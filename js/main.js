@@ -97,7 +97,58 @@ function Game_load(width,height){
 
       return scene;
     };
-    var Brain_Training_Scene = function(Type){
+    var Brain_Training_Scene = function(Type,Point,Rank){
+
+      var Button = [];
+
+      function Buttons(x,y,w,h,v,i){
+        Button[i] = new Entity();
+        Button[i].moveTo(x,y);
+        Button[i].width = w;
+        Button[i].height = h;
+        Button[i]._element = document.createElement("input");
+        Button[i]._element.type = "submit";
+        Button[i]._element.value = v;
+        Button[i].backgroundColor = "buttonface";
+        Button[i]._element.onclick = function(e){
+          switch(i){
+            case 0:
+              game.replaceScene(Brain_Training_Scene(1));
+              return;
+              break;
+            case 1:
+              game.replaceScene(Brain_Training_Scene(2));
+              return;
+              break;
+            case 2:
+              if(seikai=="赤") View(true);
+              else View(false);
+              return;
+              break;
+            case 3:
+              if(seikai=="黒") View(true);
+              else View(false);
+              return;
+              break;
+            case 4:
+              if(seikai=="青") View(true);
+              else View(false);
+              return;
+              break;
+            case 5:
+              if(seikai=="黄") View(true);
+              else View(false);
+              return;
+              break;
+            case 6:
+              game.pushScene(Brain_Training_Scene(3));
+              return;
+              break;
+          }
+          return;
+        };
+        scene.addChild(Button[i]);
+      }
 
       switch(Type){
         case 0:
@@ -126,36 +177,9 @@ function Game_load(width,height){
             scene.addChild(Text[i]);
           }
 
-          function Buttons(x,y,w,h,v,i){
-            Button[i] = new Entity();
-            Button[i].moveTo(x,y);
-            Button[i].width = w;
-            Button[i].height = h;
-            Button[i]._element = document.createElement("input");
-            Button[i]._element.type = "submit";
-            Button[i]._element.value = v;
-            Button[i].backgroundColor = "buttonface";
-            Button[i]._element.onclick = function(e){
-              switch(i){
-                case 0:
-                  game.replaceScene(Brain_Training_Scene(1));
-                  return;
-                  break;
-                case 1:
-                  game.replaceScene(Brain_Training_Scene(2));
-                  return;
-                  break;
-              }
-              return;
-            };
-            scene.addChild(Button[i]);
-          }
-
           for (var i = 0; i < Start_text.length; i++) {
             Texts(Start_text[i]);
           }
-
-          var Button = [];
 
           Buttons(width/4,Numbers+60,width/2,height/10,"ゲームスタート",0);
           Buttons(width/4,Numbers+180,width/2,height/10,"上級ゲームスタート",1);
@@ -195,8 +219,8 @@ function Game_load(width,height){
 
           var Label1 = new Label();
           Label1.font  = "90px monospace";
-          Label1.y = 150;
-          Label1.width = 300;
+          Label1.y = 250;
+          Label1.width = width/2;
           Label1.height = 300;
           Label1.text = iros[0];
           Label1.color = iros[1];
@@ -206,7 +230,7 @@ function Game_load(width,height){
           var Label2 = new Label();
           Label2.font  = "20px monospace";
           Label2.x = 0;
-          Label2.y = 150;
+          Label2.y = 200;
           Label2.width = 600;
           Label2.height = 20;
           Label2.text = "ポイント:0";
@@ -215,7 +239,7 @@ function Game_load(width,height){
           var Label3 = new Label();
           Label3.font  = "20px monospace";
           Label3.x = 0;
-          Label3.y = 180;
+          Label3.y = 220;
           Label3.width = 600;
           Label3.height = 20;
           Label3.text = "残り時間:" + Time;
@@ -231,10 +255,8 @@ function Game_load(width,height){
 
             var Label4 = new Label();
             Label4.font  = "40px monospace";
-            Label4.x = 250;
-            Label4.y = 100;
-            Label4.width = 300;
-            Label4.height = 300;
+            Label4.x = 160;
+            Label4.y = 200;
             Label4.text = Touch + "をタッチ！";
             scene.addChild(Label4);
           }
@@ -261,65 +283,24 @@ function Game_load(width,height){
               break;
             case "きいろ":
             case "yellow":
-              seikai = "黄色";
+              seikai = "黄";
               break;
             default:
               console.log(seikai);
               break;
           }
 
-          function Buttons(x,y,w,h,v,i){
-            Button[i] = new Entity();
-            Button[i].moveTo(x,y);
-            Button[i].width = w;
-            Button[i].height = h;
-            Button[i]._element = document.createElement("input");
-            Button[i]._element.type = "submit";
-            Button[i]._element.value = v;
-            Button[i].backgroundColor = "buttonface";
-            Button[i]._element.onclick = function(e){
-              switch(i){
-                case 0:
-                  if(seikai=="赤") View(true);
-                  else View(false);
-                  return;
-                  break;
-                case 1:
-                  if(seikai=="黒") View(true);
-                  else View(false);
-                  return;
-                  break;
-                case 2:
-                  if(seikai=="青") View(true);
-                  else View(false);
-                  return;
-                  break;
-                case 3:
-                  if(seikai=="黄") View(true);
-                  else View(false);
-                  return;
-                  break;
-              }
-              return;
-            };
-            scene.addChild(Button[i]);
-          }
-
-          var Button = [];
-
-          Buttons(0,500,150,150,"赤",0);
-          Buttons(150,500,150,100,"黒",1);
-          Buttons(300,500,150,150,"青",2);
-          Buttons(450,500,150,150,"黄",3);
-          Buttons(450,50,50,100,"中断",4);
+          Buttons(0,500,width/4,width/4,"赤",2);
+          Buttons(width/4,500,width/4,width/4,"黒",3);
+          Buttons(width/2,500,width/4,width/4,"青",4);
+          Buttons(width/4*3,500,width/4,width/4,"黄",5);
+          Buttons(width/4*3,50,width/4,width/4,"中断",6);
 
 
           var Judgment = new Label();
-          Judgment.font  = "20px monospace";
+          Judgment.font  = "100px monospace";
           Judgment.x = 0;
-          Judgment.y = 0;
-          Judgment.width = 20;
-          Judgment.height = 20;
+          Judgment.y = 50;
           Judgment.text = "";
           scene.addChild(Judgment);
 
@@ -329,6 +310,7 @@ function Game_load(width,height){
             if(aaaa){
               Point += P_P;
               if(Difficulty) P_P++;
+              Judgment.color = "red";
               Judgment.text = "○";
             }
             else{
@@ -336,6 +318,7 @@ function Game_load(width,height){
               else Point --;
               if(Point<0) Point = 0;
               P_P = 1;
+              Judgment.color = "blue";
               Judgment.text = "×";
             }
             var old_iros1 = iros[0]
@@ -370,7 +353,7 @@ function Game_load(width,height){
                 break;
               case "きいろ":
               case "yellow":
-                seikai = "黄色";
+                seikai = "黄";
                 break;
               default:
                 console.log(seikai);
@@ -388,13 +371,211 @@ function Game_load(width,height){
 
           Label3.addEventListener("enterframe",function(){
             Time--;
-            if(Time==0) core.replaceScene(ENDScene(Point,Difficulty,Name));
             Label3.text = "残り時間:" + Time;
+            if(Time==0) game.replaceScene(Brain_Training_Scene("END",Point,Difficulty));
           })
 
-          Label5.addEventListener("touchstart",function(){
-            core.pushScene(StopScene(Point,Difficulty,Name));
+          return scene;
+          break;
+        case "END":
+          var scene = new Scene();                                // 新しいシーンを作る
+
+          var Label1 = new Label();
+          Label1.font  = "30px monospace";
+          Label1.x = width/4;
+          Label1.y = 50;
+          Label1.text = Point + "ポイント獲得！";
+          scene.addChild(Label1);
+
+          var S_Input1 = new Entity();
+          S_Input1.moveTo(width/4,100);
+          S_Input1.width = width/2;
+          S_Input1.height = 30;
+          S_Input1._element = document.createElement('input');
+          S_Input1._element.type = "text";
+          S_Input1._element.name = "myText";
+          S_Input1._element.value = "Name";
+          S_Input1._element.placeholder = "ニックネームを入力";
+          scene.addChild(S_Input1);
+
+          var S_Input2 = new Entity();
+          S_Input2.moveTo(width/4,150);
+          S_Input2.width = width/2;
+          S_Input2.height = 30;
+          S_Input2._element = document.createElement('input');
+          S_Input2._element.type = "submit";
+          scene.addChild(S_Input2);
+
+          var S_Input3 = new Entity();
+          S_Input3.moveTo(width/4,200);
+          S_Input3.width = width/2;
+          S_Input3.height = 30;
+          S_Input3._element = document.createElement('input');
+          S_Input3._element.value = "ポイントコード発行";
+          S_Input3._element.type = "submit";
+          scene.addChild(S_Input3);
+
+          var S_Input4 = new Entity();
+          S_Input4.moveTo(width/4,250);
+          S_Input4.width = width/2;
+          S_Input4.height = 30;
+          S_Input4._element = document.createElement('input');
+          S_Input4._element.type = "text";
+          S_Input4._element.name = "myText";
+          S_Input4._element.placeholder = "ワンタイムパスワード";
+
+          var S_Input5 = new Entity();
+          S_Input5.moveTo(width/4,300);
+          S_Input5.width = width/2;
+          S_Input5.height = 30;
+          S_Input5._element = document.createElement('input');
+          S_Input5._element.value = "もう一度";
+          S_Input5._element.type = "submit";
+          scene.addChild(S_Input5);
+
+          var S_Input6 = new Entity();
+          S_Input6.moveTo(width/4,350);
+          S_Input6.width = width/2;
+          S_Input6.height = 30;
+          S_Input6._element = document.createElement('input');
+          S_Input6._element.value = "スタートへ戻る";
+          S_Input6._element.type = "submit";
+          scene.addChild(S_Input6);
+
+          var S_Input7 = new Entity();
+          S_Input7.moveTo(width/4,400);
+          S_Input7.width = width/2;
+          S_Input7.height = 30;
+          S_Input7._element = document.createElement('input');
+          S_Input7._element.value = "ランキングを見る";
+          S_Input7._element.type = "submit";
+          if(Point>0){
+            S_Input2._element.value = "ランキング登録";
+            scene.addChild(S_Input7);
+          }
+          else S_Input2._element.value = "ランキングを見る";
+
+          var hakkou = false;
+          var Code = "";
+          if(Difficulty) var Rank = "田植";
+          else var Rank = "田中";
+
+          S_Input2.addEventListener("touchstart",function(){
+            if(S_Input1._element.value.length>6){
+              Label1.text = "名前は六文字以下です。";
+              return;
+            }
+            Name = S_Input1._element.value;
+            window.localStorage.setItem("Name",Name);
+            if(this._element.value == "ランキングを見る"){
+              core.pushScene(ReadScene("読み込み"));
+              fetch
+              (
+                "https://script.google.com/macros/s/AKfycbxmC5AscixoTM6P1eAPeQwQrNn-vbP_B8Aovhant0tDl8r2_C0/exec",
+                {
+                  method: "POST",
+                  body: Rank + "ランキングデータロード"
+                }
+              ).then(res => res.json()).then(result => {
+                 core.replaceScene(RankingScene(result,0));
+                 return;
+                },);
+                return;
+            }
+            core.pushScene(ReadScene("保存"));
+            fetch
+            (
+              "https://script.google.com/macros/s/AKfycbxmC5AscixoTM6P1eAPeQwQrNn-vbP_B8Aovhant0tDl8r2_C0/exec",
+              {
+                method: 'POST',
+                body: Rank + Point + "(改行)" + Name + "(改行)" + ID
+              }
+            ).then(res => res.json()).then(result => {
+               core.popScene();
+               this._element.value = "ランキングを見る";
+               scene.removeChild(S_Input7);
+               return;
+              },);
             return;
+          })
+
+          S_Input3.addEventListener("touchstart",function(){
+            if(S_Input1._element.value.length>6){
+              Label1.text = "名前は六文字以下です。";
+              return;
+            }
+            Name = S_Input1._element.value;
+            window.localStorage.setItem("Name",Name);
+            if(hakkou){
+              S_Input4._element.value = Code;
+              return;
+            }
+
+            var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
+            "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
+            "1","2","3","4","5","6","7","8","9"];
+
+            for (var i = 0; i < 12; i++) {
+              Code += Codes[rand(Codes.length)];
+            }
+
+            S_Input4._element.value = Code;
+            scene.addChild(S_Input4);
+            hakkou = true;
+            fetch
+            (
+              "https://script.google.com/macros/s/AKfycbxmC5AscixoTM6P1eAPeQwQrNn-vbP_B8Aovhant0tDl8r2_C0/exec",
+              {
+                method: 'POST',
+                body: "発行" + Code + Point
+              }
+            )
+            return;
+          })
+
+          S_Input5.addEventListener("touchstart",function(){
+            if(S_Input1._element.value.length>6){
+              Label1.text = "名前は六文字以下です。";
+              return;
+            }
+            Name = S_Input1._element.value;
+            window.localStorage.setItem("Name",Name);
+            core.replaceScene(MainScene(Difficulty,Name));
+            core.pushScene(CountdownScene());
+            return;
+          })
+
+          S_Input6.addEventListener("touchstart",function(){
+            if(S_Input1._element.value.length>6){
+              Label1.text = "名前は六文字以下です。";
+              return;
+            }
+            Name = S_Input1._element.value;
+            window.localStorage.setItem("Name",Name);
+            core.replaceScene(StartScene(Name));
+            return;
+          })
+
+          S_Input7.addEventListener("touchstart",function(){
+            if(S_Input1._element.value.length>6){
+              Label1.text = "名前は六文字以下です。";
+              return;
+            }
+            Name = S_Input1._element.value;
+            window.localStorage.setItem("Name",Name);
+            core.pushScene(ReadScene("読み込み"));
+            fetch
+            (
+              "https://script.google.com/macros/s/AKfycbxmC5AscixoTM6P1eAPeQwQrNn-vbP_B8Aovhant0tDl8r2_C0/exec",
+              {
+                method: "POST",
+                body: Rank + "ランキングデータロード"
+              }
+            ).then(res => res.json()).then(result => {
+               core.replaceScene(RankingScene(result,0));
+               return;
+              },);
+              return;
           })
 
           return scene;
