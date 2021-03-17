@@ -6,30 +6,6 @@ BGM.addEventListener("ended",function(e){
   BGM.play();
 });
 
-function rand(n){
-  return Math.floor(Math.random() * (n));
-}
-
-function iro(){
-  var Values = [
-    ["red","あか"],
-    ["blue","あお"],
-    ["black","くろ"],
-    ["yellow","きいろ"]
-  ];
-  var aaa = rand(Values.length);
-  var Values2 = [];
-  var k = 0;
-  for (var i = 0; i < Values.length; i++) {
-    if(i != aaa){
-      Values2[k] = Values[i];
-      k++;
-    }
-  }
-  var bbb = rand(Values2.length);
-  return([Values[aaa][1],Values2[bbb][0]]);
-}
-
 function Game_load(width,height){
 
   var Setting_Flag = {
@@ -54,6 +30,13 @@ function Game_load(width,height){
   game.onload = function(){
     var Start_Menu_Scene = function(){
       var scene = new Scene();
+
+      var Background = new Sprite();
+      Background._element = document.createElement("img");
+      Background._element.src = "../image/メニュー背景.png";
+      Background.width = width;
+      Background.height = height;
+      scene.addChild(Background);
 
       function Buttons(x,y,w,h,v,i){
         Button[i] = new Entity();
@@ -102,6 +85,30 @@ function Game_load(width,height){
       game.fps = 30;
 
       var Button = [];
+
+      function rand(n){
+        return Math.floor(Math.random() * (n));
+      }
+
+      function iro(){
+        var Values = [
+          ["red","あか"],
+          ["blue","あお"],
+          ["black","くろ"],
+          ["yellow","きいろ"]
+        ];
+        var aaa = rand(Values.length);
+        var Values2 = [];
+        var k = 0;
+        for (var i = 0; i < Values.length; i++) {
+          if(i != aaa){
+            Values2[k] = Values[i];
+            k++;
+          }
+        }
+        var bbb = rand(Values2.length);
+        return([Values[aaa][1],Values2[bbb][0]]);
+      }
 
       function Buttons(x,y,w,h,v,i){
         Button[i] = new Entity();
@@ -240,7 +247,7 @@ function Game_load(width,height){
           var Label1 = new Label();
           Label1.font  = "90px monospace";
           Label1.y = 250;
-          Label1.width = width/2;
+          Label1.width = width;
           Label1.height = 300;
           Label1.text = iros[0];
           Label1.color = iros[1];
@@ -627,8 +634,8 @@ function Game_load(width,height){
           scene.addChild(Background);
 
           var Button = new Entity();
-          Button.moveTo((width-300)/2,(height-100)/2);
-          Button.width = 300;
+          Button.moveTo((width-100)/2,(height-100)/2);
+          Button.width = 100;
           Button.height = 100;
           Button._element = document.createElement("input");
           Button._element.type = "submit";
