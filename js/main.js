@@ -97,6 +97,28 @@ function Game_load(width,height){
       Background.height = height;
       scene.addChild(Background);
 
+      function zyunbi(i){
+        switch (Button[i]._element.value) {
+          case "準備中":
+            Button[i]._element.value = "準備中 もうちょっと待ってね";
+            break;
+          case "準備中 もうちょっと待ってね":
+            Button[i]._element.value = "待ってってば！";
+            break;
+          case "待ってってば！":
+            Button[i]._element.value = "しつこいですね…";
+            break;
+          case "…":
+          case "しつこいですね…":
+            Button[i]._element.value = "…";
+            break;
+          default:
+            Button[i]._element.value = "準備中";
+            break;
+        }
+        return
+      }
+
       function Buttons(x,y,w,h,v,i){
         Button[i] = new Entity();
         Button[i].moveTo(x,y);
@@ -113,11 +135,8 @@ function Game_load(width,height){
               return;
               break;
             case 1:
-              game.replaceScene(Start_Menu_Scene());
-              return;
-              break;
             case 2:
-              game.replaceScene(Start_Menu_Scene());
+              zyunbi(i);
               return;
               break;
             case 3:
