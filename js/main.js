@@ -67,7 +67,7 @@ function Game_load(width,height){
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
-              game.replaceScene(Brain_Training_Scene(0));
+              game.replaceScene(Brain_Training_Scene("メニュー"));
               return;
               break;
             case 1:
@@ -97,7 +97,9 @@ function Game_load(width,height){
 
       return scene;
     };
-    var Brain_Training_Scene = function(Type,Point,Rank){
+    var Brain_Training_Scene = function(Type,Difficulty,Point){
+
+      game.fps = 30;
 
       var Button = [];
 
@@ -113,11 +115,13 @@ function Game_load(width,height){
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
-              game.replaceScene(Brain_Training_Scene(1));
+              game.replaceScene(Brain_Training_Scene("メイン",false));
+              game.pushScene(Brain_Training_Scene("COUNTDOWN"));
               return;
               break;
             case 1:
-              game.replaceScene(Brain_Training_Scene(2));
+              game.replaceScene(Brain_Training_Scene("メイン",true));
+              game.pushScene(Brain_Training_Scene("COUNTDOWN"));
               return;
               break;
             case 2:
@@ -141,7 +145,27 @@ function Game_load(width,height){
               return;
               break;
             case 6:
-              game.pushScene(Brain_Training_Scene(3));
+              game.pushScene(Brain_Training_Scene("STOP",Difficulty,Point));
+              return;
+              break;
+            case 7:
+              game.replaceScene(Brain_Training_Scene("COUNTDOWN"));
+              return;
+            case 8:
+              game.popScene();
+              game.replaceScene(Brain_Training_Scene("END",Difficulty,Point));
+              return;
+              break;
+            case 9:
+            case 10:
+              game.replaceScene(Brain_Training_Scene("ランキング",Difficulty,Point-1));
+              break;
+            case 11:
+            case 12:
+              game.replaceScene(Brain_Training_Scene("ランキング",Difficulty,Point+1));
+              break;
+            case 13:
+              game.popScene();
               return;
               break;
           }
@@ -151,7 +175,7 @@ function Game_load(width,height){
       }
 
       switch(Type){
-        case 0:
+        case "メニュー":
           var scene = new Scene();                                // 新しいシーンを作る
 
           var T_I = "red";
@@ -206,12 +230,8 @@ function Game_load(width,height){
 
           return scene;
           break;
-        case 1:
-        case 2:
+        case "メイン":
           var scene = new Scene();                                // 新しいシーンを作る
-
-          if(Type==1) var Difficulty = false;
-          else var Difficulty = true;
 
           var Time = 1000;
           var iros = iro();
@@ -372,7 +392,7 @@ function Game_load(width,height){
           Label3.addEventListener("enterframe",function(){
             Time--;
             Label3.text = "残り時間:" + Time;
-            if(Time==0) game.replaceScene(Brain_Training_Scene("END",Point,Difficulty));
+            if(Time==0) game.replaceScene(Brain_Training_Scene("END",Difficulty,Point));
           })
 
           return scene;
@@ -413,7 +433,7 @@ function Game_load(width,height){
           S_Input3._element = document.createElement('input');
           S_Input3._element.value = "ポイントコード発行";
           S_Input3._element.type = "submit";
-          scene.addChild(S_Input3);
+          if(Point>0) scene.addChild(S_Input3);
 
           var S_Input4 = new Entity();
           S_Input4.moveTo(width/4,250);
@@ -438,7 +458,7 @@ function Game_load(width,height){
           S_Input6.width = width/2;
           S_Input6.height = 30;
           S_Input6._element = document.createElement('input');
-          S_Input6._element.value = "スタートへ戻る";
+          S_Input6._element.value = "メニューへ戻る";
           S_Input6._element.type = "submit";
           scene.addChild(S_Input6);
 
@@ -468,7 +488,7 @@ function Game_load(width,height){
             Name = S_Input1._element.value;
             window.localStorage.setItem("Name",Name);
             if(this._element.value == "ランキングを見る"){
-              core.pushScene(ReadScene("読み込み"));
+              game.pushScene(Brain_Training_Scene("読み込み"));
               fetch
               (
                 "https://script.google.com/macros/s/AKfycbxmC5AscixoTM6P1eAPeQwQrNn-vbP_B8Aovhant0tDl8r2_C0/exec",
@@ -477,12 +497,12 @@ function Game_load(width,height){
                   body: Rank + "ランキングデータロード"
                 }
               ).then(res => res.json()).then(result => {
-                 core.replaceScene(RankingScene(result,0));
+                 game.replaceScene(Brain_Training_Scene("ランキング",result,0));
                  return;
                 },);
                 return;
             }
-            core.pushScene(ReadScene("保存"));
+            game.pushScene(Brain_Training_Scene("保存"));
             fetch
             (
               "https://script.google.com/macros/s/AKfycbxmC5AscixoTM6P1eAPeQwQrNn-vbP_B8Aovhant0tDl8r2_C0/exec",
@@ -491,7 +511,7 @@ function Game_load(width,height){
                 body: Rank + Point + "(改行)" + Name + "(改行)" + ID
               }
             ).then(res => res.json()).then(result => {
-               core.popScene();
+               game.popScene();
                this._element.value = "ランキングを見る";
                scene.removeChild(S_Input7);
                return;
@@ -540,8 +560,8 @@ function Game_load(width,height){
             }
             Name = S_Input1._element.value;
             window.localStorage.setItem("Name",Name);
-            core.replaceScene(MainScene(Difficulty,Name));
-            core.pushScene(CountdownScene());
+            game.replaceScene(Brain_Training_Scene("メイン",Difficulty));
+            game.pushScene(Brain_Training_Scene("COUNTDOWN"));
             return;
           })
 
@@ -551,8 +571,7 @@ function Game_load(width,height){
               return;
             }
             Name = S_Input1._element.value;
-            window.localStorage.setItem("Name",Name);
-            core.replaceScene(StartScene(Name));
+            game.replaceScene(Start_Menu_Scene());
             return;
           })
 
@@ -563,7 +582,7 @@ function Game_load(width,height){
             }
             Name = S_Input1._element.value;
             window.localStorage.setItem("Name",Name);
-            core.pushScene(ReadScene("読み込み"));
+            game.pushScene(Brain_Training_Scene("読み込み"));
             fetch
             (
               "https://script.google.com/macros/s/AKfycbxmC5AscixoTM6P1eAPeQwQrNn-vbP_B8Aovhant0tDl8r2_C0/exec",
@@ -572,13 +591,167 @@ function Game_load(width,height){
                 body: Rank + "ランキングデータロード"
               }
             ).then(res => res.json()).then(result => {
-               core.replaceScene(RankingScene(result,0));
+               game.replaceScene(Brain_Training_Scene("ランキング",result,0));
                return;
               },);
-              return;
+            return;
           })
 
           return scene;
+          break;
+        case "STOP":
+          var scene = new Scene();                                // 新しいシーンを作る
+
+          var Background = new Sprite();
+          Background._element = document.createElement("img");
+          Background._element.src = "../image/半透明(黒).png";
+          Background.x = 0;
+          Background.y = 0;
+          Background.width = width;
+          Background.height = height;
+          scene.addChild(Background);
+
+          Buttons((width-300)/2,150,300,90,"続ける",7);
+          Buttons((width-300)/2,300,300,90,"やめる",8);
+
+          return scene;
+          break;
+        case "COUNTDOWN":
+          var scene = new Scene();                                // 新しいシーンを作る
+
+          var Background = new Sprite();
+          Background._element = document.createElement("img");
+          Background._element.src = "../image/半透明(黒).png";
+          Background.width = width;
+          Background.height = height;
+          scene.addChild(Background);
+
+          var Button = new Entity();
+          Button.moveTo((width-300)/2,(height-100)/2);
+          Button.width = 300;
+          Button.height = 100;
+          Button._element = document.createElement("input");
+          Button._element.type = "submit";
+          Button._element.value = "四";
+          Button.backgroundColor = "buttonface";
+          scene.addChild(Button);
+
+          game.fps = 1;
+
+          Button.addEventListener("enterframe",function(){
+            switch (Button._element.value) {
+              case "四":
+                Button._element.value = "三";
+                break;
+              case "三":
+                Button._element.value = "二";
+                break;
+              case "二":
+                Button._element.value = "一";
+                break;
+              case "一":
+                Button._element.value = "スタート！";
+                break;
+              case "スタート！":
+                game.fps = 30;
+                game.popScene();
+                break;
+            }
+          })
+
+          return scene;
+          break;
+        case "保存":
+        case "読み込み":
+          var scene = new Scene();                                // 新しいシーンを作る
+
+            var Background = new Sprite();
+            Background._element = document.createElement("img");
+            Background._element.src = "../image/半透明(黒).png";
+            Background.width = width;
+            Background.height = height;
+            scene.addChild(Background);
+
+            var Loading = new Entity();
+            Loading._element = document.createElement("img");
+            if(Type=="読み込み") Loading._element.src = "../image/読み込み中.gif";
+            else Loading._element.src = "../image/保存中.gif";
+            Loading.width = width;
+            Loading.height = height;
+            scene.addChild(Loading);
+
+            return scene;
+            break;
+        case "ランキング":
+          var scene = new Scene();                                // 新しいシーンを作る
+
+          var Background = new Sprite();
+          Background._element = document.createElement("img");
+          Background._element.src = "../image/メニュー背景.png";
+          Background.width = width;
+          Background.height = height;
+          scene.addChild(Background);
+
+          Buttons(20,420,80,80,"↑",9);
+          Buttons(305,420,80,80,"↑",10);
+          Buttons(20,500,80,80,"↓",11);
+          Buttons(305,500,80,80,"↓",12);
+          Buttons(100,420,205,160,"戻る",13);
+
+          if(Point <= 0){
+            scene.removeChild(Button[9]);
+            scene.removeChild(Button[10]);
+          }
+
+          if(Difficulty.length <= Point + 10){
+            scene.removeChild(Button[11]);
+            scene.removeChild(Button[12]);
+          }
+
+          var Numbers = 40;
+
+          function R_Texts(a,b){
+            R_Text[i] = new Sprite();
+            R_Text[i]._element = document.createElement("innerHTML");
+            R_Text[i]._style.font  = "20px monospace";
+            R_Text[i]._element.textContent = a;
+            R_Text[i].x = b;
+            R_Text[i].y = Numbers;
+            scene.addChild(R_Text[i]);
+          }
+
+          var Result = [];
+          var k = 0;
+          var R_X = null;
+          var R_Text = [];
+
+          for (var i = Point; i < Point + 10; i++) {
+            if(Difficulty.length <= i) break;
+            Result[k] = Difficulty[i];
+            k++;
+          }
+
+          for (var i = 0; i < Result.length; i++) {
+            R_X = 40;
+            if(Result[i].順位 < 10) R_X += 10;
+            if(Result[i].順位 < 100) R_X += 10;
+            if(Result[i].順位 < 1000) R_X += 10;
+            if(Result[i].順位 < 10000) R_X += 10;
+            if(Result[i].順位 < 100000) R_X += 10;
+            R_Texts(Result[i].順位+"位",R_X);
+            R_X = 130;
+            if(Result[i].ポイント < 10) R_X += 10;
+            if(Result[i].ポイント < 100) R_X += 10;
+            if(Result[i].ポイント < 1000) R_X += 10;
+            if(Result[i].ポイント < 10000) R_X += 10;
+            R_Texts(Result[i].ポイント+"ポイント",R_X);
+            R_X = 270;
+            R_Texts(Result[i].名前,R_X);
+            Numbers += 35;
+          }
+
+          return scene;
+
           break;
       }
 
