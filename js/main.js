@@ -128,6 +128,7 @@ function Game_load(width,height){
         Button[i]._element.type = "submit";
         Button[i]._element.value = v;
         Button[i].backgroundColor = "buttonface";
+        //Button[i]._element.font.size = "30px";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -347,7 +348,7 @@ function Game_load(width,height){
           var seikai = null;
 
           var Label1 = new Label();
-          Label1.font  = "90px monospace";
+          Label1.font = "90px monospace";
           Label1.y = 250;
           Label1.width = width;
           Label1.height = 300;
@@ -745,11 +746,20 @@ function Game_load(width,height){
           Button.backgroundColor = "buttonface";
           scene.addChild(Button);
 
+          var Meter = new Sprite();
+          Meter._element = document.createElement("img");
+          Meter._element.src = "../image/透明.png";
+          Meter.y = (height - width) / 2;
+          Meter.width = width;
+          Meter.height = width;
+          scene.addChild(Meter);
+
           game.fps = 1;
 
           Button.addEventListener("enterframe",function(){
             switch (Button._element.value) {
               case "四":
+                Meter._element.src = "../image/メーター.gif";
                 Button._element.value = "三";
                 break;
               case "三":
@@ -760,10 +770,11 @@ function Game_load(width,height){
                 break;
               case "一":
                 Button._element.value = "スタート！";
+                scene.removeChild(Meter);
                 break;
               case "スタート！":
-                game.fps = 30;
                 game.popScene();
+                game.fps = 30;
                 break;
             }
           })
