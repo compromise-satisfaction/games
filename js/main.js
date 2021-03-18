@@ -132,6 +132,7 @@ function Game_load(width,height){
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
+              game.fps = 30;
               game.replaceScene(Brain_Training_Scene("メニュー"));
               return;
               break;
@@ -141,6 +142,7 @@ function Game_load(width,height){
               return;
               break;
             case 3:
+            game.fps = 100;
             game.pushScene(Loading_Scene("読み込み"));
             fetch
             (
@@ -184,8 +186,6 @@ function Game_load(width,height){
       return scene;
     };
     var Brain_Training_Scene = function(Type,Difficulty,Point){
-
-      game.fps = 30;
 
       var Button = [];
 
