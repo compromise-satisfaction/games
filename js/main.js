@@ -94,7 +94,7 @@ function Game_load(width,height){
       Background._element.src = "../image/メニュー背景.png";
       Background.width = width;
       Background.height = height;
-      scene.addChild(Background);
+      //scene.addChild(Background);
 
       function zyunbi(i){
         switch (Button[i]._element.value) {
