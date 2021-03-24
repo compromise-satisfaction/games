@@ -1,6 +1,86 @@
 enchant();
 
+var BGM = document.createElement("audio");
+BGM.addEventListener("ended",function(e){
+  BGM.currentTime = BGM.id*1;
+  BGM.play();
+});
+
 function Game_load(width,height){
+
+  var Scene_kazu = 1;
+  var Item_Flag = [];
+  var Setting_Flag = {
+    人物ページ:0,
+    アイテムページ:0,
+    BGM音量:5,
+    音声音量:5,
+    効果音音量:5,
+    自由:"自由",
+    名前:"名前",
+    苗字:"苗字",
+    性別:"未設定",
+    一人称:"一人称",
+    二人称:"二人称",
+    オートセーブ:true,
+    演出スキップ:false,
+    シーンナンバー:"スタート"
+  };
+  function Sound_branch(a){
+      if(a=="無し") return;
+      for (var i = 0; i < SE.length; i++) {
+        if(SE[i].title == a) break;
+      }
+      switch(SE[i].type){
+        case "音声":
+          var Volume = Setting_Flag.音声音量;
+          break;
+        case "効果音":
+          var Volume = Setting_Flag.効果音音量;
+          break;
+        default:
+          var Volume = Setting_Flag.BGM音量;
+          break;
+      }
+      if(Volume){
+        Volume /= 10;
+        SE[i].volume = Volume;
+        if(SE[i].paused) SE[i].play();
+        else SE[i].currentTime = 0;
+      }
+      else{
+        if(SE[i].paused==false) SE[i].pause();
+      }
+      return;
+    }
+  function BGM_ON(BGM_Name){
+      switch(BGM_Name){
+        case "無し":
+          if(BGM.paused==false) BGM.pause();
+          BGM.title = BGM_Name;
+          break;
+        case "消音":
+          BGM.volume = 0;
+          break;
+        case "オン":
+          BGM.volume = Setting_Flag.BGM音量/10;
+          break;
+        default:
+          if(BGM.title == BGM_Name && BGM.paused == false) return;
+          if(BGM.paused==false) BGM.pause();
+          for (var i = 0; i < SE.length; i++) {
+            if(SE[i].title == BGM_Name) break;
+          }
+          BGM.src = SE[i].src;
+          BGM.currentTime = 0;
+          BGM.volume = Setting_Flag.BGM音量/10;
+          BGM.play();
+          BGM.title = BGM_Name;
+          BGM.id = SE[i].type;
+          break;
+      }
+      return;
+    }
 
   var game = new Game(width,height);
   game.fps = 100;
@@ -105,7 +185,6 @@ function Game_load(width,height){
       return scene;
     };
     game.replaceScene(Start_Menu_Scene());
-
   }
   game.start();
 }
