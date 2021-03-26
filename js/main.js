@@ -94,7 +94,7 @@ function Game_load(width,height){
       Background._element.src = "../image/メニュー背景.png";
       Background.width = width;
       Background.height = height;
-      //scene.addChild(Background);
+      scene.addChild(Background);
 
       function zyunbi(i){
         switch (Button[i]._element.value) {
@@ -126,8 +126,8 @@ function Game_load(width,height){
         Button[i]._element = document.createElement("input");
         Button[i]._element.type = "submit";
         Button[i]._element.value = v;
+        Button[i]._element.style.fontSize = h/2;
         Button[i].backgroundColor = "buttonface";
-        //Button[i]._element.font.size = "30px";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -220,6 +220,17 @@ function Game_load(width,height){
         Button[i]._element = document.createElement("input");
         Button[i]._element.type = "submit";
         Button[i]._element.value = v;
+        switch (v) {
+          case "赤":
+          case "青":
+          case "黒":
+          case "黄":
+            Button[i]._element.style.fontSize = h/2;
+            break;
+          default:
+            Button[i]._element.style.fontSize = w/(v.length+1);
+            break;
+        }
         Button[i].backgroundColor = "buttonface";
         Button[i]._element.onclick = function(e){
           switch(i){
