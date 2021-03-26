@@ -220,17 +220,7 @@ function Game_load(width,height){
         Button[i]._element = document.createElement("input");
         Button[i]._element.type = "submit";
         Button[i]._element.value = v;
-        switch (v) {
-          case "赤":
-          case "青":
-          case "黒":
-          case "黄":
-            Button[i]._element.style.fontSize = h/2;
-            break;
-          default:
-            Button[i]._element.style.fontSize = w/(v.length+1);
-            break;
-        }
+        Button[i]._element.style.fontSize = w/(v.length+1);
         Button[i].backgroundColor = "buttonface";
         Button[i]._element.onclick = function(e){
           switch(i){
