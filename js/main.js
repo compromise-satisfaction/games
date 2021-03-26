@@ -102,28 +102,6 @@ function Game_load(width,height){
       Background.height = height;
       scene.addChild(Background);
 
-      function zyunbi(i){
-        switch (Button[i]._element.value) {
-          case "準備中":
-            Button[i]._element.value = "準備中 もうちょっと待ってね";
-            break;
-          case "準備中 もうちょっと待ってね":
-            Button[i]._element.value = "待ってってば！";
-            break;
-          case "待ってってば！":
-            Button[i]._element.value = "しつこいですね…";
-            break;
-          case "…":
-          case "しつこいですね…":
-            Button[i]._element.value = "…";
-            break;
-          default:
-            Button[i]._element.value = "準備中";
-            break;
-        }
-        return
-      }
-
       function Buttons(x,y,w,h,v,i){
         Button[i] = new Entity();
         Button[i].moveTo(x,y);
@@ -146,10 +124,6 @@ function Game_load(width,height){
               game.replaceScene(R_MainScene());
               return;
             case 2:
-              zyunbi(i);
-              return;
-              break;
-            case 3:
             game.fps = 100;
             game.pushScene(Loading_Scene("読み込み"));
             fetch
@@ -186,10 +160,9 @@ function Game_load(width,height){
 
       var Button = [];
 
-      Buttons(width/4,60,width/2,height/10,"脳トレ",0);
-      Buttons(width/4,180,width/2,height/10,"リバーシ",1);
-      Buttons(width/4,300,width/2,height/10,"ブロック崩し",2);
-      Buttons(width/4,420,width/2,height/10,"ノベルゲーム",3);
+      Buttons(width/4,180,width/2,height/10,"脳トレ",0);
+      Buttons(width/4,300,width/2,height/10,"リバーシ",1);
+      Buttons(width/4,420,width/2,height/10,"ノベルゲーム",2);
 
       return scene;
     };
@@ -2058,19 +2031,19 @@ function Game_load(width,height){
 
       return scene;
     };
-    /*
-    var ID = window.localStorage.getItem("ID");
-    if(!ID){
+    if(window.localStorage){
+      var ID = window.localStorage.getItem("ID");
+    }
+    else{
       var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
       "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
       "1","2","3","4","5","6","7","8","9"];
-      ID = "";
+      var ID = "";
       for (var i = 0; i < 10; i++) {
         ID += Codes[rand(Codes.length)];
       }
       window.localStorage.setItem("ID",ID);
     }
-    */
     game.replaceScene(Start_Menu_Scene());
   }
   game.start();
