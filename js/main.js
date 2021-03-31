@@ -204,7 +204,7 @@ function Game_load(width,height){
         Button[i].width = w;
         Button[i].height = h;
         Button[i]._element = document.createElement("input");
-        Button[i]._element.type = "submit";
+        Button[i]._element.type = "button";
         Button[i]._element.value = v;
         Button[i]._element.style.fontSize = w/(v.length+1);
         Button[i].backgroundColor = "buttonface";
@@ -883,7 +883,7 @@ function Game_load(width,height){
         Button[i].width = a.split(",")[3];
         Button[i].height = a.split(",")[4];
         Button[i]._element = document.createElement("input");
-        Button[i]._element.type = "submit";
+        Button[i]._element.type = "button";
         Button[i]._element.value = a.split(",")[0];
         Button[i].backgroundColor = "buttonface";
         if(false){
