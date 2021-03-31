@@ -112,7 +112,7 @@ function Game_load(width,height){
         Button[i]._element.value = v;
         Button[i]._element.style.fontSize = h/2;
         Button[i]._element.style.borderRadius = "0%";
-        Button[i].backgroundColor = "buttonface";
+        Button[i].backgroundColor = "red";
         console.log(Button[i]._element.style);
         Button[i]._element.onclick = function(e){
           switch(i){
