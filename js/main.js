@@ -111,7 +111,9 @@ function Game_load(width,height){
         Button[i]._element.type = "submit";
         Button[i]._element.value = v;
         Button[i]._element.style.fontSize = h/2;
+        Button[i]._element.style.borderRadius = "0%";
         Button[i].backgroundColor = "buttonface";
+        console.log(Button[i]._element.style);
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -889,30 +891,27 @@ function Game_load(width,height){
         Button[i]._element.onclick = function(e){
           if(a.split(",")[6]) Sound_branch(a.split(",")[6]);
           else Sound_branch("無し");
-          switch(a.split(",")[7]){
-            case "人物":
-            case "アイテム":
-              if(Scene_kazu == 1){
-                game.pushScene(Novel_MainScene(a.split(",")[7]));
-                Scene_kazu++;
-              }
-              else game.replaceScene(Novel_MainScene(a.split(",")[7]));
-              return;
-              break;
-            case "popScene":
-              game.popScene();
-              Scene_kazu--;
-              return;
-              break;
-            default:
-              Setting_Flag.シーンナンバー = a.split(",")[5];
-              break;
-          }
           for (var i = 0; i < Game_Datas.length; i++) {
             if(Game_Datas[i].Number==a.split(",")[5]) break;
           }
           if(i < Game_Datas.length) game.replaceScene(Novel_MainScene(Game_Datas[i].Data));
-          else game.replaceScene(Novel_MainScene("(ボタン:エラー,0,0,405,600,スタート)"));
+          else{
+            switch(a.split(",")[5]){
+              case "popScene":
+                game.popScene();
+                break;
+              case "pushScene":
+                for (var i = 0; i < Game_Datas.length; i++) {
+                  if(Game_Datas[i].Number==a.split(",")[7]) break;
+                }
+                if(i < Game_Datas.length) game.pushScene(Novel_MainScene(Game_Datas[i].Data));
+                else game.replaceScene(Novel_MainScene("(ボタン:エラー,0,0,405,600,スタート)"));
+                break;
+              default:
+                game.replaceScene(Novel_MainScene("(ボタン:エラー,0,0,405,600,スタート)"));
+                break;
+            }
+          }
           return;
         };
       }
@@ -928,34 +927,18 @@ function Game_load(width,height){
         Data = Data.replace(/\(画像:.+?\)/g,"●");//テキストを消費
       }
 
-      var White_Background = new Sprite();
-      White_Background._element = document.createElement("img");
-      switch(Data){
-        case "アイテム":
-          White_Background._element.src = "../image/メニュー背景.png";
-          White_Background.height = height;
-          Data  = "(ボタン:戻る,30,30,80,40,popScene,戻る,popScene)";
-          Data += "(ボタン:設定,162.5,30,80,40,popScene,メニュー)";
-          Data += "(ボタン:人物,295,30,80,40,人物,メニュー,人物)";
-          for (var i = 0; i < Item_Flag.length; i++) {
-            Data += "(ボタン:" + Item_Flag[i] + ",30,140,345,40,人物,メニュー,人物)";
-          }
-          break;
-        case "人物":
-          White_Background._element.src = "../image/メニュー背景.png";
-          White_Background.height = height;
-          Data  = "(ボタン:戻る,30,30,80,40,popScene,戻る,popScene)";
-          Data += "(ボタン:設定,162.5,30,80,40,popScene,メニュー)";
-          Data += "(ボタン:アイテム,295,30,80,40,アイテム,メニュー,アイテム)";
-          break;
-        default:
-          White_Background._element.src = "../image/白.png";
-          White_Background.y = width/16*9;
-          White_Background.height = height-width/16*9;
-          break;
+      var White_Background = Data.match(/\(白背景\)/g);
+
+      if(White_Background){
+        White_Background = new Sprite();
+        White_Background._element = document.createElement("img");
+        White_Background._element.src = "../image/白.png";
+        White_Background.y = width/16*9;
+        White_Background.height = height-width/16*9;
+        White_Background.width = width;
+        scene.addChild(White_Background);
       }
-      White_Background.width = width;
-      scene.addChild(White_Background);
+
 
       var Buttons_Data = Data.match(/\(ボタン:.+?\)/g);
 
@@ -1140,6 +1123,22 @@ function Game_load(width,height){
             break;
         }
         Display_time++;
+        if(FPS==0){
+          Display_time = 0;
+          Text[Text_Number] = new Sprite();
+          Text[Text_Number]._element = document.createElement("innerHTML");
+          Text[Text_Number]._style.font  = PX + "px monospace";
+          Text[Text_Number]._element.textContent = Itimozi;
+          Text[Text_Number].x = Text_X;
+          Text[Text_Number].y = Text_Y;
+          Text[Text_Number]._style.color = Text_Color;
+          Text_X += PX;
+          Sound_branch(Text_Sound);
+          scene.addChild(Text[Text_Number]);
+          Text_Number++;
+          Texts();
+          return;
+        }
         if(Display_time%FPS!=0) return;
         Display_time = 0;
         Text[Text_Number] = new Sprite();
@@ -1158,10 +1157,12 @@ function Game_load(width,height){
 
       Texts();
 
-      White_Background.addEventListener("enterframe",function(){
+      game.addEventListener("enterframe",function(){
         Texts();
+        if(game.input.up) game.popScene();
         return;
       });
+
 
       return scene;
     };
