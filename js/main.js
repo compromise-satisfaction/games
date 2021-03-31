@@ -113,6 +113,7 @@ function Game_load(width,height){
         Button[i]._element.style.fontSize = h/2;
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
+        Button[i]._element.style.webkitAppearance = "none";
         Button[i].backgroundColor = "buttonface";
         console.log(Button[i]._element.style);
         Button[i]._element.onclick = function(e){
