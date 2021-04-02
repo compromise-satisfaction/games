@@ -876,6 +876,7 @@ function Game_load(width,height){
       }
 
       var Button = [];
+      var Button_fontSize = 15;
 
       function Buttons(a){
         Button[i] = new Entity();
@@ -885,6 +886,8 @@ function Game_load(width,height){
         Button[i]._element = document.createElement("input");
         Button[i]._element.type = "button";
         Button[i]._element.value = a.split(",")[0];
+        Button[i]._element.style.fontSize = Button_fontSize;
+        Button[i]._element.style.webkitAppearance = "none";
         Button[i].backgroundColor = "buttonface";
         if(false){
           Button[i]._element.value += " ✓";
@@ -1028,6 +1031,7 @@ function Game_load(width,height){
         Data = Data.replace(/\(名前:.+?\)/g,"");//テキストを消費
       }
 
+      var Text = [];
       var PX = width/20;
       var Text_X = width/20;
       var Text_Y = width/20 + width/20 + width/16*9;
@@ -1037,6 +1041,8 @@ function Game_load(width,height){
       var Itimozi = null;
       var FPS = 5;
       var Display_time = 0;
+      var Opacity = 1;
+      var Opacitys = -0.02;
 
       function Texts(){
         Itimozi = Data[Text_Number];
@@ -1069,6 +1075,7 @@ function Game_load(width,height){
             PX = Text_informations_Data[Text_information_Number].split(",")[0]*1;
             Text_Color = Text_informations_Data[Text_information_Number].split(",")[1];
             Text_Sound = Text_informations_Data[Text_information_Number].split(",")[2];
+            Button_fontSize = Text_informations_Data[Text_information_Number].split(",")[3];
             Text_information_Number++
             Text_Number++;
             Texts();
@@ -1127,32 +1134,46 @@ function Game_load(width,height){
         Display_time++;
         if(FPS==0){
           Display_time = 0;
-          Text[Text_Number] = new Sprite();
-          Text[Text_Number]._element = document.createElement("innerHTML");
-          Text[Text_Number]._style.font  = PX + "px monospace";
-          Text[Text_Number]._element.textContent = Itimozi;
-          Text[Text_Number].x = Text_X;
-          Text[Text_Number].y = Text_Y;
-          Text[Text_Number]._style.color = Text_Color;
+          Text[Text.length] = new Sprite();
+          Text[Text.length-1]._element = document.createElement("innerHTML");
+          Text[Text.length-1]._style.font  = PX + "px monospace";
+          Text[Text.length-1]._element.textContent = Itimozi;
+          Text[Text.length-1].x = Text_X;
+          Text[Text.length-1].y = Text_Y;
+          if(Text_Color.substring(0,2)=="点滅"){
+            Text[Text.length-1].点滅 = true;
+            Text[Text.length-1]._style.color = Text_Color.substring(2);
+          }
+          else{
+            Text[Text.length-1].点滅 = false;
+            Text[Text.length-1]._style.color = Text_Color;
+          }
           Text_X += PX;
           Sound_branch(Text_Sound);
-          scene.addChild(Text[Text_Number]);
+          scene.addChild(Text[Text.length-1]);
           Text_Number++;
           Texts();
           return;
         }
         if(Display_time%FPS!=0) return;
         Display_time = 0;
-        Text[Text_Number] = new Sprite();
-        Text[Text_Number]._element = document.createElement("innerHTML");
-        Text[Text_Number]._style.font  = PX + "px monospace";
-        Text[Text_Number]._element.textContent = Itimozi;
-        Text[Text_Number].x = Text_X;
-        Text[Text_Number].y = Text_Y;
-        Text[Text_Number]._style.color = Text_Color;
+        Text[Text.length] = new Sprite();
+        Text[Text.length-1]._element = document.createElement("innerHTML");
+        Text[Text.length-1]._style.font  = PX + "px monospace";
+        Text[Text.length-1]._element.textContent = Itimozi;
+        Text[Text.length-1].x = Text_X;
+        Text[Text.length-1].y = Text_Y;
+        if(Text_Color.substring(0,2)=="点滅"){
+          Text[Text.length-1].点滅 = true;
+          Text[Text.length-1]._style.color = Text_Color.substring(2);
+        }
+        else{
+          Text[Text.length-1].点滅 = false;
+          Text[Text.length-1]._style.color = Text_Color;
+        }
         Text_X += PX;
         Sound_branch(Text_Sound);
-        scene.addChild(Text[Text_Number]);
+        scene.addChild(Text[Text.length-1]);
         Text_Number++;
         return;
       }
@@ -1160,8 +1181,14 @@ function Game_load(width,height){
       Texts();
 
       game.addEventListener("enterframe",function(){
+        for (var i = 0; i < Text.length; i++) {
+          if(Text[i].点滅) Text[i].opacity = Opacity;
+        }
+        Opacity += Opacitys;
+        if(Opacity < 0) Opacitys = 0.02;
+        if(Opacity > 1) Opacitys = -0.02;
         Texts();
-        if(game.input.up) game.popScene();
+        if(game.input.up) console.log(Text.length);
         return;
       });
 
