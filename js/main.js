@@ -843,6 +843,8 @@ function Game_load(width,height){
     };
     var Novel_MainScene = function(Data){
 
+      Data = Data.replace(/\n/g,"");
+
       var scene = new Scene();                                // 新しいシーンを作る
 
       var Image = [];
@@ -886,7 +888,6 @@ function Game_load(width,height){
         Button[i]._element = document.createElement("input");
         Button[i]._element.type = "button";
         Button[i]._element.value = a.split(",")[0];
-        Button[i]._element.style.fontSize = Button_fontSize;
         Button[i]._element.style.webkitAppearance = "none";
         Button[i].backgroundColor = "buttonface";
         if(false){
@@ -902,6 +903,10 @@ function Game_load(width,height){
           if(i < Game_Datas.length) game.replaceScene(Novel_MainScene(Game_Datas[i].Data));
           else{
             switch(a.split(",")[5]){
+              case "メニューに戻る":
+                game.popScene();
+                game.replaceScene(Start_Menu_Scene());
+                break;
               case "popScene":
                 game.popScene();
                 break;
@@ -913,6 +918,7 @@ function Game_load(width,height){
                 else game.replaceScene(Novel_MainScene("(ボタン:エラー,0,0,405,600,スタート)"));
                 break;
               default:
+                game.popScene();
                 game.replaceScene(Novel_MainScene("(ボタン:エラー,0,0,405,600,スタート)"));
                 break;
             }
@@ -1065,6 +1071,7 @@ function Game_load(width,height){
             return;
             break;
           case "Θ":
+            Button[Button_Number]._element.style.fontSize = Button_fontSize;
             scene.addChild(Button[Button_Number]);
             Button_Number++;
             Text_Number++;
@@ -1075,7 +1082,7 @@ function Game_load(width,height){
             PX = Text_informations_Data[Text_information_Number].split(",")[0]*1;
             Text_Color = Text_informations_Data[Text_information_Number].split(",")[1];
             Text_Sound = Text_informations_Data[Text_information_Number].split(",")[2];
-            Button_fontSize = Text_informations_Data[Text_information_Number].split(",")[3];
+            Button_fontSize = Text_informations_Data[Text_information_Number].split(",")[3]*1;
             Text_information_Number++
             Text_Number++;
             Texts();
