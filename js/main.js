@@ -1180,7 +1180,7 @@ function Game_load(width,height){
 
       Texts();
 
-      game.addEventListener("enterframe",function(){
+      scene.addEventListener("enterframe",function(){
         for (var i = 0; i < Text.length; i++) {
           if(Text[i].点滅) Text[i].opacity = Opacity;
         }
@@ -1188,7 +1188,10 @@ function Game_load(width,height){
         if(Opacity < 0) Opacitys = 0.02;
         if(Opacity > 1) Opacitys = -0.02;
         Texts();
-        if(game.input.up) console.log(Text.length);
+        if(game.input.up){
+          game.popScene();
+          game.replaceScene(Start_Menu_Scene());
+        }
         return;
       });
 
