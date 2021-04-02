@@ -954,8 +954,18 @@ function Game_load(width,height){
         White_Background.height = height-width/16*9;
         White_Background.width = width;
         scene.addChild(White_Background);
+        Data = Data.replace(/\(白背景)/g,"");//テキストを消費
       }
 
+      var Next = Data.match(/\(次へ進む:.+?\)/g);
+
+      if(Next){
+        Next = Next[0].substring(6,Next[0].length-1);
+        var Next_Time = Next.split(",")[0]*1;
+        Next = Next.split(",")[1];
+        Data = Data.replace(/\(次へ進む:.+?\)/g,"");//テキストを消費
+      }
+      else Next = false;
 
       var Buttons_Data = Data.match(/\(ボタン:.+?\)/g);
 
@@ -1028,6 +1038,16 @@ function Game_load(width,height){
         Data = Data.replace(/\(文字座標:.+?\)/g,"±");//テキストを消費
       }
 
+      var Image_TL_Data = Data.match(/\(画像\d+:.+?\)/g);
+
+      if(Image_TL_Data){
+        var Image_TL_Number = 0;
+        for (var i = 0; i < Image_TL_Data.length; i++) {
+          Image_TL_Data[i] = Image_TL_Data[i].substring(3,Image_TL_Data[i].length-1);
+        }
+        Data = Data.replace(/\(画像\d+:.+?\)/g,"Ω");//テキストを消費
+      }
+
       var Name_texts = Data.match(/\(名前:.+?\)/g);
 
       if(Name_texts){
@@ -1055,6 +1075,7 @@ function Game_load(width,height){
       var Display_time = 0;
       var Opacity = 1;
       var Opacitys = -0.02;
+      var Move_Image = null;
 
       function Texts(){
         Itimozi = Data[Text_Number];
@@ -1135,6 +1156,18 @@ function Game_load(width,height){
             Texts();
             return;
             break;
+          case "Ω":
+            Move_Image = Image[Image_TL_Data[Image_TL_Number].substring(0,Image_TL_Data[Image_TL_Number].indexOf(":"))*1];
+            Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[0];
+            Move_Image.VX = Move_Image.VX.substring(Move_Image.VX.indexOf(":")+1)*1;
+            Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
+            Move_Image.VA = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+            Move_Image.tl.moveTo(Move_Image.VX,Move_Image.VY,Move_Image.VA);
+            Image_TL_Number++
+            Text_Number++;
+            Texts();
+            return;
+            break;
           case " ":
             Text_X += PX;
             Text_Number++;
@@ -1181,6 +1214,19 @@ function Game_load(width,height){
       Texts();
 
       scene.addEventListener("enterframe",function(){
+        if(Next){
+          Next_Time--;
+          if(Next_Time==0){
+            for (var i = 0; i < Game_Datas.length; i++) {
+              if(Game_Datas[i].Number==Next) break;
+            }
+            if(i < Game_Datas.length) game.replaceScene(Novel_MainScene(Game_Datas[i].Data));
+            else{
+                  game.popScene();
+                  game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
+              }
+          }
+        }
         for (var i = 0; i < Text.length; i++) {
           if(Text[i].点滅) Text[i].opacity = Opacity;
         }
