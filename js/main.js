@@ -115,7 +115,6 @@ function Game_load(width,height){
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
         Button[i].backgroundColor = "buttonface";
-        //console.log(Button[i]._element.style);
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -208,6 +207,7 @@ function Game_load(width,height){
         Button[i]._element.value = v;
         Button[i]._element.style.fontSize = w/(v.length+1);
         Button[i].backgroundColor = "buttonface";
+        Button[i]._element.style.webkitAppearance = "none";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
