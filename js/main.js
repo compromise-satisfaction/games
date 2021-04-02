@@ -8,11 +8,8 @@ BGM.addEventListener("ended",function(e){
 
 function Game_load(width,height){
 
-  var Scene_kazu = 1;
-  var Item_Flag = [];
+  var Flag = [];
   var Setting_Flag = {
-    人物ページ:0,
-    アイテムページ:0,
     BGM音量:5,
     音声音量:5,
     効果音音量:5,
@@ -967,6 +964,15 @@ function Game_load(width,height){
       }
       else Next = false;
 
+      var Flags_Display = Data.match(/\(フラグ表示\)/g);
+
+      if(Flags_Display){
+        for (var i = 0; i < Flag.length; i++) {
+          Data += "(ボタン:" + Flag[i] + ",80,180,180,40,人物,メニュー)";
+        }
+        Data = Data.replace(/\(フラグ表示\)/g,"");//テキストを消費
+      }
+
       var Buttons_Data = Data.match(/\(ボタン:.+?\)/g);
 
       if(Buttons_Data){
@@ -1018,14 +1024,14 @@ function Game_load(width,height){
         Data = Data.replace(/\(BGM:.+?\)/g,"§");//テキストを消費
       }
 
-      var Items_Data = Data.match(/\(アイテム:.+?\)/g);
+      var Flags_Data = Data.match(/\(フラグ:.+?\)/g);
 
-      if(Items_Data){
-        var Item_Number = 0;
-        for (var i = 0; i < Items_Data.length; i++) {
-          Items_Data[i] = Items_Data[i].substring(6,Items_Data[i].length-1);
+      if(Flags_Data){
+        var Flag_Number = 0;
+        for (var i = 0; i < Flags_Data.length; i++) {
+          Flags_Data[i] = Flags_Data[i].substring(5,Flags_Data[i].length-1);
         }
-        Data = Data.replace(/\(アイテム:.+?\)/g,"π");//テキストを消費
+        Data = Data.replace(/\(フラグ:.+?\)/g,"π");//テキストを消費
       }
 
       var Coordinates_Data = Data.match(/\(文字座標:.+?\)/g);
@@ -1137,13 +1143,13 @@ function Game_load(width,height){
             return;
             break;
           case "π":
-            for (var i = 0; i < Item_Flag.length; i++) {
-              if(Item_Flag[i] == Items_Data[Item_Number]){
+            for (var i = 0; i < Flag.length; i++) {
+              if(Flag[i] == Flags_Data[Flag_Number]){
                 break;
               }
             }
-            if(i==Item_Flag.length) Item_Flag[Item_Flag.length] = Items_Data[Item_Number];
-            Item_Number++
+            if(i==Flag.length) Flag[Flag.length] = Flags_Data[Flag_Number];
+            Flag_Number++
             Text_Number++;
             Texts();
             return;
@@ -1234,10 +1240,7 @@ function Game_load(width,height){
         if(Opacity < 0) Opacitys = 0.02;
         if(Opacity > 1) Opacitys = -0.02;
         Texts();
-        if(game.input.up){
-          game.popScene();
-          game.replaceScene(Start_Menu_Scene());
-        }
+        if(game.input.up) console.log(Flag);
         return;
       });
 
