@@ -150,7 +150,7 @@ function Game_load(width,height){
                  }
                }
                game.popScene();
-               game.replaceScene(Novel_MainScene("(ボタン:スタート,0,0,405,600,スタート)"));
+               game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:スタート,0,0,405,600,スタート)"));
                return;
               },);
               return;
@@ -869,7 +869,10 @@ function Game_load(width,height){
                 if(Game_Datas[i].Number==a.split(",")[5]) break;
               }
               if(i < Game_Datas.length) game.replaceScene(Novel_MainScene(Game_Datas[i].Data));
-              else game.replaceScene(Novel_MainScene("(ボタン:エラー,0,0,405,600,スタート)"));
+              else{
+                game.popScene();
+                game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
+              }
             });
           }
         }
@@ -915,11 +918,14 @@ function Game_load(width,height){
                   if(Game_Datas[i].Number==a.split(",")[7]) break;
                 }
                 if(i < Game_Datas.length) game.pushScene(Novel_MainScene(Game_Datas[i].Data));
-                else game.replaceScene(Novel_MainScene("(ボタン:エラー,0,0,405,600,スタート)"));
+                else{
+                  game.popScene();
+                  game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
+                }
                 break;
               default:
                 game.popScene();
-                game.replaceScene(Novel_MainScene("(ボタン:エラー,0,0,405,600,スタート)"));
+                game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
                 break;
             }
           }
