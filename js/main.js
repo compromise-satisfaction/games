@@ -1146,29 +1146,16 @@ function Game_load(width,height){
         }
         Display_time++;
         if(FPS==0){
-          Display_time = 0;
-          Text[Text.length] = new Sprite();
-          Text[Text.length-1]._element = document.createElement("innerHTML");
-          Text[Text.length-1]._style.font  = PX + "px monospace";
-          Text[Text.length-1]._element.textContent = Itimozi;
-          Text[Text.length-1].x = Text_X;
-          Text[Text.length-1].y = Text_Y;
-          if(Text_Color.substring(0,2)=="点滅"){
-            Text[Text.length-1].点滅 = true;
-            Text[Text.length-1]._style.color = Text_Color.substring(2);
-          }
-          else{
-            Text[Text.length-1].点滅 = false;
-            Text[Text.length-1]._style.color = Text_Color;
-          }
-          Text_X += PX;
-          Sound_branch(Text_Sound);
-          scene.addChild(Text[Text.length-1]);
-          Text_Number++;
+          Text_Generate();
           Texts();
           return;
         }
         if(Display_time%FPS!=0) return;
+        Text_Generate();
+        return;
+      }
+
+      function Text_Generate(){
         Display_time = 0;
         Text[Text.length] = new Sprite();
         Text[Text.length-1]._element = document.createElement("innerHTML");
