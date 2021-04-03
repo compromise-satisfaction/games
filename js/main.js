@@ -940,6 +940,21 @@ function Game_load(width,height){
         };
       }
 
+      var Branch = Data.match(/\{フラグ所持:.+?:フラグ所持\}/g);
+
+      if(Branch){
+        for (var i = 0; i < Branch.length; i++) {
+          Branch[i] = Branch[i].substring(7,Branch[i].length-7);
+          for (var k = 0; k < Flag.length; k++) {
+            if(Flag[k]==Branch[i].split("{内容}")[0]){
+              Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,Branch[i].split("{内容}")[1]);//テキストを消費
+              break;
+            }
+          }
+        }
+        Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,"");//テキストを消費
+      }
+
       var Images_Data = Data.match(/\(画像:.+?\)/g);
 
       if(Images_Data){
