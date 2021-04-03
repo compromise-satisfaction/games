@@ -107,10 +107,10 @@ function Game_load(width,height){
         Button[i]._element = document.createElement("input");
         Button[i]._element.type = "button";
         Button[i]._element.value = v;
-        //Button[i]._element.style.fontSize = h/2.2;
-        //Button[i]._element.style.textAlign = "center";
-        //Button[i]._element.style.borderRadius = "0%";
-        //Button[i]._element.style.webkitAppearance = "none";
+        Button[i]._element.style.fontSize = h/2.2;
+        Button[i]._element.style.textAlign = "center";
+        Button[i]._element.style.borderRadius = "0%";
+        Button[i]._element.style.webkitAppearance = "none";
         Button[i].backgroundColor = "buttonface";
         Button[i]._element.onclick = function(e){
           switch(i){
@@ -1045,13 +1045,18 @@ function Game_load(width,height){
       if(Flags_Data){
         for (var i = 0; i < Flags_Data.length; i++) {
           for (var k = 0; k < Flag.length; k++) {
-            if(Flag[k] == Flags_Data[i].substring(5,Flags_Data[i].length-1)){
+            if(Flag[k] == Flags_Data[i].substring(5,Flags_Data[i].length-1).split("→")[0]){
               break;
             }
           }
           if(k==Flag.length){
             if(Flags_Data[i].substring(5,Flags_Data[i].length-1)=="リセット") Flag = [];
-            else Flag[Flag.length] = Flags_Data[i].substring(5,Flags_Data[i].length-1);
+            else Flag[Flag.length] = Flags_Data[i].substring(5,Flags_Data[i].length-1).split("→")[0];
+          }
+          else{
+            if(Flags_Data[i].substring(5,Flags_Data[i].length-1).split("→")[1]){
+              Flag[k] = Flags_Data[i].substring(5,Flags_Data[i].length-1).split("→")[1];
+            }
           }
         }
         Data = Data.replace(/\(フラグ:.+?\)/g,"");//テキストを消費
@@ -1232,7 +1237,6 @@ function Game_load(width,height){
 
       scene.addEventListener("enterframe",function(){
         if(Next){
-          Next_Time--;
           if(Next_Time==0){
             for (var i = 0; i < Game_Datas.length; i++) {
               if(Game_Datas[i].Number==Next) break;
@@ -1243,6 +1247,7 @@ function Game_load(width,height){
                   game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
               }
           }
+          Next_Time--;
         }
         for (var i = 0; i < Text.length; i++) {
           if(Text[i].点滅) Text[i].opacity = Opacity;
