@@ -989,19 +989,21 @@ function Game_load(width,height){
       }
       else Next = false;
 
-      var Flags_Display = Data.match(/\(フラグ表示\)/g);
+      var Flags_Display = Data.match(/\(フラグ表示:.+?\)/g);
 
       if(Flags_Display){
         for (var i = 0; i < Flag.length; i++) {
           for (var k = 0; k < Game_Datas.length; k++) {
             if(Game_Datas[k].Number==Flag[i]) break;
           }
-          Data += "(ボタン:" + Game_Datas[k].Data.split(",")[1];
-          Data += ",30,"+ (i*60 + 100) +",345,40,";
-          Data += Game_Datas[k].Data.split(",")[2] + ",";
-          Data += Game_Datas[k].Data.split(",")[3] + ")";
+          if(Game_Datas[k].Data.split(",")[0]==Flags_Display[0].substring(7,Flags_Display[0].length-1)){
+            Data += "(ボタン:" + Game_Datas[k].Data.split(",")[1];
+            Data += ",30,"+ (i*60 + 100) +",345,40,";
+            Data += Game_Datas[k].Data.split(",")[2] + ",";
+            Data += Game_Datas[k].Data.split(",")[3] + ")";
+          }
         }
-        Data = Data.replace(/\(フラグ表示\)/g,"");//テキストを消費
+        Data = Data.replace(/\(フラグ表示:.+?\)/g,"");//テキストを消費
       }
 
       var Buttons_Data = Data.match(/\(ボタン:.+?\)/g);
