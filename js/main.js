@@ -840,7 +840,17 @@ function Game_load(width,height){
     };
     var Novel_MainScene = function(Data){
 
+      console.clear();
+      console.log(Data);
+      for (var i = 0; i < Setting_Flag.自由.split(",").length; i++) {
+        var frees = "(自由"+(i+1)+")";
+        Data = Data.replace(frees,Setting_Flag.自由.split(",")[i]);
+      }
       Data = Data.replace(/\n/g,"");
+      Data = Data.replace(/\(主人公苗字\)/g,Setting_Flag.苗字);
+      Data = Data.replace(/\(主人公名前\)/g,Setting_Flag.名前);
+      Data = Data.replace(/\(一人称\)/g,Setting_Flag.一人称);
+      Data = Data.replace(/\(二人称\)/g,Setting_Flag.二人称);
 
       var scene = new Scene();                                // 新しいシーンを作る
 
@@ -968,7 +978,13 @@ function Game_load(width,height){
 
       if(Flags_Display){
         for (var i = 0; i < Flag.length; i++) {
-          Data += "(ボタン:" + Flag[i] + ",80,180,180,40,人物,メニュー)";
+          for (var k = 0; k < Game_Datas.length; k++) {
+            if(Game_Datas[k].Number==Flag[i]) break;
+          }
+          Data += "(ボタン:" + Game_Datas[k].Data.split(",")[1];
+          Data += ",30,"+ (i*60 + 100) +",345,40,";
+          Data += Game_Datas[k].Data.split(",")[2] + ",";
+          Data += Game_Datas[k].Data.split(",")[3] + ")";
         }
         Data = Data.replace(/\(フラグ表示\)/g,"");//テキストを消費
       }
@@ -1027,11 +1043,15 @@ function Game_load(width,height){
       var Flags_Data = Data.match(/\(フラグ:.+?\)/g);
 
       if(Flags_Data){
-        var Flag_Number = 0;
         for (var i = 0; i < Flags_Data.length; i++) {
-          Flags_Data[i] = Flags_Data[i].substring(5,Flags_Data[i].length-1);
+          for (var k = 0; k < Flag.length; k++) {
+            if(Flag[k] == Flags_Data[i].substring(5,Flags_Data[i].length-1)){
+              break;
+            }
+          }
+          if(k==Flag.length) Flag[Flag.length] = Flags_Data[i].substring(5,Flags_Data[i].length-1);
         }
-        Data = Data.replace(/\(フラグ:.+?\)/g,"π");//テキストを消費
+        Data = Data.replace(/\(フラグ:.+?\)/g,"");//テキストを消費
       }
 
       var Coordinates_Data = Data.match(/\(文字座標:.+?\)/g);
@@ -1138,18 +1158,6 @@ function Game_load(width,height){
           case "§":
             BGM_ON(BGMs_Data[BGM_Number]);
             BGM_Number++
-            Text_Number++;
-            Texts();
-            return;
-            break;
-          case "π":
-            for (var i = 0; i < Flag.length; i++) {
-              if(Flag[i] == Flags_Data[Flag_Number]){
-                break;
-              }
-            }
-            if(i==Flag.length) Flag[Flag.length] = Flags_Data[Flag_Number];
-            Flag_Number++
             Text_Number++;
             Texts();
             return;
