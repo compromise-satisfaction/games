@@ -107,10 +107,10 @@ function Game_load(width,height){
         Button[i]._element = document.createElement("input");
         Button[i]._element.type = "button";
         Button[i]._element.value = v;
-        Button[i]._element.style.fontSize = h/2.2;
-        Button[i]._element.style.textAlign = "center";
-        Button[i]._element.style.borderRadius = "0%";
-        Button[i]._element.style.webkitAppearance = "none";
+        //Button[i]._element.style.fontSize = h/2.2;
+        //Button[i]._element.style.textAlign = "center";
+        //Button[i]._element.style.borderRadius = "0%";
+        //Button[i]._element.style.webkitAppearance = "none";
         Button[i].backgroundColor = "buttonface";
         Button[i]._element.onclick = function(e){
           switch(i){
