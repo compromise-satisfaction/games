@@ -1049,7 +1049,10 @@ function Game_load(width,height){
               break;
             }
           }
-          if(k==Flag.length) Flag[Flag.length] = Flags_Data[i].substring(5,Flags_Data[i].length-1);
+          if(k==Flag.length){
+            if(Flags_Data[i].substring(5,Flags_Data[i].length-1)=="リセット") Flag = [];
+            else Flag[Flag.length] = Flags_Data[i].substring(5,Flags_Data[i].length-1);
+          }
         }
         Data = Data.replace(/\(フラグ:.+?\)/g,"");//テキストを消費
       }
