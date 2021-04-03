@@ -2113,6 +2113,7 @@ function Game_load(width,height){
 
       return scene;
     };
+    /*
     if(window.localStorage){
       var ID = window.localStorage.getItem("ID");
     }
@@ -2126,6 +2127,7 @@ function Game_load(width,height){
       }
       window.localStorage.setItem("ID",ID);
     }
+    */
     game.replaceScene(Start_Menu_Scene());
   }
   game.start();
