@@ -89,6 +89,51 @@ function Game_load(width,height){
   game.preload("../image/Set_button.png");
   game.onload = function(){
 
+    var Start_Scene = function(){
+      var scene = new Scene();
+
+      var Background = new Sprite();
+      Background._element = document.createElement("img");
+      Background._element.src = "../image/メニュー背景.png";
+      Background.width = width;
+      Background.height = height;
+      scene.addChild(Background);
+
+      function Buttons(x,y,w,h,v,i){
+        Button[i] = new Entity();
+        Button[i].moveTo(x,y);
+        Button[i].width = w;
+        Button[i].height = h;
+        Button[i]._element = document.createElement("input");
+        Button[i]._element.type = "button";
+        Button[i]._element.value = v;
+        Button[i]._element.style.fontSize = h/2.2;
+        Button[i]._element.style.textAlign = "center";
+        Button[i]._element.style.borderRadius = "0%";
+        Button[i]._element.style.webkitAppearance = "none";
+        Button[i].backgroundColor = "buttonface";
+        Button[i]._element.onclick = function(e){
+          switch(i){
+            case 0:
+              game.replaceScene(Start_Menu_Scene());
+              break;
+            case 1:
+              window.localStorage.clear();
+              game.replaceScene(Start_Menu_Scene());
+              break;
+          }
+          return;
+        };
+        scene.addChild(Button[i]);
+      }
+
+      var Button = [];
+
+      Buttons(width/4,180,width/2,height/10,"続きから",0);
+      Buttons(width/4,300,width/2,height/10,"初めから",1);
+
+      return scene;
+    };
     var Start_Menu_Scene = function(){
       var scene = new Scene();
 
@@ -579,7 +624,6 @@ function Game_load(width,height){
               return;
             }
             Name = S_Input1._element.value;
-            window.localStorage.setItem("Name",Name);
             if(this._element.value == "ランキングを見る"){
               game.pushScene(Loading_Scene("読み込み"));
               fetch
@@ -618,7 +662,6 @@ function Game_load(width,height){
               return;
             }
             Name = S_Input1._element.value;
-            window.localStorage.setItem("Name",Name);
             if(hakkou){
               S_Input4._element.value = Code;
               return;
@@ -652,7 +695,6 @@ function Game_load(width,height){
               return;
             }
             Name = S_Input1._element.value;
-            window.localStorage.setItem("Name",Name);
             game.replaceScene(Brain_Training_Scene("メイン",Difficulty));
             game.pushScene(Brain_Training_Scene("COUNTDOWN"));
             return;
@@ -674,7 +716,6 @@ function Game_load(width,height){
               return;
             }
             Name = S_Input1._element.value;
-            window.localStorage.setItem("Name",Name);
             game.pushScene(Loading_Scene("読み込み"));
             fetch
             (
@@ -2161,7 +2202,7 @@ function Game_load(width,height){
       window.localStorage.setItem("ID",ID);
     }
     */
-    game.replaceScene(Start_Menu_Scene());
+    game.replaceScene(Start_Scene());
   }
   game.start();
 }
