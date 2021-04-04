@@ -879,6 +879,7 @@ function Game_load(width,height){
       }
 
     };
+    /*
     var Novel_MainScene = function(Data){
 
       console.clear();
@@ -1370,6 +1371,7 @@ function Game_load(width,height){
 
       return scene;
     };
+    */
     var Loading_Scene = function(Type){
       var scene = new Scene();                                // 新しいシーンを作る
 
