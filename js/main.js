@@ -913,6 +913,8 @@ function Game_load(width,height){
           }
           else{
             Image[i].addEventListener("touchend",function(e){
+              if(a.split(",")[6]) Sound_branch(a.split(",")[6]);
+              else Sound_branch("無し");
               for (var i = 0; i < Game_Datas.length; i++) {
                 if(Game_Datas[i].Number==a.split(",")[5]) break;
               }
@@ -930,6 +932,7 @@ function Game_load(width,height){
 
       var Button = [];
       var Button_fontSize = 15;
+      var Button_color = "buttonface";
 
       function Buttons(a){
         Button[i] = new Entity();
@@ -940,11 +943,6 @@ function Game_load(width,height){
         Button[i]._element.type = "button";
         Button[i]._element.value = a.split(",")[0];
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "buttonface";
-        if(false){
-          Button[i]._element.value += " ✓";
-          Button[i].backgroundColor = "red";
-        }
         Button[i]._element.onclick = function(e){
           if(a.split(",")[6]) Sound_branch(a.split(",")[6]);
           else Sound_branch("無し");
@@ -996,6 +994,63 @@ function Game_load(width,height){
         }
       }
 
+      var Flags_Display = Data.match(/\(フラグ表示:.+?\)/g);
+
+      if(Flags_Display){
+        var I_X = 0;
+        var I_Y = 0;
+        var I_N = 0;
+        for (var i = 0; i < Flag.length; i++) {
+          for (var k = 0; k < Game_Datas.length; k++) {
+            if(Game_Datas[k].Number==Flag[i]) break;
+          }
+          if(Game_Datas[k].Data.split(",")[0]==Flags_Display[0].substring(7,Flags_Display[0].length-1)){
+            switch (I_N) {
+              case 0:
+              case 3:
+              case 6:
+                I_X = 30;
+                break;
+              case 1:
+              case 4:
+              case 7:
+                I_X = 162.5;
+                break;
+              case 2:
+              case 5:
+              case 8:
+                I_X = 295;
+                break;
+            }
+            switch (I_N) {
+              case 0:
+              case 1:
+              case 2:
+                I_Y = 100;
+                break;
+              case 3:
+              case 4:
+              case 5:
+                I_Y = 232.5;
+                break;
+              case 6:
+              case 7:
+              case 8:
+                I_Y = 365;
+                break;
+            }
+            Data += "(画像:../image/アイテム.png,"+I_X+","+ I_Y +",80,80)";
+            Data += "(画像:" + Game_Datas[k].Data.split(",")[1];
+            Data += ","+I_X+","+ I_Y +",80,80)";
+            Data += "(画像:../image/アイテム枠.png,"+I_X+","+ I_Y +",80,80,";
+            Data += Game_Datas[k].Data.split(",")[2] + ",";
+            Data += Game_Datas[k].Data.split(",")[3] + ")";
+            I_N++;
+          }
+        }
+        Data = Data.replace(/\(フラグ表示:.+?\)/g,"");//テキストを消費
+      }
+
       var Images_Data = Data.match(/\(画像:.+?\)/g);
 
       if(Images_Data){
@@ -1029,23 +1084,6 @@ function Game_load(width,height){
         Data = Data.replace(/\(次へ進む:.+?\)/g,"");//テキストを消費
       }
       else Next = false;
-
-      var Flags_Display = Data.match(/\(フラグ表示:.+?\)/g);
-
-      if(Flags_Display){
-        for (var i = 0; i < Flag.length; i++) {
-          for (var k = 0; k < Game_Datas.length; k++) {
-            if(Game_Datas[k].Number==Flag[i]) break;
-          }
-          if(Game_Datas[k].Data.split(",")[0]==Flags_Display[0].substring(7,Flags_Display[0].length-1)){
-            Data += "(ボタン:" + Game_Datas[k].Data.split(",")[1];
-            Data += ",30,"+ (i*60 + 100) +",345,40,";
-            Data += Game_Datas[k].Data.split(",")[2] + ",";
-            Data += Game_Datas[k].Data.split(",")[3] + ")";
-          }
-        }
-        Data = Data.replace(/\(フラグ表示:.+?\)/g,"");//テキストを消費
-      }
 
       var Buttons_Data = Data.match(/\(ボタン:.+?\)/g);
 
@@ -1190,6 +1228,7 @@ function Game_load(width,height){
             return;
             break;
           case "Θ":
+            Button[Button_Number].backgroundColor = Button_color;
             Button[Button_Number]._element.style.fontSize = Button_fontSize;
             scene.addChild(Button[Button_Number]);
             Button_Number++;
@@ -1202,6 +1241,9 @@ function Game_load(width,height){
             Text_Color = Text_informations_Data[Text_information_Number].split(",")[1];
             Text_Sound = Text_informations_Data[Text_information_Number].split(",")[2];
             Button_fontSize = Text_informations_Data[Text_information_Number].split(",")[3]*1;
+            if(Text_informations_Data[Text_information_Number].split(",")[4]){
+              Button_color = Text_informations_Data[Text_information_Number].split(",")[4];
+            }
             Text_information_Number++
             Text_Number++;
             Texts();
@@ -1238,11 +1280,18 @@ function Game_load(width,height){
             break;
           case "Ω":
             Move_Image = Image[Image_TL_Data[Image_TL_Number].substring(0,Image_TL_Data[Image_TL_Number].indexOf(":"))*1];
-            Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[0];
-            Move_Image.VX = Move_Image.VX.substring(Move_Image.VX.indexOf(":")+1)*1;
-            Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
-            Move_Image.VA = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
-            Move_Image.tl.moveTo(Move_Image.VX,Move_Image.VY,Move_Image.VA);
+            switch (Image_TL_Data[Image_TL_Number].split(",")[0].substring(Image_TL_Data[Image_TL_Number].indexOf(":")+1)){
+              case "消滅する":
+                scene.removeChild(Move_Image);
+                break;
+              default:
+                Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[0];
+                Move_Image.VX = Move_Image.VX.substring(Move_Image.VX.indexOf(":")+1)*1;
+                Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
+                Move_Image.VA = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                Move_Image.tl.moveTo(Move_Image.VX,Move_Image.VY,Move_Image.VA);
+                break;
+            }
             Image_TL_Number++
             Text_Number++;
             Texts();
