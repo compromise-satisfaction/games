@@ -992,8 +992,8 @@ function Game_load(width,height){
               break;
             }
           }
+          if(k == Flag.length) Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,Branch[i].split("{内容}")[2]);//テキストを消費
         }
-        Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/g,"");//テキストを消費
       }
 
       var Images_Data = Data.match(/\(画像:.+?\)/g);
