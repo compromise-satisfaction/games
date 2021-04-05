@@ -879,8 +879,9 @@ function Game_load(width,height){
       }
 
     };
-    /*
     var Novel_MainScene = function(Data){
+      
+      var scene = new Scene();                                // 新しいシーンを作る
 
       console.clear();
       console.log(Data);
@@ -889,12 +890,12 @@ function Game_load(width,height){
         Data = Data.replace(frees,Setting_Flag.自由.split(",")[i]);
       }
       Data = Data.replace(/\n/g,"");
+      Data = Data.replace(/Ю/g,"(変換:Ю)");
       Data = Data.replace(/\(主人公苗字\)/g,Setting_Flag.苗字);
       Data = Data.replace(/\(主人公名前\)/g,Setting_Flag.名前);
       Data = Data.replace(/\(一人称\)/g,Setting_Flag.一人称);
       Data = Data.replace(/\(二人称\)/g,Setting_Flag.二人称);
 
-      var scene = new Scene();                                // 新しいシーンを作る
 
       var Image = [];
 
@@ -987,11 +988,11 @@ function Game_load(width,height){
           Branch[i] = Branch[i].substring(7,Branch[i].length-7);
           for (var k = 0; k < Flag.length; k++) {
             if(Flag[k]==Branch[i].split("{内容}")[0]){
-              Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,Branch[i].split("{内容}")[1]);//テキストを消費
+              Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,Branch[i].split("{内容}")[1]);
               break;
             }
           }
-          if(k == Flag.length) Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,Branch[i].split("{内容}")[2]);//テキストを消費
+          if(k == Flag.length) Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,Branch[i].split("{内容}")[2]);
         }
       }
 
@@ -1049,7 +1050,7 @@ function Game_load(width,height){
             I_N++;
           }
         }
-        Data = Data.replace(/\(フラグ表示:.+?\)/g,"");//テキストを消費
+        Data = Data.replace(/\(フラグ表示:.+?\)/g,"");
       }
 
       var Images_Data = Data.match(/\(画像:.+?\)/g);
@@ -1060,7 +1061,7 @@ function Game_load(width,height){
           Images_Data[i] = Images_Data[i].substring(4,Images_Data[i].length-1);
           Images(Images_Data[i]);
         }
-        Data = Data.replace(/\(画像:.+?\)/g,"●");//テキストを消費
+        Data = Data.replace(/\(画像:.+?\)/g,"(変換:画像)");
       }
 
       var White_Background = Data.match(/\(白背景\)/g);
@@ -1073,18 +1074,18 @@ function Game_load(width,height){
         White_Background.height = height-width/16*9;
         White_Background.width = width;
         scene.addChild(White_Background);
-        Data = Data.replace(/\(白背景)/g,"");//テキストを消費
+        Data = Data.replace(/\(白背景)/g,"");
       }
 
-      var Next = Data.match(/\(次へ進む:.+?\)/g);
+      var Next_Data = Data.match(/\(次へ進む:.+?\)/g);
+      var Next = false;
 
-      if(Next){
-        Next = Next[0].substring(6,Next[0].length-1);
-        var Next_Time = Next.split(",")[0]*1;
-        Next = Next.split(",")[1];
-        Data = Data.replace(/\(次へ進む:.+?\)/g,"");//テキストを消費
+      if(Next_Data){
+        Next_Data = Next_Data[0].substring(6,Next_Data[0].length-1);
+        var Next_Time = Next_Data.split(",")[0]*1;
+        Next_Data = Next_Data.split(",")[1];
+        Data = Data.replace(/\(次へ進む:.+?\)/g,"(変換:次へ進む)");
       }
-      else Next = false;
 
       var Buttons_Data = Data.match(/\(ボタン:.+?\)/g);
 
@@ -1094,7 +1095,7 @@ function Game_load(width,height){
           Buttons_Data[i] = Buttons_Data[i].substring(5,Buttons_Data[i].length-1);
           Buttons(Buttons_Data[i]);
         }
-        Data = Data.replace(/\(ボタン:.+?\)/g,"Θ");//テキストを消費
+        Data = Data.replace(/\(ボタン:.+?\)/g,"(変換:ボタン)");
       }
 
       var Text_informations_Data = Data.match(/\(文字情報:.+?\)/g);
@@ -1104,7 +1105,7 @@ function Game_load(width,height){
         for (var i = 0; i < Text_informations_Data.length; i++) {
           Text_informations_Data[i] = Text_informations_Data[i].substring(6,Text_informations_Data[i].length-1);
         }
-        Data = Data.replace(/\(文字情報:.+?\)/g,"¶");//テキストを消費
+        Data = Data.replace(/\(文字情報:.+?\)/g,"(変換:文字情報)");
       }
 
       var Speeds_Data = Data.match(/\(待機時間:.+?\)/g);
@@ -1114,7 +1115,7 @@ function Game_load(width,height){
         for (var i = 0; i < Speeds_Data.length; i++) {
           Speeds_Data[i] = Speeds_Data[i].substring(6,Speeds_Data[i].length-1);
         }
-        Data = Data.replace(/\(待機時間:.+?\)/g,"δ");//テキストを消費
+        Data = Data.replace(/\(待機時間:.+?\)/g,"(変換:待機時間)");
       }
 
       var Sounds_Data = Data.match(/\(再生:.+?\)/g);
@@ -1124,7 +1125,7 @@ function Game_load(width,height){
         for (var i = 0; i < Sounds_Data.length; i++) {
           Sounds_Data[i] = Sounds_Data[i].substring(4,Sounds_Data[i].length-1);
         }
-        Data = Data.replace(/\(再生:.+?\)/g,"Ψ");//テキストを消費
+        Data = Data.replace(/\(再生:.+?\)/g,"(変換:再生)");
       }
 
       var BGMs_Data = Data.match(/\(BGM:.+?\)/g);
@@ -1134,7 +1135,7 @@ function Game_load(width,height){
         for (var i = 0; i < BGMs_Data.length; i++) {
           BGMs_Data[i] = BGMs_Data[i].substring(5,BGMs_Data[i].length-1);
         }
-        Data = Data.replace(/\(BGM:.+?\)/g,"§");//テキストを消費
+        Data = Data.replace(/\(BGM:.+?\)/g,"(変換:BGM)");
       }
 
       var Flags_Data = Data.match(/\(フラグ:.+?\)/g);
@@ -1156,7 +1157,7 @@ function Game_load(width,height){
             }
           }
         }
-        Data = Data.replace(/\(フラグ:.+?\)/g,"");//テキストを消費
+        Data = Data.replace(/\(フラグ:.+?\)/g,"");
       }
 
       var Coordinates_Data = Data.match(/\(文字座標:.+?\)/g);
@@ -1166,7 +1167,7 @@ function Game_load(width,height){
         for (var i = 0; i < Coordinates_Data.length; i++) {
           Coordinates_Data[i] = Coordinates_Data[i].substring(6,Coordinates_Data[i].length-1);
         }
-        Data = Data.replace(/\(文字座標:.+?\)/g,"±");//テキストを消費
+        Data = Data.replace(/\(文字座標:.+?\)/g,"(変換:文字座標)");
       }
 
       var Image_TL_Data = Data.match(/\(画像\d+:.+?\)/g);
@@ -1176,7 +1177,7 @@ function Game_load(width,height){
         for (var i = 0; i < Image_TL_Data.length; i++) {
           Image_TL_Data[i] = Image_TL_Data[i].substring(3,Image_TL_Data[i].length-1);
         }
-        Data = Data.replace(/\(画像\d+:.+?\)/g,"Ω");//テキストを消費
+        Data = Data.replace(/\(画像\d+:.+?\)/g,"(変換:画像移動)");
       }
 
       var Name_texts = Data.match(/\(名前:.+?\)/g);
@@ -1191,7 +1192,17 @@ function Game_load(width,height){
         Name_text.x = 0;
         Name_text.y = width/30 + width/16*9;
         scene.addChild(Name_text);
-        Data = Data.replace(/\(名前:.+?\)/g,"");//テキストを消費
+        Data = Data.replace(/\(名前:.+?\)/g,"");
+      }
+
+      var Itimozis_Data = Data.match(/\(変換:.+?\)/g);
+
+      if(Itimozis_Data){
+        var Itimozi_Number = 0;
+        for (var i = 0; i < Itimozis_Data.length; i++) {
+          Itimozis_Data[i] = Itimozis_Data[i].substring(4,Itimozis_Data[i].length-1);
+        }
+        Data = Data.replace(/\(変換:.+?\)/g,"Ю");
       }
 
       var Text = [];
@@ -1212,89 +1223,88 @@ function Game_load(width,height){
         Itimozi = Data[Text_Number];
         if(!Itimozi) return;
         switch (Itimozi) {
-          case "●":
-            if(Image[Image_Number].fade){
-              if(Image[Image_Number].fade.substring(0,2)=="in"){
-                Image[Image_Number].opacity = 0;
-                Image[Image_Number].tl.fadeIn(Image[Image_Number].fade.substring(2)*1);
-              }
-              else{
-                Image[Image_Number].tl.fadeOut(Image[Image_Number].fade.substring(3)*1);
-              }
-            }
-            Image[Image_Number]._element.src = Image[Image_Number].imageurl
-            Image_Number++;
-            Text_Number++;
-            Texts();
-            return;
-            break;
-          case "Θ":
-            Button[Button_Number].backgroundColor = Button_color;
-            Button[Button_Number]._element.style.fontSize = Button_fontSize;
-            scene.addChild(Button[Button_Number]);
-            Button_Number++;
-            Text_Number++;
-            Texts();
-            return;
-            break;
-          case "¶":
-            PX = Text_informations_Data[Text_information_Number].split(",")[0]*1;
-            Text_Color = Text_informations_Data[Text_information_Number].split(",")[1];
-            Text_Sound = Text_informations_Data[Text_information_Number].split(",")[2];
-            Button_fontSize = Text_informations_Data[Text_information_Number].split(",")[3]*1;
-            if(Text_informations_Data[Text_information_Number].split(",")[4]){
-              Button_color = Text_informations_Data[Text_information_Number].split(",")[4];
-            }
-            Text_information_Number++
-            Text_Number++;
-            Texts();
-            return;
-            break;
-          case "δ":
-            FPS = Speeds_Data[Speed_Number];
-            Speed_Number++
-            Text_Number++;
-            Texts();
-            return;
-            break;
-          case "Ψ":
-            Sound_branch(Sounds_Data[Sound_Number]);
-            Sound_Number++
-            Text_Number++;
-            Texts();
-            return;
-            break;
-          case "§":
-            BGM_ON(BGMs_Data[BGM_Number]);
-            BGM_Number++
-            Text_Number++;
-            Texts();
-            return;
-            break;
-          case "±":
-            Text_X = Coordinates_Data[Coordinate_Number].split(",")[0]*1;
-            Text_Y = Coordinates_Data[Coordinate_Number].split(",")[1]*1;
-            Coordinate_Number++
-            Text_Number++;
-            Texts();
-            return;
-            break;
-          case "Ω":
-            Move_Image = Image[Image_TL_Data[Image_TL_Number].substring(0,Image_TL_Data[Image_TL_Number].indexOf(":"))*1];
-            switch (Image_TL_Data[Image_TL_Number].split(",")[0].substring(Image_TL_Data[Image_TL_Number].indexOf(":")+1)){
-              case "消滅する":
-                scene.removeChild(Move_Image);
+          case "Ю":
+            switch(Itimozis_Data[Itimozi_Number]){
+              case "画像":
+                if(Image[Image_Number].fade){
+                  if(Image[Image_Number].fade.substring(0,2)=="in"){
+                    Image[Image_Number].opacity = 0;
+                    Image[Image_Number].tl.fadeIn(Image[Image_Number].fade.substring(2)*1);
+                  }
+                  else{
+                    Image[Image_Number].tl.fadeOut(Image[Image_Number].fade.substring(3)*1);
+                  }
+                }
+                Image[Image_Number]._element.src = Image[Image_Number].imageurl
+                Image_Number++;
                 break;
-              default:
-                Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[0];
-                Move_Image.VX = Move_Image.VX.substring(Move_Image.VX.indexOf(":")+1)*1;
-                Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
-                Move_Image.VA = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
-                Move_Image.tl.moveTo(Move_Image.VX,Move_Image.VY,Move_Image.VA);
+              case "ボタン":
+                Button[Button_Number].backgroundColor = Button_color;
+                Button[Button_Number]._element.style.fontSize = Button_fontSize;
+                scene.addChild(Button[Button_Number]);
+                Button_Number++;
+                break;
+              case "文字情報":
+                PX = Text_informations_Data[Text_information_Number].split(",")[0]*1;
+                Text_Color = Text_informations_Data[Text_information_Number].split(",")[1];
+                Text_Sound = Text_informations_Data[Text_information_Number].split(",")[2];
+                Button_fontSize = Text_informations_Data[Text_information_Number].split(",")[3]*1;
+                if(Text_informations_Data[Text_information_Number].split(",")[4]){
+                  Button_color = Text_informations_Data[Text_information_Number].split(",")[4];
+                }
+                Text_information_Number++
+                break;
+              case "待機時間":
+                FPS = Speeds_Data[Speed_Number];
+                Speed_Number++
+                break;
+              case "再生":
+                Sound_branch(Sounds_Data[Sound_Number]);
+                Sound_Number++
+                break;
+              case "BGM":
+                BGM_ON(BGMs_Data[BGM_Number]);
+                BGM_Number++
+                break;
+              case "文字座標":
+                Text_X = Coordinates_Data[Coordinate_Number].split(",")[0]*1;
+                Text_Y = Coordinates_Data[Coordinate_Number].split(",")[1]*1;
+                Coordinate_Number++
+                break;
+              case "画像移動":
+                Move_Image = Image[Image_TL_Data[Image_TL_Number].substring(0,Image_TL_Data[Image_TL_Number].indexOf(":"))*1];
+                switch (Image_TL_Data[Image_TL_Number].split(",")[0].substring(Image_TL_Data[Image_TL_Number].indexOf(":")+1)){
+                  case "消滅する":
+                    scene.removeChild(Move_Image);
+                    break;
+                  default:
+                    Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[0];
+                    Move_Image.VX = Move_Image.VX.substring(Move_Image.VX.indexOf(":")+1)*1;
+                    Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
+                    Move_Image.VA = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                    Move_Image.tl.moveTo(Move_Image.VX,Move_Image.VY,Move_Image.VA);
+                    break;
+                }
+                Image_TL_Number++
+                break;
+              case "次へ進む":
+                Next = Next_Data;
+                break;
+              case "Ю":
+                Display_time++;
+                if(FPS==0){
+                  Text_Generate();
+                  Texts();
+                  return;
+                }
+                if(Display_time%FPS!=0) return;
+                Itimozi_Number++;
+                Text_Generate();
+                return;
                 break;
             }
-            Image_TL_Number++
             Text_Number++;
+            Itimozi_Number++;
             Texts();
             return;
             break;
@@ -1371,7 +1381,6 @@ function Game_load(width,height){
 
       return scene;
     };
-    */
     var Loading_Scene = function(Type){
       var scene = new Scene();                                // 新しいシーンを作る
 
