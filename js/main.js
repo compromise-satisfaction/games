@@ -111,7 +111,7 @@ function Game_load(width,height){
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "blue";
+        Button[i].backgroundColor = "red";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -980,8 +980,6 @@ function Game_load(width,height){
         };
       }
 
-      //ここまで問題なし
-
       var Branch = Data.match(/\{フラグ所持:.+?:フラグ所持\}/g);
 
       if(Branch){
@@ -997,7 +995,8 @@ function Game_load(width,height){
         }
       }
 
-      /*
+
+      //ここまで問題なし
 
       var Flags_Display = Data.match(/\(フラグ表示:.+?\)/g);
 
@@ -1066,6 +1065,8 @@ function Game_load(width,height){
         }
         Data = Data.replace(/\(画像:.+?\)/g,"(変換:画像)");
       }
+
+      /*
 
       var White_Background = Data.match(/\(白背景\)/g);
 
@@ -1198,6 +1199,7 @@ function Game_load(width,height){
         Data = Data.replace(/\(名前:.+?\)/g,"");
       }
 
+      */
 
       var Itimozis_Data = Data.match(/\(変換:.+?\)/g);
 
@@ -1383,8 +1385,6 @@ function Game_load(width,height){
         if(game.input.up) console.log(Flag);
         return;
       });
-
-      */
 
       return scene;
     };
