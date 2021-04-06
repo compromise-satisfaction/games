@@ -111,7 +111,7 @@ function Game_load(width,height){
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "green";
+        Button[i].backgroundColor = "red";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -896,8 +896,6 @@ function Game_load(width,height){
       Data = Data.replace(/\(一人称\)/g,Setting_Flag.一人称);
       Data = Data.replace(/\(二人称\)/g,Setting_Flag.二人称);
 
-      //ここまで問題なし
-
       var Image = [];
 
       function Images(a){
@@ -982,7 +980,7 @@ function Game_load(width,height){
         };
       }
 
-      /*
+      //ここまで問題なし
 
       var Branch = Data.match(/\{フラグ所持:.+?:フラグ所持\}/g);
 
@@ -1208,6 +1206,8 @@ function Game_load(width,height){
         }
         Data = Data.replace(/\(変換:.+?\)/g,"Ю");
       }
+
+      /*
 
       var Text = [];
       var PX = width/20;
