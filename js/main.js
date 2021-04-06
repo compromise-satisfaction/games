@@ -111,7 +111,7 @@ function Game_load(width,height){
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "blue";
+        Button[i].backgroundColor = "red";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -1066,6 +1066,7 @@ function Game_load(width,height){
       }
 
       //ここまで問題なし
+      /*
 
       var White_Background = Data.match(/\(白背景\)/g);
 
@@ -1080,7 +1081,6 @@ function Game_load(width,height){
         Data = Data.replace(/\(白背景)/g,"");
       }
 
-      /*
       var Next_Data = Data.match(/\(次へ進む:.+?\)/g);
       var Next = false;
 
