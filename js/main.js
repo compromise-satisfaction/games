@@ -111,7 +111,7 @@ function Game_load(width,height){
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "red";
+        Button[i].backgroundColor = "blue";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -997,6 +997,8 @@ function Game_load(width,height){
         }
       }
 
+      /*
+
       var Flags_Display = Data.match(/\(フラグ表示:.+?\)/g);
 
       if(Flags_Display){
@@ -1207,7 +1209,7 @@ function Game_load(width,height){
         Data = Data.replace(/\(変換:.+?\)/g,"Ю");
       }
 
-      /*
+      //ここまでに問題あり
 
       var Text = [];
       var PX = width/20;
