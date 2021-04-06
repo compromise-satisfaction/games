@@ -996,7 +996,6 @@ function Game_load(width,height){
       }
 
 
-      //ここまで問題なし
 
       var Flags_Display = Data.match(/\(フラグ表示:.+?\)/g);
 
@@ -1066,6 +1065,7 @@ function Game_load(width,height){
         Data = Data.replace(/\(画像:.+?\)/g,"(変換:画像)");
       }
 
+      //ここまで問題なし
 
       var White_Background = Data.match(/\(白背景\)/g);
 
