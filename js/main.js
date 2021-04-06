@@ -111,7 +111,7 @@ function Game_load(width,height){
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "red";
+        Button[i].backgroundColor = "blue";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -896,6 +896,8 @@ function Game_load(width,height){
       Data = Data.replace(/\(一人称\)/g,Setting_Flag.一人称);
       Data = Data.replace(/\(二人称\)/g,Setting_Flag.二人称);
 
+      /*
+
       var Image = [];
 
       function Images(a){
@@ -1351,8 +1353,6 @@ function Game_load(width,height){
       }
 
       Texts();
-
-      /*
 
       scene.addEventListener("enterframe",function(){
         if(Next){
