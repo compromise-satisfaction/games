@@ -111,7 +111,7 @@ function Game_load(width,height){
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "yellow";
+        Button[i].backgroundColor = "green";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -982,6 +982,8 @@ function Game_load(width,height){
         };
       }
 
+      /*
+
       var Branch = Data.match(/\{フラグ所持:.+?:フラグ所持\}/g);
 
       if(Branch){
@@ -1196,7 +1198,6 @@ function Game_load(width,height){
         Data = Data.replace(/\(名前:.+?\)/g,"");
       }
 
-      /*
 
       var Itimozis_Data = Data.match(/\(変換:.+?\)/g);
 
