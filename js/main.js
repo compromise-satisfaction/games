@@ -111,7 +111,7 @@ function Game_load(width,height){
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "red";
+        Button[i].backgroundColor = "blue";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -1066,7 +1066,6 @@ function Game_load(width,height){
         Data = Data.replace(/\(画像:.+?\)/g,"(変換:画像)");
       }
 
-      /*
 
       var White_Background = Data.match(/\(白背景\)/g);
 
@@ -1081,6 +1080,7 @@ function Game_load(width,height){
         Data = Data.replace(/\(白背景)/g,"");
       }
 
+      /*
       var Next_Data = Data.match(/\(次へ進む:.+?\)/g);
       var Next = false;
 
@@ -1183,6 +1183,7 @@ function Game_load(width,height){
         }
         Data = Data.replace(/\(画像\d+:.+?\)/g,"(変換:画像移動)");
       }
+      */
 
       var Name_texts = Data.match(/\(名前:.+?\)/g);
 
@@ -1199,7 +1200,7 @@ function Game_load(width,height){
         Data = Data.replace(/\(名前:.+?\)/g,"");
       }
 
-      */
+      //ここまでに問題あり
 
       var Itimozis_Data = Data.match(/\(変換:.+?\)/g);
 
@@ -1211,7 +1212,6 @@ function Game_load(width,height){
         Data = Data.replace(/\(変換:.+?\)/g,"Ю");
       }
 
-      //ここまでに問題あり
 
       var Text = [];
       var PX = width/20;
