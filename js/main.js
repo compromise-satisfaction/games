@@ -89,51 +89,6 @@ function Game_load(width,height){
   game.preload("../image/Set_button.png");
   game.onload = function(){
 
-    var Start_Scene = function(){
-      var scene = new Scene();
-
-      var Background = new Sprite();
-      Background._element = document.createElement("img");
-      Background._element.src = "../image/メニュー背景.png";
-      Background.width = width;
-      Background.height = height;
-      scene.addChild(Background);
-
-      function Buttons(x,y,w,h,v,i){
-        Button[i] = new Entity();
-        Button[i].moveTo(x,y);
-        Button[i].width = w;
-        Button[i].height = h;
-        Button[i]._element = document.createElement("input");
-        Button[i]._element.type = "button";
-        Button[i]._element.value = v;
-        Button[i]._element.style.fontSize = h/2.2;
-        Button[i]._element.style.textAlign = "center";
-        Button[i]._element.style.borderRadius = "0%";
-        Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "blue";
-        Button[i]._element.onclick = function(e){
-          switch(i){
-            case 0:
-              game.replaceScene(Start_Menu_Scene());
-              break;
-            case 1:
-              window.localStorage.clear();
-              game.replaceScene(Start_Menu_Scene());
-              break;
-          }
-          return;
-        };
-        scene.addChild(Button[i]);
-      }
-
-      var Button = [];
-
-      Buttons(width/4,180,width/2,height/10,"続きから",0);
-      Buttons(width/4,300,width/2,height/10,"初めから",1);
-
-      return scene;
-    };
     var Start_Menu_Scene = function(){
       var scene = new Scene();
 
@@ -1063,9 +1018,6 @@ function Game_load(width,height){
         Data = Data.replace(/\(画像:.+?\)/g,"(変換:画像)");
       }
 
-      //ここまで問題なし
-      /*
-
       var White_Background = Data.match(/\(白背景\)/g);
 
       if(White_Background){
@@ -1076,10 +1028,8 @@ function Game_load(width,height){
         White_Background.height = height-width/16*9;
         White_Background.width = width;
         scene.addChild(White_Background);
-        Data = Data.replace(/\(白背景)/g,"");
+        Data = Data.replace(/\(白背景\)/g,"");
       }
-
-      */
 
       var Next_Data = Data.match(/\(次へ進む:.+?\)/g);
       var Next = false;
@@ -2253,7 +2203,6 @@ function Game_load(width,height){
 
       return scene;
     };
-    /*
     if(window.localStorage){
       var ID = window.localStorage.getItem("ID");
     }
@@ -2267,8 +2216,7 @@ function Game_load(width,height){
       }
       window.localStorage.setItem("ID",ID);
     }
-    */
-    game.replaceScene(Start_Scene());
+    game.replaceScene(Start_Menu_Scene());
   }
   game.start();
 }
