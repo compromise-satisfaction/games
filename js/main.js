@@ -111,7 +111,7 @@ function Game_load(width,height){
         Button[i]._element.style.textAlign = "center";
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].backgroundColor = "blue";
+        Button[i].backgroundColor = "yellow";
         Button[i]._element.onclick = function(e){
           switch(i){
             case 0:
@@ -896,7 +896,7 @@ function Game_load(width,height){
       Data = Data.replace(/\(一人称\)/g,Setting_Flag.一人称);
       Data = Data.replace(/\(二人称\)/g,Setting_Flag.二人称);
 
-      /*
+      //ここまで問題なし
 
       var Image = [];
 
@@ -1195,6 +1195,8 @@ function Game_load(width,height){
         scene.addChild(Name_text);
         Data = Data.replace(/\(名前:.+?\)/g,"");
       }
+
+      /*
 
       var Itimozis_Data = Data.match(/\(変換:.+?\)/g);
 
