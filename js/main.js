@@ -12,20 +12,7 @@ function Game_load(width,height){
 
   var Flag = [];
   var Flag_Number = [];
-  var Setting_Flag = {
-    BGM音量:5,
-    音声音量:5,
-    効果音音量:5,
-    自由:"自由",
-    名前:"名前",
-    苗字:"苗字",
-    性別:"未設定",
-    一人称:"一人称",
-    二人称:"二人称",
-    オートセーブ:true,
-    演出スキップ:false,
-    シーンナンバー:"スタート"
-  };
+  var Setting_Flag = [];
   function Sound_branch(a){
       if(a=="無し") return;
       for (var i = 0; i < SE.length; i++) {
@@ -83,6 +70,9 @@ function Game_load(width,height){
       }
       return;
     }
+  function rand(n){
+    return Math.floor(Math.random() * (n));
+  }
 
   var game = new Game(width,height);
   game.fps = 100;
@@ -141,7 +131,8 @@ function Game_load(width,height){
             (
               "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
               {
-                method: "POST"
+                method: "POST",
+                body: "Data"
               }
             ).then(res => res.json()).then(result => {
                Game_Datas = result;
@@ -187,10 +178,6 @@ function Game_load(width,height){
     var Brain_Training_Scene = function(Type,Difficulty,Point){
 
       var Button = [];
-
-      function rand(n){
-        return Math.floor(Math.random() * (n));
-      }
 
       function iro(){
         var Values = [
@@ -525,7 +512,7 @@ function Game_load(width,height){
           S_Input1._element = document.createElement('input');
           S_Input1._element.type = "text";
           S_Input1._element.name = "myText";
-          S_Input1._element.value = "Name";
+          S_Input1._element.value = Setting_Flag.ニックネーム;
           S_Input1._element.placeholder = "ニックネームを入力";
           scene.addChild(S_Input1);
 
@@ -596,7 +583,6 @@ function Game_load(width,height){
               Label1.text = "名前は六文字以下です。";
               return;
             }
-            Name = S_Input1._element.value;
             if(this._element.value == "ランキングを見る"){
               game.pushScene(Loading_Scene("読み込み"));
               fetch
@@ -634,7 +620,6 @@ function Game_load(width,height){
               Label1.text = "名前は六文字以下です。";
               return;
             }
-            Name = S_Input1._element.value;
             if(hakkou){
               S_Input4._element.value = Code;
               return;
@@ -667,7 +652,6 @@ function Game_load(width,height){
               Label1.text = "名前は六文字以下です。";
               return;
             }
-            Name = S_Input1._element.value;
             game.replaceScene(Brain_Training_Scene("メイン",Difficulty));
             game.pushScene(Brain_Training_Scene("COUNTDOWN"));
             return;
@@ -678,7 +662,6 @@ function Game_load(width,height){
               Label1.text = "名前は六文字以下です。";
               return;
             }
-            Name = S_Input1._element.value;
             game.replaceScene(Start_Menu_Scene());
             return;
           })
@@ -688,7 +671,6 @@ function Game_load(width,height){
               Label1.text = "名前は六文字以下です。";
               return;
             }
-            Name = S_Input1._element.value;
             game.pushScene(Loading_Scene("読み込み"));
             fetch
             (
@@ -856,8 +838,8 @@ function Game_load(width,height){
 
       var scene = new Scene();                                // 新しいシーンを作る
 
-      //console.clear();
-      //console.log(Data);
+      console.clear();
+      console.log(Data);
 
       var Conversion = Data.match(/\(変換:.+?\)/g);
 
@@ -2657,8 +2639,42 @@ function Game_load(width,height){
 
       return scene;
     };
-    if(window.localStorage){
+    if(window.localStorage.length){
       var ID = window.localStorage.getItem("ID");
+      game.replaceScene(Loading_Scene("読み込み"));
+      fetch
+      (
+        "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
+        {
+          method: 'POST',
+          body: "読込" + ID
+        }
+      ).then(res => res.json()).then(result => {
+         for (var i = 0; i < result.length; i++) {
+           if(result[i].ID==ID) break;
+         }
+         Setting_Flag = result[i];
+         if(i==result.length){
+           fetch
+           (
+             "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
+             {
+               method: 'POST',
+               body: "保存" + ID
+             }
+           ).then(res => res.json()).then(result => {
+               for (var i = 0; i < result.length; i++) {
+                 if(result[i].ID==ID) break;
+               }
+               Setting_Flag = result[i];
+              game.replaceScene(Start_Menu_Scene());
+              return;
+             },);
+         }
+         else Setting_Flag = result[i];
+         game.replaceScene(Start_Menu_Scene());
+         return;
+       },);
     }
     else{
       var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
@@ -2669,8 +2685,23 @@ function Game_load(width,height){
         ID += Codes[rand(Codes.length)];
       }
       window.localStorage.setItem("ID",ID);
+      game.replaceScene(Loading_Scene("保存"));
+      fetch
+      (
+        "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
+        {
+          method: 'POST',
+          body: "保存" + ID
+        }
+      ).then(res => res.json()).then(result => {
+          for (var i = 0; i < result.length; i++) {
+            if(result[i].ID==ID) break;
+          }
+          Setting_Flag = result[i];
+         game.replaceScene(Start_Menu_Scene());
+         return;
+        },);
     }
-    game.replaceScene(Start_Menu_Scene());
   }
   game.start();
 }
