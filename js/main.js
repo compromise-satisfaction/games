@@ -569,7 +569,7 @@ function Game_load(width,height){
           S_Input6.width = width/2;
           S_Input6.height = 30;
           S_Input6._element = document.createElement('input');
-          S_Input6._element.value = "メニューへ戻る";
+          S_Input6._element.value = "メニューに戻る";
           S_Input6._element.type = "submit";
           scene.addChild(S_Input6);
 
@@ -2314,7 +2314,7 @@ function Game_load(width,height){
       S_Input.width = width/2;
       S_Input.height = 95;
       S_Input._element = document.createElement('input');
-      S_Input._element.value = "メニューへ戻る";
+      S_Input._element.value = "メニューに戻る";
       S_Input._element.type = "submit";
       S_Input._element.fontSize = 90;
       scene.addChild(S_Input);
@@ -2439,6 +2439,19 @@ function Game_load(width,height){
       Hand.image = game.assets["../image/Main.png"];
       scene.addChild(Hand);
 
+      var S_Input = new Entity();
+      S_Input.moveTo(0,height-80);
+      S_Input.width = 300;
+      S_Input.height = 80;
+      S_Input._element = document.createElement('input');
+      S_Input._element.value = "メニューに戻る";
+      S_Input._element.type = "submit";
+      S_Input._element.fontSize = 10;
+      scene.addChild(S_Input);
+      S_Input.addEventListener('touchstart',function(e){
+        game.replaceScene(Start_Menu_Scene());
+      });
+
       var Start = new Sprite(40,40);
       Start.image = game.assets["../image/Number.png"];
       Start.x = width-40;
@@ -2484,7 +2497,7 @@ function Game_load(width,height){
             K = 5;
           }
         }
-        
+
       for (var i = 1; i < 82; i++){
         if(V[i-1]==0||V[i-1]>9) V[i-1] = "123456789";
       }
