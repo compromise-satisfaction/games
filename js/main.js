@@ -2342,22 +2342,22 @@ function Game_load(width,height){
       Hand.image = game.assets["../image/Main.png"];
       scene.addChild(Hand);
 
-      var Main = new Sprite(465,465);
+      var Main = new Sprite(405,405);
       Main.image = game.assets["../image/Main.png"];
       Main.x = 0;
       Main.y = 0;
       scene.addChild(Main);
 
-      var Start = new Sprite(45,45);
+      var Start = new Sprite(40,40);
       Start.image = game.assets["../image/Number.png"];
-      Start.x = width-45;
-      Start.y = height-45;
+      Start.x = width-40;
+      Start.y = height-40;
       Start.frame = 10;
       scene.addChild(Start);
 
       var Numbers = Class.create(Sprite, {
         initialize: function(x,y,z,o) {
-          Sprite.call(this,45,45);
+          Sprite.call(this,40,40);
           this.image = game.assets["../image/Number.png"];
           this.x = x;
           this.y = y;
@@ -2367,23 +2367,23 @@ function Game_load(width,height){
         }
       });
 
-      var I = 0;
-      var K = 0;
+      var I = 5;
+      var K = 5;
       var Choice = 0;
 
       for (var i = 1; i < 82; i++){
-        Number[i] = new Numbers(5+K,5+I,0);
-        K = K+50;
-        if(i%3==0) K = K+5;
+        Number[i] = new Numbers(K,I,0);
+        K = K+44;
+        if(i%3==0) K = K+2;
         if(i%9==0){
-          I = I+50;
-          if(i%27==0) I = I+5;
-          K=0;
+          I = I+44;
+          if(i%27==0) I = I+2;
+          K = 5;
         }
       }
 
       for (var i = 1; i < 10; i++){
-        Set[i] = new Numbers((i-1)*50,500,i,true);
+        Set[i] = new Numbers((i-1)*45,500,i,true);
       }
 
       if(V!=undefined){
@@ -2439,21 +2439,21 @@ function Game_load(width,height){
       Hand.image = game.assets["../image/Main.png"];
       scene.addChild(Hand);
 
-      var Start = new Sprite(45,45);
+      var Start = new Sprite(40,40);
       Start.image = game.assets["../image/Number.png"];
-      Start.x = width-45;
-      Start.y = height-45;
+      Start.x = width-40;
+      Start.y = height-40;
       Start.frame = 11;
       scene.addChild(Start);
 
-      var Main = new Sprite(465,465);
+      var Main = new Sprite(405,405);
       Main.image = game.assets["../image/Main.png"];
       Main.x = 0;
       Main.y = 0;
       scene.addChild(Main);
       var Numbers = Class.create(Sprite, {
         initialize: function(x,y,z) {
-          Sprite.call(this,45,45);
+          Sprite.call(this,40,40);
           this.image = game.assets["../image/Number.png"];
           this.x = x;
           this.y = y;
@@ -2470,19 +2470,21 @@ function Game_load(width,height){
         label.text = ("");
         scene.addChild(label);
 
-      var I = 0;
-      var K = 0;
+        var I = 5;
+        var K = 5;
+        var Choice = 0;
 
-      for (var i = 1; i < 82; i++){
-        Number[i] = new Numbers(5+K,5+I,V[i-1]);
-        K = K+50;
-        if(i%3==0) K = K+5;
-        if(i%9==0){
-          I = I+50;
-          if(i%27==0) I = I+5;
-          K=0;
+        for (var i = 1; i < 82; i++){
+          Number[i] = new Numbers(K,I,0);
+          K = K+44;
+          if(i%3==0) K = K+2;
+          if(i%9==0){
+            I = I+44;
+            if(i%27==0) I = I+2;
+            K = 5;
+          }
         }
-      }
+        
       for (var i = 1; i < 82; i++){
         if(V[i-1]==0||V[i-1]>9) V[i-1] = "123456789";
       }
