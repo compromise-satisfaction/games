@@ -5,10 +5,13 @@ BGM.addEventListener("ended",function(e){
   BGM.currentTime = BGM.id*1;
   BGM.play();
 });
+var BGM_Change = 0;
+var BGM_Volume = 0;
 
 function Game_load(width,height){
 
   var Flag = [];
+  var Flag_Number = [];
   var Setting_Flag = {
     BGM音量:5,
     音声音量:5,
@@ -56,11 +59,13 @@ function Game_load(width,height){
           if(BGM.paused==false) BGM.pause();
           BGM.title = BGM_Name;
           break;
-        case "消音":
-          BGM.volume = 0;
-          break;
         case "オン":
-          BGM.volume = Setting_Flag.BGM音量/10;
+          BGM_Volume = 0;
+          BGM_Change = 0.005;
+          break;
+        case "消音":
+          BGM_Change = - 0.005;
+          BGM_Volume = Setting_Flag.BGM音量/10;
           break;
         default:
           if(BGM.title == BGM_Name && BGM.paused == false) return;
@@ -144,6 +149,12 @@ function Game_load(width,height){
                    SE[SE_Number].type = result[i].Data.split(",")[1];
                    SE[SE_Number].title = result[i].Number;
                    SE_Number++;
+                 }
+                 if(result[i].Number=="フラグ管理"){
+                   Flag_Number = [];
+                   for (var j = 0; j < result[i].Data.split(",").length; j++) {
+                     Flag_Number[Flag_Number.length] = result[i].Data.split(",")[j] + ":0";
+                   }
                  }
                }
                game.popScene();
@@ -838,8 +849,24 @@ function Game_load(width,height){
 
       var scene = new Scene();                                // 新しいシーンを作る
 
-      console.clear();
-      console.log(Data);
+      //console.clear();
+      //console.log(Data);
+
+      var Conversion = Data.match(/\(変換:.+?\)/g);
+
+      if(Conversion){
+        for (var i = 0; i < Conversion.length; i++) {
+          Conversion[i] = Conversion[i].substring(4,Conversion[i].length-1);
+          for (var j = 0; j < Game_Datas.length; j++) {
+            if(Game_Datas[j].Number==Conversion[i]){
+              Conversion[i] = Game_Datas[j].Data;
+              break;
+            }
+          }
+          Data = Data.replace(/\(変換:.+?\)/,Conversion[i]);
+        }
+      }
+
       for (var i = 0; i < Setting_Flag.自由.split(",").length; i++) {
         var frees = "(自由"+(i+1)+")";
         Data = Data.replace(frees,Setting_Flag.自由.split(",")[i]);
@@ -900,6 +927,33 @@ function Game_load(width,height){
         Button[i]._element.value = a.split(",")[0];
         Button[i]._element.style.webkitAppearance = "none";
         Button[i]._element.onclick = function(e){
+          if(a.split(",")[7]){
+            switch ((a.split(",")[7].substring(a.split(",")[7].length-1))) {
+              case "+":
+                var Flags_Display = a.split(",")[7].substring(0,a.split(",")[7].length-1);
+                for (var i = 0; i < Flag_Number.length; i++) {
+                  if(Flags_Display == Flag_Number[i].split(":")[0]){
+                    Flag_Number[i] = Flag_Number[i].split(":")[1]*1+1;
+                    Flag_Number[i] = Flags_Display + ":" + (Flag_Number[i]);
+                    break;
+                  }
+                }
+                break;
+              case "-":
+                var Flags_Display = a.split(",")[7].substring(0,a.split(",")[7].length-1);
+                for (var i = 0; i < Flag_Number.length; i++) {
+                  if(Flags_Display == Flag_Number[i].split(":")[0]){
+                    Flag_Number[i] = Flag_Number[i].split(":")[1]*1-1;
+                    if(Flag_Number[i] < 0) Flag_Number[i] = Flags_Display + ":最後";
+                    else Flag_Number[i] = Flags_Display + ":" + (Flag_Number[i]);
+                    break;
+                  }
+                }
+                break;
+              default:
+                break;
+            };
+          }
           if(a.split(",")[6]) Sound_branch(a.split(",")[6]);
           else Sound_branch("無し");
           for (var i = 0; i < Game_Datas.length; i++) {
@@ -953,56 +1007,112 @@ function Game_load(width,height){
       var Flags_Display = Data.match(/\(フラグ表示:.+?\)/g);
 
       if(Flags_Display){
+        Flags_Display = Flags_Display[0].substring(7,Flags_Display[0].length-1)
         var I_X = 0;
         var I_Y = 0;
         var I_N = 0;
-        for (var i = 0; i < Flag.length; i++) {
-          for (var k = 0; k < Game_Datas.length; k++) {
-            if(Game_Datas[k].Number==Flag[i]) break;
-          }
-          if(Game_Datas[k].Data.split(",")[0]==Flags_Display[0].substring(7,Flags_Display[0].length-1)){
-            switch (I_N) {
-              case 0:
-              case 3:
-              case 6:
-                I_X = 30;
-                break;
-              case 1:
-              case 4:
-              case 7:
-                I_X = 162.5;
-                break;
-              case 2:
-              case 5:
-              case 8:
-                I_X = 295;
-                break;
+        var P_N = 0;
+        var P_P = false;
+        var PPP = true;
+        while (PPP){
+          for (var i = 0; i < Flag_Number.length; i++) {
+            if(Flags_Display == Flag_Number[i].split(":")[0]){
+              if(Flag_Number[i].split(":")[1]=="最後"){
+                var PPPP = 0;
+                P_P = true;
+                for (var j = 0; j < Flag.length; j++) {
+                  for (var k = 0; k < Game_Datas.length; k++) {
+                    if(Game_Datas[k].Number==Flag[j]) break;
+                  }
+                  if(Game_Datas[k].Data.split(",")[0]==Flags_Display){
+                    P_N++;
+                  }
+                  if(P_N==9){
+                    P_N = 0;
+                    PPPP++;
+                  }
+                }
+                P_N = PPPP*9;
+                Flag_Number[i] = Flags_Display + ":" + PPPP;
+              }
+              else{
+                P_N = Flag_Number[i].split(":")[1]*9;
+                if(P_N > 0) P_P = true;
+                else P_P = false;
+              }
+              break;
             }
-            switch (I_N) {
-              case 0:
-              case 1:
-              case 2:
-                I_Y = 100;
-                break;
-              case 3:
-              case 4:
-              case 5:
-                I_Y = 232.5;
-                break;
-              case 6:
-              case 7:
-              case 8:
-                I_Y = 365;
-                break;
-            }
-            Data += "(画像:../image/アイテム.png,"+I_X+","+ I_Y +",80,80)";
-            Data += "(画像:" + Game_Datas[k].Data.split(",")[1];
-            Data += ","+I_X+","+ I_Y +",80,80)";
-            Data += "(画像:../image/アイテム枠.png,"+I_X+","+ I_Y +",80,80,";
-            Data += Game_Datas[k].Data.split(",")[2] + ",";
-            Data += Game_Datas[k].Data.split(",")[3] + ")";
-            I_N++;
           }
+          for (var i = 0; i < Flag.length; i++) {
+            for (var k = 0; k < Game_Datas.length; k++) {
+              if(Game_Datas[k].Number==Flag[i]) break;
+            }
+            if(Game_Datas[k].Data.split(",")[0]==Flags_Display){
+              if(P_N==0){
+                switch (I_N) {
+                  case 0:
+                  case 3:
+                  case 6:
+                  I_X = 30;
+                  break;
+                  case 1:
+                  case 4:
+                  case 7:
+                  I_X = 162.5;
+                  break;
+                  case 2:
+                  case 5:
+                  case 8:
+                  I_X = 295;
+                  break;
+                }
+                switch (I_N) {
+                  case 0:
+                  case 1:
+                  case 2:
+                  I_Y = 100;
+                  break;
+                  case 3:
+                  case 4:
+                  case 5:
+                  I_Y = 232.5;
+                  break;
+                  case 6:
+                  case 7:
+                  case 8:
+                  I_Y = 365;
+                  break;
+                }
+                if(I_N==9){
+                  I_N++;
+                  break;
+                }
+                Data += "(画像:../image/アイテム.png,"+I_X+","+ I_Y +",80,80)";
+                Data += "(画像:" + Game_Datas[k].Data.split(",")[1];
+                Data += ","+I_X+","+ I_Y +",80,80)";
+                Data += "(画像:../image/アイテム枠.png,"+I_X+","+ I_Y +",80,80,";
+                Data += Game_Datas[k].Data.split(",")[2] + ",";
+                Data += Game_Datas[k].Data.split(",")[3] + ")";
+                I_N++;
+              }
+              else P_N--;
+            }
+          }
+          if(I_N==0){
+            for (var i = 0; i < Flag_Number.length; i++) {
+              if(Flags_Display == Flag_Number[i].split(":")[0]){
+                Flag_Number[i] = Flag_Number[i].split(":")[1];
+                if(Flag_Number[i] == 0) PPP = false;
+                Flag_Number[i] = Flags_Display + ":0";
+                break;
+              }
+            }
+          }
+          else break;
+        }
+        if(I_N==10 || P_P){
+          Data += "(ボタン:◀,30,497.5,81,81,"+Flags_Display+",メニュー移動,"+Flags_Display+"-)";
+          Data += "(ボタン:▶,295,497.5,81,81,"+Flags_Display+",メニュー移動,"+Flags_Display+"+)";
         }
         Data = Data.replace(/\(フラグ表示:.+?\)/g,"");
       }
@@ -1133,7 +1243,6 @@ function Game_load(width,height){
         }
         Data = Data.replace(/\(画像\d+:.+?\)/g,"(変換:画像移動)");
       }
-      //ここまでに問題あり
 
       var Name_texts = Data.match(/\(名前:.+?\)/g);
 
@@ -1160,7 +1269,6 @@ function Game_load(width,height){
         }
         Data = Data.replace(/\(変換:.+?\)/g,"Ю");
       }
-
 
       var Text = [];
       var PX = width/20;
@@ -1323,6 +1431,23 @@ function Game_load(width,height){
               }
           }
           Next_Time--;
+        }
+        if(BGM_Change != 0){
+          BGM_Volume += BGM_Change;
+          if(BGM_Change > 0){
+            if(BGM_Volume > Setting_Flag.BGM音量/10){
+              BGM.volume = Setting_Flag.BGM音量/10;
+              BGM_Change = 0;
+            }
+            else BGM.volume = BGM_Volume;
+          }
+          else if(BGM_Change < 0){
+            if(BGM_Volume < 0){
+              BGM.volume = 0;
+              BGM_Change = 0;
+            }
+            else BGM.volume = BGM_Volume;
+          }
         }
         for (var i = 0; i < Text.length; i++) {
           if(Text[i].点滅) Text[i].opacity = Opacity;
