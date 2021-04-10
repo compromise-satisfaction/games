@@ -13,6 +13,12 @@ function Game_load(width,height){
   var Flag = [];
   var Flag_Number = [];
   var Setting_Flag = [];
+  function GAS(){
+
+  }
+  function rand(n){
+    return Math.floor(Math.random() * (n));
+  }
   function Sound_branch(a){
       if(a=="無し") return;
       for (var i = 0; i < SE.length; i++) {
@@ -70,9 +76,6 @@ function Game_load(width,height){
       }
       return;
     }
-  function rand(n){
-    return Math.floor(Math.random() * (n));
-  }
 
   var game = new Game(width,height);
   game.fps = 100;
@@ -155,7 +158,7 @@ function Game_load(width,height){
                  }
                }
                game.popScene();
-               game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:スタート,0,0,405,600,スタート)"));
+               game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:続きから,0,0,405,600,"+Setting_Flag.シーンナンバー+")"));
                return;
               },);
               return;
@@ -693,7 +696,7 @@ function Game_load(width,height){
 
           var Background = new Sprite();
           Background._element = document.createElement("img");
-          Background._element.src = "../image/半透明(黒).png";
+          Background._element.src = "../image/半透明黒.png";
           Background.x = 0;
           Background.y = 0;
           Background.width = width;
@@ -710,7 +713,7 @@ function Game_load(width,height){
 
           var Background = new Sprite();
           Background._element = document.createElement("img");
-          Background._element.src = "../image/半透明(黒).png";
+          Background._element.src = "../image/半透明黒.png";
           Background.width = width;
           Background.height = height;
           scene.addChild(Background);
@@ -1456,7 +1459,7 @@ function Game_load(width,height){
 
         var Background = new Sprite();
         Background._element = document.createElement("img");
-        Background._element.src = "../image/半透明(黒).png";
+        Background._element.src = "../image/半透明黒.png";
         Background.width = width;
         Background.height = height;
         scene.addChild(Background);
