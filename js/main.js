@@ -202,7 +202,7 @@ function Game_load(width,height){
       Buttons(width/4,180,width/2,height/10,"リバーシ",1);
       Buttons(width/4,300,width/2,height/10,"数独補佐",2);
       Buttons(width/4,420,width/2,height/10,"ノベルゲーム",3);
-      Buttons(width/4,540,width/2,height/20,"データ消去",4);
+      Buttons(width/4,540,width/2,height/20,"動作がおかしい時",4);
 
       return scene;
     };
