@@ -2644,6 +2644,7 @@ function Game_load(width,height){
     };
     if(window.localStorage.length){
       var ID = window.localStorage.getItem("ID");
+      console.log(ID);
       game.replaceScene(Loading_Scene("読み込み"));
       fetch
       (
@@ -2688,6 +2689,7 @@ function Game_load(width,height){
         ID += Codes[rand(Codes.length)];
       }
       window.localStorage.setItem("ID",ID);
+      console.log(ID);
       game.replaceScene(Loading_Scene("保存"));
       fetch
       (
@@ -2700,7 +2702,7 @@ function Game_load(width,height){
           for (var i = 0; i < result.length; i++) {
             if(result[i].ID==ID) break;
           }
-          Setting_Flag = result[i];
+         Setting_Flag = result[i];
          game.replaceScene(Start_Menu_Scene());
          return;
         },);
