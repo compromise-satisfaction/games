@@ -164,32 +164,32 @@ function Game_load(width,height){
               return;
               break;
             case 4:
-            var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-            "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-            "1","2","3","4","5","6","7","8","9"];
-            ID = "";
-            for (var i = 0; i < 10; i++) {
-              ID += Codes[rand(Codes.length)];
-            }
-            window.localStorage.setItem("ID",ID);
-            console.log(ID);
-            game.replaceScene(Loading_Scene("保存"));
-            fetch
-            (
-              "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
-              {
-                method: 'POST',
-                body: "保存" + ID
+              var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
+              "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
+              "1","2","3","4","5","6","7","8","9"];
+              ID = "";
+              for (var k = 0; k < 10; k++) {
+                ID += Codes[rand(Codes.length)];
               }
-            ).then(res => res.json()).then(result => {
-                for (var i = 0; i < result.length; i++) {
-                  if(result[i].ID==ID) break;
+              window.localStorage.setItem("ID",ID);
+              console.log(ID);
+              game.pushScene(Loading_Scene("保存"));
+              fetch
+              (
+                "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
+                {
+                  method: 'POST',
+                  body: "保存" + ID
                 }
-               Setting_Flag = result[i];
-               game.replaceScene(Start_Menu_Scene());
-               return;
-              },);
-              break;
+              ).then(res => res.json()).then(result => {
+                  for (var i = 0; i < result.length; i++) {
+                    if(result[i].ID==ID) break;
+                  }
+                 Setting_Flag = result[i];
+                 game.popScene();
+                 return;
+                },);
+                break;
           }
           return;
         };
