@@ -142,8 +142,8 @@ function Game_load(width,height){
                SE = [];
                var SE_Number = 0;
                for (var i = 0; i < result.length; i++) {
-                 if(result[i].Data.match(/\(音:.+?\)/)){
-                   result[i].Data = result[i].Data.substring(3,result[i].Data.length-1);
+                 if(result[i].Data.match(/\(音:.+?:音\)/)){
+                   result[i].Data = result[i].Data.substring(3,result[i].Data.length-3);
                    SE[SE_Number] = document.createElement("audio");
                    SE[SE_Number].src = result[i].Data.split(",")[0];
                    SE[SE_Number].type = result[i].Data.split(",")[1];
@@ -157,8 +157,12 @@ function Game_load(width,height){
                    }
                  }
                }
+               var iii = "(画像:../image/メニュー背景.png:画像)";
+               iii += "(文字情報:20,black,無し,30:文字情報)"
+               iii += "(ボタン:初めから,101.25,400,202.5,100,無し,スタート:ボタン)";
+               iii += "(ボタン:続きから,101.25,200,202.5,100,無し,"+Setting_Flag.シーンナンバー+":ボタン)";
                game.popScene();
-               game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:続きから,0,0,405,600,"+Setting_Flag.シーンナンバー+")"));
+               game.replaceScene(Novel_MainScene(iii));
                return;
               },);
               return;
@@ -872,18 +876,18 @@ function Game_load(width,height){
       console.clear();
       console.log(Data);
 
-      var Conversion = Data.match(/\(変換:.+?\)/g);
+      var Conversion = Data.match(/\(変換:.+?:変換\)/g);
 
       if(Conversion){
         for (var i = 0; i < Conversion.length; i++) {
-          Conversion[i] = Conversion[i].substring(4,Conversion[i].length-1);
+          Conversion[i] = Conversion[i].substring(4,Conversion[i].length-4);
           for (var j = 0; j < Game_Datas.length; j++) {
             if(Game_Datas[j].Number==Conversion[i]){
               Conversion[i] = Game_Datas[j].Data;
               break;
             }
           }
-          Data = Data.replace(/\(変換:.+?\)/,Conversion[i]);
+          Data = Data.replace(/\(変換:.+?:変換\)/,Conversion[i]);
         }
       }
 
@@ -901,31 +905,24 @@ function Game_load(width,height){
       var Image = [];
 
       function Images(a){
+        a = a.split(",");
         Image[i] = new Sprite();
         Image[i]._element = document.createElement("img");
         Image[i]._element.src = "../image/透明.png";
-        Image[i].imageurl = a.split(",")[0];
-        Image[i].x = a.split(",")[1]*1;
-        Image[i].y = a.split(",")[2]*1;
-        Image[i].width = a.split(",")[3]*1;
-        Image[i].height = a.split(",")[4]*1;
+        Image[i].imageurl = a[0];
+        Image[i].x = a[1]*1;
+        Image[i].y = a[2]*1;
+        Image[i].width = a[3]*1;
+        Image[i].height = a[4]*1;
         Image[i].fade = false;
-        if(a.split(",")[5]){
-          if(a.split(",")[5].substring(0,4)=="fade"){
-            Image[i].fade = a.split(",")[5].substring(4);
+        if(a[5]){
+          if(a[5].substring(0,4)=="fade"){
+            Image[i].fade = a[5].substring(4);
           }
           else{
             Image[i].addEventListener("touchend",function(e){
-              if(a.split(",")[6]) Sound_branch(a.split(",")[6]);
-              else Sound_branch("無し");
-              for (var i = 0; i < Game_Datas.length; i++) {
-                if(Game_Datas[i].Number==a.split(",")[5]) break;
-              }
-              if(i < Game_Datas.length) game.replaceScene(Novel_MainScene(Game_Datas[i].Data));
-              else{
-                game.popScene();
-                game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
-              }
+              Sound_branch(a[5]);
+              Scene_load(a[6]);
             });
           }
         }
@@ -937,94 +934,77 @@ function Game_load(width,height){
       var Button_fontSize = 15;
       var Button_color = "buttonface";
 
+      function Scene_load(Scene_Name){
+        var Push = false;
+        switch(Scene_Name.split("→")[0]){
+          case "popScene":
+            game.popScene();
+            Scene_Name = Scene_Name.substring(9);
+            if(Scene_Name=="") return;
+            break;
+          case "pushScene":
+            Push = true;
+            Scene_Name = Scene_Name.substring(10);
+            break;
+        }
+        switch(Scene_Name){
+            case "保存箇所":
+              Scene_Name = Setting_Flag.シーンナンバー;
+              break;
+        }
+        for (var i = 0; i < Game_Datas.length; i++) {
+          if(Game_Datas[i].Number==Scene_Name) break;
+        }
+        if(i < Game_Datas.length){
+          if(Push) game.pushScene(Novel_MainScene(Game_Datas[i].Data));
+          else game.replaceScene(Novel_MainScene(Game_Datas[i].Data));
+        }
+        else{
+          switch(Scene_Name){
+            case "メニューに戻る":
+              game.replaceScene(Start_Menu_Scene());
+              break;
+            default:
+              game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65:文字情報)(ボタン:エラー,0,0,405,600,スタート:ボタン)"));
+              break;
+          }
+        }
+        return;
+      }
+
       function Buttons(a){
+        a = a.split(",");
         Button[i] = new Entity();
-        Button[i].moveTo(a.split(",")[1]*1,a.split(",")[2]*1);
-        Button[i].width = a.split(",")[3];
-        Button[i].height = a.split(",")[4];
+        Button[i].moveTo(a[1]*1,a[2]*1);
+        Button[i].width = a[3];
+        Button[i].height = a[4];
         Button[i]._element = document.createElement("input");
         Button[i]._element.type = "button";
-        Button[i]._element.value = a.split(",")[0];
+        Button[i]._element.value = a[0];
         Button[i]._element.style.webkitAppearance = "none";
         Button[i]._element.onclick = function(e){
-          if(a.split(",")[7]){
-            switch ((a.split(",")[7].substring(a.split(",")[7].length-1))) {
-              case "+":
-                var Flags_Display = a.split(",")[7].substring(0,a.split(",")[7].length-1);
-                for (var i = 0; i < Flag_Number.length; i++) {
-                  if(Flags_Display == Flag_Number[i].split(":")[0]){
-                    Flag_Number[i] = Flag_Number[i].split(":")[1]*1+1;
-                    Flag_Number[i] = Flags_Display + ":" + (Flag_Number[i]);
-                    break;
-                  }
-                }
-                break;
-              case "-":
-                var Flags_Display = a.split(",")[7].substring(0,a.split(",")[7].length-1);
-                for (var i = 0; i < Flag_Number.length; i++) {
-                  if(Flags_Display == Flag_Number[i].split(":")[0]){
-                    Flag_Number[i] = Flag_Number[i].split(":")[1]*1-1;
-                    if(Flag_Number[i] < 0) Flag_Number[i] = Flags_Display + ":最後";
-                    else Flag_Number[i] = Flags_Display + ":" + (Flag_Number[i]);
-                    break;
-                  }
-                }
-                break;
-              default:
-                break;
-            };
-          }
-          if(a.split(",")[6]) Sound_branch(a.split(",")[6]);
-          else Sound_branch("無し");
-          for (var i = 0; i < Game_Datas.length; i++) {
-            if(Game_Datas[i].Number==a.split(",")[5]) break;
-          }
-          if(i < Game_Datas.length) game.replaceScene(Novel_MainScene(Game_Datas[i].Data));
-          else{
-            switch(a.split(",")[5]){
-              case "メニューに戻る":
-                game.popScene();
-                game.replaceScene(Start_Menu_Scene());
-                break;
-              case "popScene":
-                game.popScene();
-                break;
-              case "pushScene":
-                for (var i = 0; i < Game_Datas.length; i++) {
-                  if(Game_Datas[i].Number==a.split(",")[7]) break;
-                }
-                if(i < Game_Datas.length) game.pushScene(Novel_MainScene(Game_Datas[i].Data));
-                else{
-                  game.popScene();
-                  game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
-                }
-                break;
-              default:
-                game.popScene();
-                game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
-                break;
-            }
-          }
+          Sound_branch(a[5]);
+          Scene_load(a[6]);
           return;
         };
       }
 
-      var Branch = Data.match(/\{フラグ所持:.+?:フラグ所持\}/g);
+      var Branch = Data.match(/\(フラグ所持:.+?:フラグ所持\)/g);
 
       if(Branch){
         for (var i = 0; i < Branch.length; i++) {
           Branch[i] = Branch[i].substring(7,Branch[i].length-7);
           for (var k = 0; k < Flag.length; k++) {
-            if(Flag[k]==Branch[i].split("{内容}")[0]){
-              Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,Branch[i].split("{内容}")[1]);
+            if(Flag[k]==Branch[i].split("(内容)")[0]){
+              Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[1]);
               break;
             }
           }
-          if(k == Flag.length) Data = Data.replace(/\{フラグ所持:.+?:フラグ所持\}/,Branch[i].split("{内容}")[2]);
+          if(k == Flag.length) Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[2]);
         }
       }
 
-      var Flags_Display = Data.match(/\(フラグ表示:.+?\)/g);
+      var Flags_Display = Data.match(/\(フラグ表示:.+?:フラグ表示\)/g);
 
       if(Flags_Display){
         Flags_Display = Flags_Display[0].substring(7,Flags_Display[0].length-1)
@@ -1134,18 +1114,18 @@ function Game_load(width,height){
           Data += "(ボタン:◀,30,497.5,81,81,"+Flags_Display+",メニュー移動,"+Flags_Display+"-)";
           Data += "(ボタン:▶,295,497.5,81,81,"+Flags_Display+",メニュー移動,"+Flags_Display+"+)";
         }
-        Data = Data.replace(/\(フラグ表示:.+?\)/g,"");
+        Data = Data.replace(/\(フラグ表示:.+?:フラグ表示\)/g,"");
       }
 
-      var Images_Data = Data.match(/\(画像:.+?\)/g);
+      var Images_Data = Data.match(/\(画像:.+?:画像\)/g);
 
       if(Images_Data){
         var Image_Number = 0;
         for (var i = 0; i < Images_Data.length; i++) {
-          Images_Data[i] = Images_Data[i].substring(4,Images_Data[i].length-1);
+          Images_Data[i] = Images_Data[i].substring(4,Images_Data[i].length-4);
           Images(Images_Data[i]);
         }
-        Data = Data.replace(/\(画像:.+?\)/g,"(変換:画像)");
+        Data = Data.replace(/\(画像:.+?:画像\)/g,"(変換:画像)");
       }
 
       var White_Background = Data.match(/\(白背景\)/g);
@@ -1161,113 +1141,113 @@ function Game_load(width,height){
         Data = Data.replace(/\(白背景\)/g,"");
       }
 
-      var Next_Data = Data.match(/\(次へ進む:.+?\)/g);
+      var Next_Data = Data.match(/\(次に進む:.+?:次に進む\)/g);
       var Next = false;
 
       if(Next_Data){
-        Next_Data = Next_Data[0].substring(6,Next_Data[0].length-1);
+        Next_Data = Next_Data[0].substring(6,Next_Data[0].length-6);
         var Next_Time = Next_Data.split(",")[0]*1;
         Next_Data = Next_Data.split(",")[1];
-        Data = Data.replace(/\(次へ進む:.+?\)/g,"(変換:次へ進む)");
+        Data = Data.replace(/\(次に進む:.+?:次に進む\)/g,"(変換:次に進む)");
       }
 
-      var Buttons_Data = Data.match(/\(ボタン:.+?\)/g);
+      var Buttons_Data = Data.match(/\(ボタン:.+?:ボタン\)/g);
 
       if(Buttons_Data){
         var Button_Number = 0;
         for (var i = 0; i < Buttons_Data.length; i++) {
-          Buttons_Data[i] = Buttons_Data[i].substring(5,Buttons_Data[i].length-1);
+          Buttons_Data[i] = Buttons_Data[i].substring(5,Buttons_Data[i].length-5);
           Buttons(Buttons_Data[i]);
         }
-        Data = Data.replace(/\(ボタン:.+?\)/g,"(変換:ボタン)");
+        Data = Data.replace(/\(ボタン:.+?:ボタン\)/g,"(変換:ボタン)");
       }
 
-      var Text_informations_Data = Data.match(/\(文字情報:.+?\)/g);
+      var Text_informations_Data = Data.match(/\(文字情報:.+?:文字情報\)/g);
 
       if(Text_informations_Data){
         var Text_information_Number = 0;
         for (var i = 0; i < Text_informations_Data.length; i++) {
-          Text_informations_Data[i] = Text_informations_Data[i].substring(6,Text_informations_Data[i].length-1);
+          Text_informations_Data[i] = Text_informations_Data[i].substring(6,Text_informations_Data[i].length-6);
         }
-        Data = Data.replace(/\(文字情報:.+?\)/g,"(変換:文字情報)");
+        Data = Data.replace(/\(文字情報:.+?:文字情報\)/g,"(変換:文字情報)");
       }
 
-      var Speeds_Data = Data.match(/\(待機時間:.+?\)/g);
+      var Speeds_Data = Data.match(/\(待機時間:.+?:待機時間\)/g);
 
       if(Speeds_Data){
         var Speed_Number = 0;
         for (var i = 0; i < Speeds_Data.length; i++) {
-          Speeds_Data[i] = Speeds_Data[i].substring(6,Speeds_Data[i].length-1);
+          Speeds_Data[i] = Speeds_Data[i].substring(6,Speeds_Data[i].length-6);
         }
-        Data = Data.replace(/\(待機時間:.+?\)/g,"(変換:待機時間)");
+        Data = Data.replace(/\(待機時間:.+?:待機時間\)/g,"(変換:待機時間)");
       }
 
-      var Sounds_Data = Data.match(/\(再生:.+?\)/g);
+      var Sounds_Data = Data.match(/\(再生:.+?:再生\)/g);
 
       if(Sounds_Data){
         var Sound_Number = 0;
         for (var i = 0; i < Sounds_Data.length; i++) {
-          Sounds_Data[i] = Sounds_Data[i].substring(4,Sounds_Data[i].length-1);
+          Sounds_Data[i] = Sounds_Data[i].substring(4,Sounds_Data[i].length-4);
         }
-        Data = Data.replace(/\(再生:.+?\)/g,"(変換:再生)");
+        Data = Data.replace(/\(再生:.+?:再生\)/g,"(変換:再生)");
       }
 
-      var BGMs_Data = Data.match(/\(BGM:.+?\)/g);
+      var BGMs_Data = Data.match(/\(BGM:.+?:BGM\)/g);
 
       if(BGMs_Data){
         var BGM_Number = 0;
         for (var i = 0; i < BGMs_Data.length; i++) {
-          BGMs_Data[i] = BGMs_Data[i].substring(5,BGMs_Data[i].length-1);
+          BGMs_Data[i] = BGMs_Data[i].substring(5,BGMs_Data[i].length-5);
         }
-        Data = Data.replace(/\(BGM:.+?\)/g,"(変換:BGM)");
+        Data = Data.replace(/\(BGM:.+?:BGM\)/g,"(変換:BGM)");
       }
 
-      var Flags_Data = Data.match(/\(フラグ:.+?\)/g);
+      var Flags_Data = Data.match(/\(フラグ:.+?:フラグ\)/g);
 
       if(Flags_Data){
         for (var i = 0; i < Flags_Data.length; i++) {
           for (var k = 0; k < Flag.length; k++) {
-            if(Flag[k] == Flags_Data[i].substring(5,Flags_Data[i].length-1).split("→")[0]){
+            if(Flag[k] == Flags_Data[i].substring(5,Flags_Data[i].length-5).split("→")[0]){
               break;
             }
           }
           if(k==Flag.length){
-            if(Flags_Data[i].substring(5,Flags_Data[i].length-1)=="リセット") Flag = [];
-            else Flag[Flag.length] = Flags_Data[i].substring(5,Flags_Data[i].length-1).split("→")[0];
+            if(Flags_Data[i].substring(5,Flags_Data[i].length-5)=="リセット") Flag = [];
+            else Flag[Flag.length] = Flags_Data[i].substring(5,Flags_Data[i].length-5).split("→")[0];
           }
           else{
             if(Flags_Data[i].substring(5,Flags_Data[i].length-1).split("→")[1]){
-              Flag[k] = Flags_Data[i].substring(5,Flags_Data[i].length-1).split("→")[1];
+              Flag[k] = Flags_Data[i].substring(5,Flags_Data[i].length-5).split("→")[1];
             }
           }
         }
-        Data = Data.replace(/\(フラグ:.+?\)/g,"");
+        Data = Data.replace(/\(フラグ:.+?:フラグ\)/g,"");
       }
 
-      var Coordinates_Data = Data.match(/\(文字座標:.+?\)/g);
+      var Coordinates_Data = Data.match(/\(文字座標:.+?:文字座標\)/g);
 
       if(Coordinates_Data){
         var Coordinate_Number = 0;
         for (var i = 0; i < Coordinates_Data.length; i++) {
-          Coordinates_Data[i] = Coordinates_Data[i].substring(6,Coordinates_Data[i].length-1);
+          Coordinates_Data[i] = Coordinates_Data[i].substring(6,Coordinates_Data[i].length-6);
         }
-        Data = Data.replace(/\(文字座標:.+?\)/g,"(変換:文字座標)");
+        Data = Data.replace(/\(文字座標:.+?:文字座標\)/g,"(変換:文字座標)");
       }
 
-      var Image_TL_Data = Data.match(/\(画像\d+:.+?\)/g);
+      var Image_TL_Data = Data.match(/\(画像移動:.+?:画像移動\)/g);
 
       if(Image_TL_Data){
         var Image_TL_Number = 0;
         for (var i = 0; i < Image_TL_Data.length; i++) {
-          Image_TL_Data[i] = Image_TL_Data[i].substring(3,Image_TL_Data[i].length-1);
+          Image_TL_Data[i] = Image_TL_Data[i].substring(6,Image_TL_Data[i].length-6);
         }
-        Data = Data.replace(/\(画像\d+:.+?\)/g,"(変換:画像移動)");
+        Data = Data.replace(/\(画像移動+:.+?:画像移動\)/g,"(変換:画像移動)");
       }
 
-      var Name_texts = Data.match(/\(名前:.+?\)/g);
+      var Name_texts = Data.match(/\(名前:.+?:名前\)/g);
 
       if(Name_texts){
-        Name_texts = Name_texts[0].substring(4,Name_texts[0].length-1);
+        Name_texts = Name_texts[0].substring(4,Name_texts[0].length-4);
         Name_texts = "【" + Name_texts + "】";
         var Name_text = new Sprite();
         Name_text._element = document.createElement("innerHTML");
@@ -1276,7 +1256,7 @@ function Game_load(width,height){
         Name_text.x = 0;
         Name_text.y = width/30 + width/16*9;
         scene.addChild(Name_text);
-        Data = Data.replace(/\(名前:.+?\)/g,"");
+        Data = Data.replace(/\(名前:.+?:名前\)/g,"");
       }
 
 
@@ -1298,7 +1278,7 @@ function Game_load(width,height){
       var Text_Color = "black";
       var Text_Number = 0;
       var Itimozi = null;
-      var FPS = 5;
+      var FPS = 0;
       var Display_time = 0;
       var Opacity = 1;
       var Opacitys = -0.02;
@@ -1357,22 +1337,21 @@ function Game_load(width,height){
                 Coordinate_Number++
                 break;
               case "画像移動":
-                Move_Image = Image[Image_TL_Data[Image_TL_Number].substring(0,Image_TL_Data[Image_TL_Number].indexOf(":"))*1];
-                switch (Image_TL_Data[Image_TL_Number].split(",")[0].substring(Image_TL_Data[Image_TL_Number].indexOf(":")+1)){
+                Move_Image = Image[Image_TL_Data[Image_TL_Number].split(",")[0]*1];
+                switch (Image_TL_Data[Image_TL_Number].split(",")[1]*1){
                   case "消滅する":
                     scene.removeChild(Move_Image);
                     break;
                   default:
-                    Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[0];
-                    Move_Image.VX = Move_Image.VX.substring(Move_Image.VX.indexOf(":")+1)*1;
-                    Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
-                    Move_Image.VA = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                    Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
+                    Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                    Move_Image.VA = Image_TL_Data[Image_TL_Number].split(",")[3]*1;
                     Move_Image.tl.moveTo(Move_Image.VX,Move_Image.VY,Move_Image.VA);
                     break;
                 }
                 Image_TL_Number++
                 break;
-              case "次へ進む":
+              case "次に進む":
                 Next = Next_Data;
                 break;
               case "Ю":
@@ -1441,14 +1420,8 @@ function Game_load(width,height){
       scene.addEventListener("enterframe",function(){
         if(Next){
           if(Next_Time==0){
-            for (var i = 0; i < Game_Datas.length; i++) {
-              if(Game_Datas[i].Number==Next) break;
-            }
-            if(i < Game_Datas.length) game.replaceScene(Novel_MainScene(Game_Datas[i].Data));
-            else{
-                  game.popScene();
-                  game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65)(ボタン:エラー,0,0,405,600,スタート)"));
-              }
+            Scene_load(Next);
+            return;
           }
           Next_Time--;
         }
