@@ -159,8 +159,8 @@ function Game_load(width,height){
                }
                var iii = "(画像:../image/メニュー背景.png:画像)";
                iii += "(文字情報:20,black,無し,30:文字情報)"
-               iii += "(ボタン:初めから,101.25,400,202.5,100,無し,スタート:ボタン)";
-               iii += "(ボタン:続きから,101.25,200,202.5,100,無し,"+Setting_Flag.シーンナンバー+":ボタン)";
+               iii += "(ボタン:初めから,101.25,200,202.5,100,無し,スタート:ボタン)";
+               iii += "(ボタン:続きから,101.25,400,202.5,100,無し,"+Setting_Flag.シーンナンバー+":ボタン)";
                game.popScene();
                game.replaceScene(Novel_MainScene(iii));
                return;
