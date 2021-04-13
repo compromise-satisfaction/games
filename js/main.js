@@ -938,8 +938,28 @@ function Game_load(width,height){
           }
           else{
             Image[i].addEventListener("touchend",function(e){
-              Sound_branch(a[5]);
-              Scene_load(a[6]);
+              if(Pointer_Button){
+                Sound_branch(Pointer_Button.sound);
+                if(a[5]=="remove"){
+                  Pointer_Button.View = true;
+                  scene.removeChild(Pointer_Button);
+                }
+                else{
+                  Pointer_Button.button_sound = a[5];
+                  Pointer_Button.シーンナンバー = a[6];
+                  Pointer_Button._element.value = a[7];
+                  Pointer_Button._element.style.fontSize = a[8];
+                  if(Pointer_Button.View){
+                    Pointer_Button.View = false;
+                    scene.addChild(Pointer_Button);
+                  }
+                }
+              }
+              else{
+                Sound_branch(a[5]);
+                Scene_load(a[6]);
+              }
+              return;
             });
           }
         }
@@ -1144,6 +1164,43 @@ function Game_load(width,height){
         Data = Data.replace(/\(画像:.+?:画像\)/g,"(変換:画像)");
       }
 
+      var Pointer = Data.match(/\(ポインタ:.+?:ポインタ\)/g);
+
+      if(Pointer){
+        Pointer[0] = Pointer[0].substring(6,Pointer[0].length-6);
+        var a = Pointer[0].split(",");
+        Pointer = new Sprite();
+        Pointer._element = document.createElement("img");
+        Pointer._element.src = a[0];
+        Pointer.x = a[1]*1;
+        Pointer.y = a[2]*1;
+        Pointer.width = a[3]*1;
+        Pointer.height = a[4]*1;
+
+        var Pointer_Button = new Entity();
+        Pointer_Button.moveTo(a[5]*1,a[6]*1);
+        Pointer_Button.width = a[7];
+        Pointer_Button.height = a[8];
+        Pointer_Button.sound = a[9];
+        Pointer_Button.View = true;
+        Pointer_Button._element = document.createElement("input");
+        Pointer_Button._element.type = "button";
+        Pointer_Button._element.style.webkitAppearance = "none";
+        Pointer_Button._element.onclick = function(e){
+          Sound_branch(Pointer_Button.button_sound);
+          Scene_load(Pointer_Button.シーンナンバー);
+          return;
+        };
+
+        scene.addEventListener("touchend",function(e){
+          Pointer.x = e.x - a[3]*0.5;
+          Pointer.y = e.y - a[4]*0.5;
+          //scene.removeChild(Pointer_Button);
+        });
+
+        Data = Data.replace(/\(ポインタ:.+?:ポインタ\)/g,"(変換:ポインタ)");
+      }
+
       var White_Background = Data.match(/\(白背景\)/g);
 
       if(White_Background){
@@ -1342,6 +1399,9 @@ function Game_load(width,height){
               case "再生":
                 Sound_branch(Sounds_Data[Sound_Number]);
                 Sound_Number++
+                break;
+              case "ポインタ":
+              scene.addChild(Pointer);
                 break;
               case "BGM":
                 BGM_ON(BGMs_Data[BGM_Number]);
