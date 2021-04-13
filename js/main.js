@@ -1426,7 +1426,7 @@ function Game_load(width,height){
           Text[Text.length-1]._style.color = Text_Color;
         }
         Text_X += PX;
-        if(FPS) Sound_branch(Text_Sound);
+        if(FPS > 0) Sound_branch(Text_Sound);
         scene.addChild(Text[Text.length-1]);
         Text_Number++;
         return;
