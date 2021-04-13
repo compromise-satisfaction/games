@@ -1354,9 +1354,15 @@ function Game_load(width,height){
                 break;
               case "画像移動":
                 Move_Image = Image[Image_TL_Data[Image_TL_Number].split(",")[0]*1];
-                switch (Image_TL_Data[Image_TL_Number].split(",")[1]*1){
+                switch (Image_TL_Data[Image_TL_Number].split(",")[1]){
                   case "消滅する":
                     scene.removeChild(Move_Image);
+                    break;
+                  case "fadein":
+                    Move_Image.tl.fadeIn(Image_TL_Data[Image_TL_Number].split(",")[2]*1);
+                    break;
+                  case "fadeout":
+                    Move_Image.tl.fadeOut(Image_TL_Data[Image_TL_Number].split(",")[2]*1);
                     break;
                   default:
                     Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
