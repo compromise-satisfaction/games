@@ -1024,7 +1024,7 @@ function Game_load(width,height){
       var Flags_Display = Data.match(/\(フラグ表示:.+?:フラグ表示\)/g);
 
       if(Flags_Display){
-        Flags_Display = Flags_Display[0].substring(7,Flags_Display[0].length-1)
+        Flags_Display = Flags_Display[0].substring(7,Flags_Display[0].length-7);
         var I_X = 0;
         var I_Y = 0;
         var I_N = 0;
@@ -1104,12 +1104,12 @@ function Game_load(width,height){
                   I_N++;
                   break;
                 }
-                Data += "(画像:../image/アイテム.png,"+I_X+","+ I_Y +",80,80)";
+                Data += "(画像:../image/アイテム.png,"+I_X+","+ I_Y +",80,80:画像)";
                 Data += "(画像:" + Game_Datas[k].Data.split(",")[1];
-                Data += ","+I_X+","+ I_Y +",80,80)";
+                Data += ","+I_X+","+ I_Y +",80,80:画像)";
                 Data += "(画像:../image/アイテム枠.png,"+I_X+","+ I_Y +",80,80,";
-                Data += Game_Datas[k].Data.split(",")[2] + ",";
-                Data += Game_Datas[k].Data.split(",")[3] + ")";
+                Data += Game_Datas[k].Data.split(",")[3] + ",";
+                Data += Game_Datas[k].Data.split(",")[2] + ":画像)";
                 I_N++;
               }
               else P_N--;
