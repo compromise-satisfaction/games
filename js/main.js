@@ -163,6 +163,23 @@ function Game_load(width,height){
                iii += "(ボタン:続きから,101.25,400,202.5,100,無し,"+Setting_Flag.シーンナンバー+":ボタン)";
                game.popScene();
                game.replaceScene(Novel_MainScene(iii));
+               for (var i = 0; i < result.length; i++) {
+                 var Image = result[i].Data.match(/\(画像:.+?:画像\)/g);
+                 if(Image){
+                   for (var k = 0; k < Image.length; k++){
+                     Image[k] = Image[k].substring(4);
+                     Image[k] = Image[k].split(",")[0];
+                     var Background = new Sprite();
+                     Background._element = document.createElement("img");
+                     Background._element.src = Image[k];
+                     Background.x = 405;
+                     Background.y = 600;
+                     Background.width = 0;
+                     Background.height = 0;
+                     scene.addChild(Background);
+                   }
+                 }
+               }
                return;
               },);
               return;
@@ -1409,7 +1426,7 @@ function Game_load(width,height){
           Text[Text.length-1]._style.color = Text_Color;
         }
         Text_X += PX;
-        Sound_branch(Text_Sound);
+        if(FPS) Sound_branch(Text_Sound);
         scene.addChild(Text[Text.length-1]);
         Text_Number++;
         return;
