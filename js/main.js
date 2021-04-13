@@ -982,7 +982,7 @@ function Game_load(width,height){
               game.replaceScene(Start_Menu_Scene());
               break;
             default:
-              game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65:文字情報)(ボタン:エラー,0,0,405,600,スタート:ボタン)"));
+              game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65:文字情報)(ボタン:エラー,0,0,405,600,無し,スタート:ボタン)"));
               break;
           }
         }
@@ -1104,7 +1104,6 @@ function Game_load(width,height){
                   I_N++;
                   break;
                 }
-                Data += "(画像:../image/アイテム.png,"+I_X+","+ I_Y +",80,80:画像)";
                 Data += "(画像:" + Game_Datas[k].Data.split(",")[1];
                 Data += ","+I_X+","+ I_Y +",80,80:画像)";
                 Data += "(画像:../image/アイテム枠.png,"+I_X+","+ I_Y +",80,80,";
