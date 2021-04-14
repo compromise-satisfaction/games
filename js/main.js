@@ -1309,6 +1309,16 @@ function Game_load(width,height){
         Data = Data.replace(/\(文字座標:.+?:文字座標\)/g,"(変換:文字座標)");
       }
 
+      var Intervals_Data = Data.match(/\(文字間隔:.+?:文字間隔\)/g);
+
+      if(Intervals_Data){
+        var Interval_Number = 0;
+        for (var i = 0; i < Intervals_Data.length; i++) {
+          Intervals_Data[i] = Intervals_Data[i].substring(6,Intervals_Data[i].length-6);
+        }
+        Data = Data.replace(/\(文字間隔:.+?:文字間隔\)/g,"(変換:文字間隔)");
+      }
+
       var Image_TL_Data = Data.match(/\(画像移動:.+?:画像移動\)/g);
 
       if(Image_TL_Data){
@@ -1347,6 +1357,7 @@ function Game_load(width,height){
 
       var Text = [];
       var PX = width/20;
+      var Text_Interval = PX;
       var Text_X = width/20;
       var Text_Y = width/20 + width/20 + width/16*9;
       var Text_Sound = "無し";
@@ -1386,6 +1397,7 @@ function Game_load(width,height){
                 break;
               case "文字情報":
                 PX = Text_informations_Data[Text_information_Number].split(",")[0]*1;
+                Text_Interval = PX;
                 Text_Color = Text_informations_Data[Text_information_Number].split(",")[1];
                 Text_Sound = Text_informations_Data[Text_information_Number].split(",")[2];
                 Button_fontSize = Text_informations_Data[Text_information_Number].split(",")[3]*1;
@@ -1409,9 +1421,30 @@ function Game_load(width,height){
                 BGM_ON(BGMs_Data[BGM_Number]);
                 BGM_Number++
                 break;
+              case "文字間隔":
+                Text_Interval = Intervals_Data[Interval_Number]*1;
+                Interval_Number++;
+                break;
               case "文字座標":
-                Text_X = Coordinates_Data[Coordinate_Number].split(",")[0]*1;
-                Text_Y = Coordinates_Data[Coordinate_Number].split(",")[1]*1;
+                switch (Coordinates_Data[Coordinate_Number].split(",")[0].substring(0,1)){
+                  case "+":
+                  case "-":
+                    Text_X -= Text_Interval;
+                    Text_X += Coordinates_Data[Coordinate_Number].split(",")[0]*1;
+                    break;
+                  default:
+                    Text_X = Coordinates_Data[Coordinate_Number].split(",")[0]*1;
+                    break;
+                }
+                switch (Coordinates_Data[Coordinate_Number].split(",")[1].substring(0,1)){
+                  case "+":
+                  case "-":
+                    Text_Y += Coordinates_Data[Coordinate_Number].split(",")[1]*1;
+                    break;
+                  default:
+                    Text_Y = Coordinates_Data[Coordinate_Number].split(",")[1]*1;
+                    break;
+                }
                 Coordinate_Number++
                 break;
               case "画像移動":
@@ -1457,7 +1490,7 @@ function Game_load(width,height){
             return;
             break;
           case " ":
-            Text_X += PX;
+            Text_X += Text_Interval;
             Text_Number++;
             Texts();
             return;
@@ -1492,7 +1525,7 @@ function Game_load(width,height){
           Text[Text.length-1].点滅 = false;
           Text[Text.length-1]._style.color = Text_Color;
         }
-        Text_X += PX;
+        Text_X += Text_Interval;
         if(FPS > 0) Sound_branch(Text_Sound);
         scene.addChild(Text[Text.length-1]);
         Text_Number++;
