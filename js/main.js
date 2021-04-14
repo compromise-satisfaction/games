@@ -1195,6 +1195,8 @@ function Game_load(width,height){
         scene.addEventListener("touchend",function(e){
           Pointer.x = e.x - a[3]*0.5;
           Pointer.y = e.y - a[4]*0.5;
+          console.log(Pointer.x);
+          console.log(Pointer.y);
           //scene.removeChild(Pointer_Button);
         });
 
