@@ -1079,7 +1079,6 @@ function Game_load(width,height){
               break;
             }
           }
-          console.log(Flag_Number[i]);
           Scene_Name = "表示" + Scene_Name.split(":")[0] + "表示";
         }
         for (var i = 0; i < Game_Datas.length; i++) {
@@ -1156,6 +1155,12 @@ function Game_load(width,height){
 
       if(Flags_Display){
         Flags_Display = Flags_Display[0].substring(7,Flags_Display[0].length-7);
+        for(var i = 0; i < Flag_Number.length; i++){
+          if(Flag_Number[i].split(":")[0]==Flags_Display){
+            var F_S_N = Flag_Number[i].split(":")[1];
+            break;
+          }
+        }
         var I_X = 0;
         var I_Y = 0;
         var I_N = 0;
@@ -1164,6 +1169,7 @@ function Game_load(width,height){
             for (var k = 0; k < Game_Datas.length; k++) {
               if(Game_Datas[k].Number==Flag[i].split(":")[1]) break;
             }
+            if(I_N==10) break;
             switch (I_N) {
                 case 0:
                 case 3:
@@ -1204,111 +1210,13 @@ function Game_load(width,height){
               Data += Game_Datas[k].Data.split(",")[1];
               Data += ",表示"+Flags_Display+":"+I_N+"表示:画像)";
               I_N++;
+              F_S_N++;
+          }
+          if(I_N==10){
+            Data += "(ボタン:◀,30,490,80,80,メニュー移動,表示--"+Flags_Display+"--表示:ボタン)";
+            Data += "(ボタン:▶,295,490,80,80,メニュー移動,表示++"+Flags_Display+"++表示:ボタン)";
           }
         }
-        /*
-        var P_N = 0;
-        var P_P = false;
-        var PPP = true;
-        while (PPP){
-          for (var i = 0; i < Flag_Number.length; i++) {
-            if(Flags_Display == Flag_Number[i].split(":")[0]){
-              if(Flag_Number[i].split(":")[1]=="最後"){
-                var PPPP = 0;
-                P_P = true;
-                for (var j = 0; j < Flag.length; j++) {
-                  for (var k = 0; k < Game_Datas.length; k++) {
-                    if(Game_Datas[k].Number==Flag[j]) break;
-                  }
-                  if(Game_Datas[k].Data.split(",")[0]==Flags_Display){
-                    P_N++;
-                  }
-                  if(P_N==9){
-                    P_N = 0;
-                    PPPP++;
-                  }
-                }
-                P_N = PPPP*9;
-                Flag_Number[i] = Flags_Display + ":" + PPPP;
-              }
-              else{
-                P_N = Flag_Number[i].split(":")[1]*9;
-                if(P_N > 0) P_P = true;
-                else P_P = false;
-              }
-              break;
-            }
-          }
-          for (var i = 0; i < Flag.length; i++) {
-            for (var k = 0; k < Game_Datas.length; k++) {
-              if(Game_Datas[k].Number==Flag[i]) break;
-            }
-            if(Game_Datas[k].Data.split(",")[0]==Flags_Display){
-              if(P_N==0){
-                switch (I_N) {
-                  case 0:
-                  case 3:
-                  case 6:
-                  I_X = 30;
-                  break;
-                  case 1:
-                  case 4:
-                  case 7:
-                  I_X = 162.5;
-                  break;
-                  case 2:
-                  case 5:
-                  case 8:
-                  I_X = 295;
-                  break;
-                }
-                switch (I_N) {
-                  case 0:
-                  case 1:
-                  case 2:
-                  I_Y = 100;
-                  break;
-                  case 3:
-                  case 4:
-                  case 5:
-                  I_Y = 232.5;
-                  break;
-                  case 6:
-                  case 7:
-                  case 8:
-                  I_Y = 365;
-                  break;
-                }
-                if(I_N==9){
-                  I_N++;
-                  break;
-                }
-                Data += "(画像:" + Game_Datas[k].Data.split(",")[1];
-                Data += ","+I_X+","+ I_Y +",80,80:画像)";
-                Data += "(画像:../image/アイテム枠.png,"+I_X+","+ I_Y +",80,80,";
-                Data += Game_Datas[k].Data.split(",")[3] + ",";
-                Data += Game_Datas[k].Data.split(",")[2] + ":画像)";
-                I_N++;
-              }
-              else P_N--;
-            }
-          }
-          if(I_N==0){
-            for (var i = 0; i < Flag_Number.length; i++) {
-              if(Flags_Display == Flag_Number[i].split(":")[0]){
-                Flag_Number[i] = Flag_Number[i].split(":")[1];
-                if(Flag_Number[i] == 0) PPP = false;
-                Flag_Number[i] = Flags_Display + ":0";
-                break;
-              }
-            }
-          }
-          else break;
-        }
-        if(I_N==10 || P_P){
-          Data += "(ボタン:◀,30,497.5,81,81,"+Flags_Display+",メニュー移動,"+Flags_Display+"-)";
-          Data += "(ボタン:▶,295,497.5,81,81,"+Flags_Display+",メニュー移動,"+Flags_Display+"+)";
-        }*/
         Data = Data.replace(/\(フラグ表示:.+?:フラグ表示\)/g,"");
       }
 
