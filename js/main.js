@@ -904,6 +904,12 @@ function Game_load(width,height){
               break;
             }
           }
+          for (var j = 0; j < Flag.length; j++) {
+            if(Flag[j].split(":")[0]==Conversion[i]){
+              Conversion[i] = Flag[j].split(":")[1];
+              break;
+            }
+          }
           Data = Data.replace(/\(変換:.+?:変換\)/,Conversion[i]);
         }
       }
@@ -1032,9 +1038,27 @@ function Game_load(width,height){
         for (var i = 0; i < Branch.length; i++) {
           Branch[i] = Branch[i].substring(7,Branch[i].length-7);
           for (var k = 0; k < Flag.length; k++) {
-            if(Flag[k]==Branch[i].split("(内容)")[0]){
-              Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[1]);
-              break;
+            if(Branch[i].split("(内容)")[0].indexOf(">")>0){
+              if(Flag[k].split(":")[0]==Branch[i].split("(内容)")[0].split(">")[0]){
+                if(Flag[k].split(":")[1] > Branch[i].split("(内容)")[0].split(">")[1]*1){
+                  Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[1]);
+                  break;
+                }
+              }
+            }
+            else if(Branch[i].split("(内容)")[0].indexOf("<")>0){
+              if(Flag[k].split(":")[0]==Branch[i].split("(内容)")[0].split("<")[0]){
+                if(Flag[k].split(":")[1] < Branch[i].split("(内容)")[0].split("<")[1]*1){
+                  Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[1]);
+                  break;
+                }
+              }
+            }
+            else{
+              if(Flag[k]==Branch[i].split("(内容)")[0]){
+                Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[1]);
+                break;
+              }
             }
           }
           if(k == Flag.length) Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[2]);
@@ -1355,14 +1379,14 @@ function Game_load(width,height){
                 for(var k = 0; k < Flag.length; k++){
                   if(Flag[k].split(":")[0] == Flags_Data[i].split("+")[0]) break;
                 }
-                if(k!=Flag.length) Flag[k] = Flag[k].split(":")[0] + ":" Flag[k].split(":")[0]*1 + Flags_Data[i].split("+")[1]*1;
+                if(k!=Flag.length) Flag[k] = Flag[k].split(":")[0] + ":" + (Flag[k].split(":")[1]*1 + Flags_Data[i].split("+")[1]*1);
                 else Flag[Flag.length] = Flags_Data[i].split("+")[0] + ":" + Flags_Data[i].split("+")[1];
               }
               if(Flags_Data[i].indexOf("-")>0){
                 for(var k = 0; k < Flag.length; k++){
                   if(Flag[k].split(":")[0] == Flags_Data[i].split("-")[0]) break;
                 }
-                if(k!=Flag.length) Flag[k] = Flag[k].split(":")[0] + ":" Flag[k].split(":")[0]*1 - Flags_Data[i].split("-")[1]*1;
+                if(k!=Flag.length) Flag[k] = Flag[k].split(":")[0] + ":" + (Flag[k].split(":")[1]*1 - Flags_Data[i].split("-")[1]*1);
                 else Flag[Flag.length] = Flags_Data[i].split("+")[0] + ":-" + Flags_Data[i].split("-")[1];
               }
             }
