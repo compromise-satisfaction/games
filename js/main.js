@@ -1126,7 +1126,7 @@ function Game_load(width,height){
 
         var Conversion = Data.match(/\(変換:.+?:変換\)/g);
 
-        if(Conversion){
+        while(Conversion){
           for (var i = 0; i < Conversion.length; i++) {
             Conversion[i] = Conversion[i].substring(4,Conversion[i].length-4);
             for (var j = 0; j < Game_Datas.length; j++) {
@@ -1143,6 +1143,7 @@ function Game_load(width,height){
             }
             Data = Data.replace(/\(変換:.+?:変換\)/,Conversion[i]);
           }
+          Conversion = Data.match(/\(変換:.+?:変換\)/g);
         }
 
         for (var i = 0; i < Setting_Flag.自由.split(",").length; i++) {
@@ -1188,6 +1189,17 @@ function Game_load(width,height){
             if(k == Flag.length) Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[2]);
           }
         }
+
+        var Random = Data.match(/\(ランダム:.+?:ランダム\)/g);
+
+        if(Random){
+          for (var i = 0; i < Random.length; i++) {
+            Random[i] = Random[i].substring(6,Random[i].length-6);
+          }
+          Data = Data.replace(/\(ランダム:.+?:ランダム\)/,Random[rand(Random.length)]);
+          Data = Data.replace(/\(ランダム:.+?:ランダム\)/g,"");
+        }
+
         return(Data);
       }
 
@@ -1431,7 +1443,10 @@ function Game_load(width,height){
                 for(var k = 0; k < Flag.length; k++){
                   if(Flag[k] == Flags_Data[i].split("→")[0]) break;
                 }
-                if(k!=Flag.length) Flag[k] = Flags_Data[i].split("→")[1];
+                if(k!=Flag.length){
+                  if(Flags_Data[i].split("→")[1]=="消滅") Flag.splice(k,1);
+                  else Flag[k] = Flags_Data[i].split("→")[1];
+                }
               }
               if(Flags_Data[i].indexOf("=")>0){
                 for(var k = 0; k < Flag.length; k++){
@@ -1728,6 +1743,11 @@ function Game_load(width,height){
         Texts();
         if(game.input.up) console.log(Flag);
         return;
+      });
+
+      scene.addEventListener("touchstart",function(e){
+        console.log(e.x);
+        console.log(e.y);
       });
 
       return scene;
