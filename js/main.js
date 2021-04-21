@@ -157,7 +157,7 @@ function Game_load(width,height){
                    }
                  }
                }
-               var iii = "(画像:../image/メニュー背景.png:画像)";
+               var iii = "(画像:無し,../image/メニュー背景.png:画像)";
                iii += "(文字情報:20,black,無し,30:文字情報)"
                iii += "(ボタン:初めから,101.25,200,202.5,100,無し,スタート:ボタン)";
                iii += "(ボタン:続きから,101.25,400,202.5,100,無し,保存箇所:ボタン)";
@@ -168,7 +168,7 @@ function Game_load(width,height){
                  if(Image){
                    for (var k = 0; k < Image.length; k++){
                      Image[k] = Image[k].substring(4);
-                     Image[k] = Image[k].split(",")[0];
+                     Image[k] = Image[k].split(",")[1];
                      var Background = new Sprite();
                      Background._element = document.createElement("img");
                      Background._element.src = Image[k];
@@ -938,29 +938,30 @@ function Game_load(width,height){
         Image[i] = new Sprite();
         Image[i]._element = document.createElement("img");
         Image[i]._element.src = "../image/透明.png";
-        Image[i].imageurl = a[0];
-        Image[i].x = a[1]*1;
-        Image[i].y = a[2]*1;
-        Image[i].width = a[3]*1;
-        Image[i].height = a[4]*1;
+        Image[i].name = a[0];
+        Image[i].imageurl = a[1];
+        Image[i].x = a[2]*1;
+        Image[i].y = a[3]*1;
+        Image[i].width = a[4]*1;
+        Image[i].height = a[5]*1;
         Image[i].fade = false;
-        if(a[5]){
-          if(a[5].substring(0,4)=="fade"){
-            Image[i].fade = a[5].substring(4);
+        if(a[6]){
+          if(a[6].substring(0,4)=="fade"){
+            Image[i].fade = a[6].substring(4);
           }
           else{
             Image[i].addEventListener("touchend",function(e){
               if(Pointer_Button){
                 Sound_branch(Pointer_Button.sound);
-                if(a[5]=="remove"){
+                if(a[6]=="remove"){
                   Pointer_Button.View = true;
                   scene.removeChild(Pointer_Button);
                 }
                 else{
-                  Pointer_Button.button_sound = a[5];
-                  Pointer_Button.シーンナンバー = a[6];
-                  Pointer_Button._element.value = a[7];
-                  Pointer_Button._element.style.fontSize = a[8];
+                  Pointer_Button.button_sound = a[6];
+                  Pointer_Button.シーンナンバー = a[7];
+                  Pointer_Button._element.value = a[8];
+                  Pointer_Button._element.style.fontSize = a[9];
                   if(Pointer_Button.View){
                     Pointer_Button.View = false;
                     scene.addChild(Pointer_Button);
@@ -968,8 +969,8 @@ function Game_load(width,height){
                 }
               }
               else{
-                Sound_branch(a[5]);
-                Scene_load(a[6]);
+                Sound_branch(a[6]);
+                Scene_load(a[7]);
               }
               return;
             });
@@ -1098,6 +1099,7 @@ function Game_load(width,height){
               game.replaceScene(Start_Menu_Scene());
               break;
             default:
+              console.log(Scene_Name);
               game.replaceScene(Novel_MainScene("(文字情報:20,black,無し,65:文字情報)(ボタン:エラー,0,0,405,600,無し,スタート:ボタン)"));
               break;
           }
@@ -1175,8 +1177,6 @@ function Game_load(width,height){
                 }
               }
               else if(Branch[i].split("(内容)")[0].indexOf("<")>0){
-                console.log(Flag[k].split("=")[0]);
-                console.log(Branch[i].split("(内容)")[0].split("<")[0]);
                 if(Flag[k].split("=")[0]==Branch[i].split("(内容)")[0].split("<")[0]){
                   if(Flag[k].split("=")[1]*1 < Branch[i].split("(内容)")[0].split("<")[1]*1){
                     Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[1]);
@@ -1328,9 +1328,9 @@ function Game_load(width,height){
                   I_Y = 365;
                   break;
                 }
-                Data += "(画像:" + Branchs(Game_Datas[k].Data).split(",")[0];
+                Data += "(画像:無し," + Branchs(Game_Datas[k].Data).split(",")[0];
                 Data += ","+I_X+","+ I_Y +",80,80:画像)";
-                Data += "(画像:../image/アイテム枠.png,"+I_X+","+ I_Y +",80,80,";
+                Data += "(画像:無し,../image/アイテム枠.png,"+I_X+","+ I_Y +",80,80,";
                 Data += Branchs(Game_Datas[k].Data).split(",")[1];
                 Data += ",表示"+Flags_Display+":"+(I_N+F_S_N_2)+"表示:画像)";
               }
@@ -1633,7 +1633,13 @@ function Game_load(width,height){
                 Coordinate_Number++
                 break;
               case "画像移動":
-                Move_Image = Image[Image_TL_Data[Image_TL_Number].split(",")[0]*1];
+                Move_Image = Image_TL_Data[Image_TL_Number].split(",")[0];
+                for (var i = 0; i < Image.length; i++) {
+                  if(Image[i].name==Move_Image){
+                    Move_Image = Image[i];
+                    break;
+                  }
+                }
                 switch (Image_TL_Data[Image_TL_Number].split(",")[1]){
                   case "消滅する":
                     scene.removeChild(Move_Image);
