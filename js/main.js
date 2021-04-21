@@ -12,7 +12,9 @@ function Game_load(width,height){
 
   var Flag = [];
   var Flag_Number = [];
-  var Setting_Flag = [];
+  var Setting_Flag = {
+    BGM音量:5,効果音音量:5,音声音量:5,オートセーブ:true,演出スキップ:false,シーンナンバー:"スタート",ニックネーム:"ニックネーム"
+  };
   function GAS(){
 
   }
@@ -200,13 +202,17 @@ function Game_load(width,height){
                 "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
                 {
                   method: 'POST',
-                  body: "保存" + ID
+                  body: "保存" + ID + "(改行)" + Flag + "(改行)" + Setting_Flag.BGM音量
+                  + "(改行)" + Setting_Flag.音声音量 + "(改行)" + Setting_Flag.効果音音量
+                  + "(改行)" + Setting_Flag.オートセーブ + "(改行)" + Setting_Flag.演出スキップ
+                  + "(改行)" + Setting_Flag.シーンナンバー + "(改行)" + Setting_Flag.演出スキップ
                 }
               ).then(res => res.json()).then(result => {
                   for (var i = 0; i < result.length; i++) {
                     if(result[i].ID==ID) break;
                   }
                  Setting_Flag = result[i];
+                 Flag = result[i].フラグ.split(",");
                  game.popScene();
                  return;
                 },);
@@ -635,6 +641,7 @@ function Game_load(width,height){
               Label1.text = "名前は六文字以下です。";
               return;
             }
+            Setting_Flag.ニックネーム = S_Input1._element.value;
             if(this._element.value == "ランキングを見る"){
               game.pushScene(Loading_Scene("読み込み"));
               fetch
@@ -656,7 +663,7 @@ function Game_load(width,height){
               "https://script.google.com/macros/s/AKfycbxmC5AscixoTM6P1eAPeQwQrNn-vbP_B8Aovhant0tDl8r2_C0/exec",
               {
                 method: 'POST',
-                body: Rank + Point + "(改行)" + Name + "(改行)" + ID
+                body: Rank + Point + "(改行)" + Setting_Flag.ニックネーム + "(改行)" + ID
               }
             ).then(res => res.json()).then(result => {
                game.popScene();
@@ -1151,16 +1158,8 @@ function Game_load(width,height){
           Data = Data.replace(/\(ランダム:.+?:ランダム\)/g,"");
         }
 
-        for (var i = 0; i < Setting_Flag.自由.split(",").length; i++) {
-          var frees = "(自由"+(i+1)+")";
-          Data = Data.replace(frees,Setting_Flag.自由.split(",")[i]);
-        }
         Data = Data.replace(/\n/g,"");
         Data = Data.replace(/Ю/g,"(変換:Ю)");
-        Data = Data.replace(/\(主人公苗字\)/g,Setting_Flag.苗字);
-        Data = Data.replace(/\(主人公名前\)/g,Setting_Flag.名前);
-        Data = Data.replace(/\(一人称\)/g,Setting_Flag.一人称);
-        Data = Data.replace(/\(二人称\)/g,Setting_Flag.二人称);
 
         var Branch = Data.match(/\(フラグ所持:.+?:フラグ所持\)/g);
 
@@ -2971,25 +2970,31 @@ function Game_load(width,height){
          for (var i = 0; i < result.length; i++) {
            if(result[i].ID==ID) break;
          }
-         Setting_Flag = result[i];
          if(i==result.length){
            fetch
            (
              "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
              {
                method: 'POST',
-               body: "保存" + ID
+               body: "保存" + ID + "(改行)" + Flag + "(改行)" + Setting_Flag.BGM音量
+               + "(改行)" + Setting_Flag.音声音量 + "(改行)" + Setting_Flag.効果音音量
+               + "(改行)" + Setting_Flag.オートセーブ + "(改行)" + Setting_Flag.演出スキップ
+               + "(改行)" + Setting_Flag.シーンナンバー + "(改行)" + Setting_Flag.ニックネーム
              }
            ).then(res => res.json()).then(result => {
                for (var i = 0; i < result.length; i++) {
                  if(result[i].ID==ID) break;
                }
                Setting_Flag = result[i];
+               Flag = result[i].フラグ.split(",");
               game.replaceScene(Start_Menu_Scene());
               return;
              },);
          }
-         else Setting_Flag = result[i];
+         else{
+           Setting_Flag = result[i];
+           Flag = result[i].フラグ.split(",");
+         }
          game.replaceScene(Start_Menu_Scene());
          return;
        },);
@@ -3010,13 +3015,17 @@ function Game_load(width,height){
         "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
         {
           method: 'POST',
-          body: "保存" + ID
+          body: "保存" + ID + "(改行)" + Flag + "(改行)" + Setting_Flag.BGM音量
+          + "(改行)" + Setting_Flag.音声音量 + "(改行)" + Setting_Flag.効果音音量
+          + "(改行)" + Setting_Flag.オートセーブ + "(改行)" + Setting_Flag.演出スキップ
+          + "(改行)" + Setting_Flag.シーンナンバー + "(改行)" + Setting_Flag.ニックネーム
         }
       ).then(res => res.json()).then(result => {
           for (var i = 0; i < result.length; i++) {
             if(result[i].ID==ID) break;
           }
          Setting_Flag = result[i];
+         Flag = result[i].フラグ.split(",");
          game.replaceScene(Start_Menu_Scene());
          return;
         },);
