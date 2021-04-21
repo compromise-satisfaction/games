@@ -1211,7 +1211,7 @@ function Game_load(width,height){
               else{
                 if(Flags_Data[i].indexOf("→")>0){
                   for(var k = 0; k < Flag.length; k++){
-                    if(Flag[k] == Flags_Data[i].split("→")[0]) break;
+                    if(Flag[k].split("=")[0] == Flags_Data[i].split("→")[0]) break;
                   }
                   if(k!=Flag.length){
                     if(Flags_Data[i].split("→")[1]=="消滅") Flag.splice(k,1);
