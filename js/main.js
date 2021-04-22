@@ -1157,6 +1157,7 @@ function Game_load(width,height){
             Scene_Name = Setting_Flag.シーンナンバー;
             break;
         }
+        Scene_Name += "";
         if(Scene_Name.match(/表示\+\+.+?\+\+表示/g)){
           Scene_Name = Scene_Name.substring(4,Scene_Name.length-4);
           for(var i = 0; i < Flag_Number.length; i++){
