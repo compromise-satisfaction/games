@@ -635,8 +635,14 @@ function Game_load(width,height){
 
           var hakkou = false;
           var Code = "";
-          if(Difficulty) var Rank = "田植";
-          else var Rank = "田中";
+          if(HTML=="Tanakake"){
+            if(Difficulty) var Rank = "田植";
+            else var Rank = "田中";
+          }
+          else{
+            if(Difficulty) var Rank = "上級";
+            else var Rank = "通常";
+          }
 
           S_Input2.addEventListener("touchstart",function(){
             if(S_Input1._element.value.length>6){
