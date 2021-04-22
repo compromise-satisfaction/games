@@ -1536,7 +1536,32 @@ function Game_load(width,height){
             for (var i = 0; i < Game_Datas.length; i++) {
               if(Game_Datas[i].Number==Scene_Number) break;
             }
-            var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag1);
+            switch (k) {
+              case 1:
+                var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag1);
+                break;
+              case 2:
+                var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag2);
+                break;
+              case 3:
+                var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag3);
+                break;
+              case 4:
+                var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag4);
+                break;
+              case 5:
+                var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag5);
+                break;
+              case 6:
+                var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag6);
+                break;
+              case 7:
+                var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag7);
+                break;
+              case 8:
+                var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag8);
+                break;
+            }
             Save_Images_Data = Save_Images_Data.match(/\(画像:.+?:画像\)/g);
             for (var i = 0; i < Save_Images_Data.length; i++) {
               Save_Images_Data[i] = Save_Images_Data[i].substring(4,Save_Images_Data[i].length-4);
