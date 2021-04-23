@@ -1,8 +1,7 @@
 enchant();
 
-document.addEventListener("touchend",event=>{
-  event.preventDefault();
-},false);
+$("#base").on("touchstart",function(event){event.preventDefault();});
+//余白部分タッチの無効
 
 if(!window.localStorage.getItem("ID")) window.localStorage.clear();
 
@@ -1872,7 +1871,7 @@ function Game_load(width,height){
         Name_texts = "【" + Name_texts + "】";
         var Name_text = new Sprite();
         Name_text._element = document.createElement("innerHTML");
-        Name_text._style.font  = width/20 + "px monospace";
+        Name_text._style.font = width/20 + "px monospace";
         Name_text._element.textContent = Name_texts;
         Name_text.x = 0;
         Name_text.y = width/30 + width/16*9;
