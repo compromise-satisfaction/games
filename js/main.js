@@ -16,6 +16,7 @@ var BGM_Volume = 0;
 
 function Game_load(width,height){
 
+  var Update = 1;
   var Flag = [];
   var Flag1 = [];
   var Flag2 = [];
@@ -920,12 +921,7 @@ function Game_load(width,height){
 
       Data = Data.replace(/\(変換:現在時間:変換\)/g,Now);
 
-      var Update = Data.match(/\(シーンナンバー未更新\)/g);
-
-      if(Update) Data = Data.replace(/\(シーンナンバー未更新\)/g,"");
-      else Setting_Flag.シーンナンバー = SceneNumber;
-
-      Immediately = Data.match(/\(シーンナンバー更新停止\)/g);
+      if(Update==1) Setting_Flag.シーンナンバー = SceneNumber;
 
       var Flags_small_Display = Data.match(/\(フラグ小表示:.+?:フラグ小表示\)/g);
 
@@ -1024,11 +1020,13 @@ function Game_load(width,height){
         var Do_Save = false;
         switch(Scene_Name.split("→")[0]){
           case "popScene":
+            Update--;
             game.popScene();
             Scene_Name = Scene_Name.substring(9);
             if(Scene_Name=="") return;
             break;
           case "pushScene":
+            Update++;
             Push = true;
             Scene_Name = Scene_Name.substring(10);
             break;
@@ -1542,7 +1540,7 @@ function Game_load(width,height){
           Save = Save.split(",");
           Plus_Text = "";
           if(Scene_Number=="スタート"){
-            Plus_Text += "(画像:無し,../image/new_Data.png,"
+            Plus_Text += "(画像:無し,../image/newData.png,"
             Plus_Text += Save[0]*1 + "," + Save[1]*1 + "," + Save[2]*405 + "," + Save[2]*228 + ":画像)";
           }
           else{
@@ -1745,6 +1743,7 @@ function Game_load(width,height){
         Pointer_Button.View = true;
         Pointer_Button._element = document.createElement("input");
         Pointer_Button._element.type = "button";
+        Pointer_Button.backgroundColor = "buttonface";
         Pointer_Button._element.style.webkitAppearance = "none";
         Pointer_Button._element.onclick = function(e){
           Sound_branch(Pointer_Button.button_sound);
