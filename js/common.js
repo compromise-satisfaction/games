@@ -91,7 +91,11 @@ $(function(){
   $(window).on("orientationchange",function(event){
     orientationChange();
   });
-  //余白部分をドラッグすることによるスクロールを無効にする
+
+  $("#base").on("touchstart",function(event){event.preventDefault();});
+  $("#base").on("touchmove",function(event){event.preventDefault();});
+  $("#base").on("touchend",function(event){event.preventDefault();});
+  //余白部分タッチの無効
 
   //ゲームを実行する
   Game_load(gameWidth,gameHeight);
