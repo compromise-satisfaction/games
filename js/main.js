@@ -1,5 +1,7 @@
 enchant();
 
+console.log(window.localStorage);
+
 var BGM = document.createElement("audio");
 BGM.addEventListener("ended",function(e){
   BGM.currentTime = BGM.id*1;
