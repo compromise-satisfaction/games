@@ -1540,7 +1540,7 @@ function Game_load(width,height){
           Save = Save.split(",");
           Plus_Text = "";
           if(Scene_Number=="スタート"){
-            Plus_Text += "(画像:無し,../image/newData.png,"
+            Plus_Text += "(画像:無し,../image/NewData.png,"
             Plus_Text += Save[0]*1 + "," + Save[1]*1 + "," + Save[2]*405 + "," + Save[2]*228 + ":画像)";
           }
           else{
