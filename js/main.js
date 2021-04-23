@@ -125,14 +125,9 @@ function Game_load(width,height){
       var Ui_Button = [];
 
       function Buttons(x,y,w,h,v,i){
-        Ui_Button[i] = new Button(v,"blue",h,w);
+        Ui_Button[i] = new Button(v,"light",w,h);
         Ui_Button[i].moveTo(x,y);
         Ui_Button[i]._style["font-size"] = h/2.2;
-        Ui_Button[i]._style["border-radius"] = "0em";
-        /*
-        Ui_Button[i]._element.style.textAlign = "center";
-        Ui_Button[i]._element.style.webkitAppearance = "none";
-        Ui_Button[i].backgroundColor = "buttonface";*/
         Ui_Button[i].addEventListener("touchend",function(e){
           switch(i){
             case 0:
@@ -256,10 +251,9 @@ function Game_load(width,height){
       var Ui_Button = [];
 
       function Buttons(x,y,w,h,v,i){
-          Ui_Button[i] = new Button(v,"blue",h,w);
+          Ui_Button[i] = new Button(v,"light",w,h);
           Ui_Button[i].moveTo(x,y);
-          Ui_Button[i]._style["font-size"] = w/(v.length+1);
-          Ui_Button[i]._style["border-radius"] = "0em";
+          Ui_Button[i]._style["font-size"] = w/(v.length+2);
           Ui_Button[i].addEventListener("touchend",function(e){
           switch(i){
             case 0:
@@ -570,21 +564,12 @@ function Game_load(width,height){
           S_Input1._element.placeholder = "ニックネームを入力";
           scene.addChild(S_Input1);
 
-          var S_Input2 = new Entity();
+          var S_Input2 = new Button("","light",width/2,30);
           S_Input2.moveTo(width/4,150);
-          S_Input2.width = width/2;
-          S_Input2.height = 30;
-          S_Input2._element = document.createElement('input');
-          S_Input2._element.type = "submit";
           scene.addChild(S_Input2);
 
-          var S_Input3 = new Entity();
+          var S_Input3 = new Button("ポイントコード発行","light",width/2,30);
           S_Input3.moveTo(width/4,200);
-          S_Input3.width = width/2;
-          S_Input3.height = 30;
-          S_Input3._element = document.createElement('input');
-          S_Input3._element.value = "ポイントコード発行";
-          S_Input3._element.type = "submit";
           if(Point>0) scene.addChild(S_Input3);
 
           var S_Input4 = new Entity();
@@ -596,36 +581,21 @@ function Game_load(width,height){
           S_Input4._element.name = "myText";
           S_Input4._element.placeholder = "ワンタイムパスワード";
 
-          var S_Input5 = new Entity();
+          var S_Input5 = new Button("もう一度","light",width/2,30);
           S_Input5.moveTo(width/4,300);
-          S_Input5.width = width/2;
-          S_Input5.height = 30;
-          S_Input5._element = document.createElement('input');
-          S_Input5._element.value = "もう一度";
-          S_Input5._element.type = "submit";
           scene.addChild(S_Input5);
 
-          var S_Input6 = new Entity();
+          var S_Input6 = new Button("メニューに戻る","light",width/2,30);
           S_Input6.moveTo(width/4,350);
-          S_Input6.width = width/2;
-          S_Input6.height = 30;
-          S_Input6._element = document.createElement('input');
-          S_Input6._element.value = "メニューに戻る";
-          S_Input6._element.type = "submit";
           scene.addChild(S_Input6);
 
-          var S_Input7 = new Entity();
+          var S_Input7 = new Button("ランキングを見る","light",width/2,30);
           S_Input7.moveTo(width/4,400);
-          S_Input7.width = width/2;
-          S_Input7.height = 30;
-          S_Input7._element = document.createElement('input');
-          S_Input7._element.value = "ランキングを見る";
-          S_Input7._element.type = "submit";
           if(Point>0){
-            S_Input2._element.value = "ランキング登録";
+            S_Input2.text = "ランキング登録";
             scene.addChild(S_Input7);
           }
-          else S_Input2._element.value = "ランキングを見る";
+          else S_Input2.text = "ランキングを見る";
 
           var hakkou = false;
           var Code = "";
@@ -645,7 +615,7 @@ function Game_load(width,height){
             }
             Name = S_Input1._element.value;
             window.localStorage.setItem("Name",Name);
-            if(this._element.value == "ランキングを見る"){
+            if(this.text == "ランキングを見る"){
               game.pushScene(Loading_Scene("読み込み"));
               fetch
               (
@@ -670,7 +640,7 @@ function Game_load(width,height){
               }
             ).then(res => res.json()).then(result => {
                game.popScene();
-               this._element.value = "ランキングを見る";
+               this.text = "ランキングを見る";
                scene.removeChild(S_Input7);
                return;
               },);
@@ -746,8 +716,8 @@ function Game_load(width,height){
           Background.height = height;
           scene.addChild(Background);
 
-          Buttons((width-300)/2,150,300,90,"続ける",7);
-          Buttons((width-300)/2,300,300,90,"やめる",8);
+          Buttons((width-300)/2,150,300,100,"続ける",7);
+          Buttons((width-300)/2,300,300,100,"やめる",8);
 
           return scene;
           break;
@@ -761,9 +731,9 @@ function Game_load(width,height){
           Background.height = height;
           scene.addChild(Background);
 
-          var COUNTDOWN_Button = new Button("四","blue",100,100);
+          var COUNTDOWN_Button = new Button("四","light",100,100);
           COUNTDOWN_Button.moveTo((width-100)/2,(height-100)/2);
-          COUNTDOWN_Button._style["font-size"] = 25;
+          COUNTDOWN_Button._style["font-size"] = 20;
           scene.addChild(COUNTDOWN_Button);
 
           var Meter = new Sprite();
@@ -789,6 +759,7 @@ function Game_load(width,height){
                 COUNTDOWN_Button.text = "一";
                 break;
               case "一":
+                COUNTDOWN_Button._style["font-size"] = 10;
                 COUNTDOWN_Button.text = "スタート！";
                 scene.removeChild(Meter);
                 break;
@@ -818,13 +789,13 @@ function Game_load(width,height){
           Buttons(100,420,205,160,"戻る",13);
 
           if(Point <= 0){
-            scene.removeChild(Button[9]);
-            scene.removeChild(Button[10]);
+            scene.removeChild(Ui_Button[9]);
+            scene.removeChild(Ui_Button[10]);
           }
 
           if(Difficulty.length <= Point + 10){
-            scene.removeChild(Button[11]);
-            scene.removeChild(Button[12]);
+            scene.removeChild(Ui_Button[11]);
+            scene.removeChild(Ui_Button[12]);
           }
 
           var Numbers = 40;
@@ -979,8 +950,8 @@ function Game_load(width,height){
                 else{
                   Pointer_Button.button_sound = a[6];
                   Pointer_Button.シーンナンバー = a[7];
-                  Pointer_Button._element.value = a[8];
-                  Pointer_Button._element.style.fontSize = a[9];
+                  Pointer_Button.text = a[8];
+                  Pointer_Button._style["font-size"] = a[9];
                   if(Pointer_Button.View){
                     Pointer_Button.View = false;
                     scene.addChild(Pointer_Button);
@@ -999,7 +970,7 @@ function Game_load(width,height){
         return;
       }
 
-      var Button = [];
+      var Ui_Button = [];
       var Button_fontSize = 15;
       var Button_color = "buttonface";
 
@@ -1265,15 +1236,9 @@ function Game_load(width,height){
 
       function Buttons(a){
         a = a.split(",");
-        Button[i] = new Entity();
-        Button[i].moveTo(a[1]*1,a[2]*1);
-        Button[i].width = a[3];
-        Button[i].height = a[4];
-        Button[i]._element = document.createElement("input");
-        Button[i]._element.type = "button";
-        Button[i]._element.value = a[0];
-        Button[i]._element.style.webkitAppearance = "none";
-        Button[i].addEventListener("touchend",function(e){
+        Ui_Button[i] = new Button(a[0],"light",a[3],a[4]);
+        Ui_Button[i].moveTo(a[1]*1,a[2]*1);
+        Ui_Button[i].addEventListener("touchend",function(e){
           switch (a[6].split("→")[0]) {
             case "BGM+":
               a[6] = a[6].substring(5);
@@ -1753,16 +1718,10 @@ function Game_load(width,height){
         Pointer.width = a[3]*1;
         Pointer.height = a[4]*1;
 
-        var Pointer_Button = new Entity();
+        var Pointer_Button = new Button("","light",a[7],a[8]);
         Pointer_Button.moveTo(a[5]*1,a[6]*1);
-        Pointer_Button.width = a[7];
-        Pointer_Button.height = a[8];
         Pointer_Button.sound = a[9];
         Pointer_Button.View = true;
-        Pointer_Button._element = document.createElement("input");
-        Pointer_Button._element.type = "button";
-        Pointer_Button.backgroundColor = "buttonface";
-        Pointer_Button._element.style.webkitAppearance = "none";
         Pointer_Button.addEventListener("touchend",function(e){
           Sound_branch(Pointer_Button.button_sound);
           Scene_load(Pointer_Button.シーンナンバー);
@@ -1943,9 +1902,9 @@ function Game_load(width,height){
                 Image_Number++;
                 break;
               case "ボタン":
-                Button[Button_Number].backgroundColor = Button_color;
-                Button[Button_Number]._element.style.fontSize = Button_fontSize;
-                scene.addChild(Button[Button_Number]);
+                Ui_Button[Button_Number].backgroundColor = Button_color;
+                Ui_Button[Button_Number]._style["font-size"] = Button_fontSize;
+                scene.addChild(Ui_Button[Button_Number]);
                 Button_Number++;
                 break;
               case "文字情報":
@@ -2978,14 +2937,9 @@ function Game_load(width,height){
         game.replaceScene(R_MainScene());
       });
 
-      var S_Input = new Entity();
+      var S_Input = new Button("メニューに戻る","light",width/2,95);
       S_Input.moveTo(width/4,300);
-      S_Input.width = width/2;
-      S_Input.height = 95;
-      S_Input._element = document.createElement('input');
-      S_Input._element.value = "メニューに戻る";
-      S_Input._element.type = "submit";
-      S_Input._element.fontSize = 90;
+      S_Input._style["font-size"] = 25;
       scene.addChild(S_Input);
       S_Input.addEventListener("touchend",function(e){
         game.popScene();
@@ -3108,14 +3062,9 @@ function Game_load(width,height){
       Hand.image = game.assets["../image/Main.png"];
       scene.addChild(Hand);
 
-      var S_Input = new Entity();
-      S_Input.moveTo(0,height-80);
-      S_Input.width = 300;
-      S_Input.height = 80;
-      S_Input._element = document.createElement('input');
-      S_Input._element.value = "メニューに戻る";
-      S_Input._element.type = "submit";
-      S_Input._element.fontSize = 10;
+      var S_Input = new Button("メニューに戻る","light",width/2,95);
+      S_Input.moveTo(0,height-95);
+      S_Input._style["font-size"] = 25;
       scene.addChild(S_Input);
       S_Input.addEventListener("touchend",function(e){
         game.replaceScene(Start_Menu_Scene());

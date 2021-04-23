@@ -288,7 +288,7 @@ enchant.ui.Button = enchant.Class.create(enchant.Entity, {
      * @constructs
      * @extends enchant.Entity
      */
-    initialize: function(text, theme, height, width) {
+    initialize: function(text,theme,width,height) {
         enchant.Entity.call(this);
 
         if (enchant.CanvasLayer) {
@@ -307,10 +307,10 @@ enchant.ui.Button = enchant.Class.create(enchant.Entity, {
         style["height"] = "2em";
         style["line-height"] = "2em";
         style["min-width"] = "2em";
-        style["padding"] = "2px 10px";
+        style["padding"] = "0px 0px";
         style["text-align"] = "center";
         style["font-weight"] = "bold";
-        style["border-radius"] = "0.5em";
+        style["border-radius"] = "0em";
 
         // テーマの指定がなければ "dark" を使う
         theme = theme || "dark";
