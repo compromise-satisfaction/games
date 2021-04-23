@@ -1,5 +1,9 @@
 enchant();
 
+document.addEventListener("touchend",event=>{
+  event.preventDefault();
+},false);
+
 console.log(window.localStorage);
 
 var BGM = document.createElement("audio");
@@ -268,7 +272,7 @@ function Game_load(width,height){
         Button[i]._element.style.fontSize = w/(v.length+1);
         Button[i].backgroundColor = "buttonface";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i]._element.onclick = function(e){
+        Button[i].addEventListener("touchstart",function(){
           switch(i){
             case 0:
               game.replaceScene(Brain_Training_Scene("メイン",false));
@@ -326,7 +330,7 @@ function Game_load(width,height){
               break;
           }
           return;
-        };
+        });
         scene.addChild(Button[i]);
       }
 
