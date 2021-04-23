@@ -981,7 +981,7 @@ function Game_load(width,height){
             Image[i].fade = a[6].substring(4);
           }
           else{
-            Image[i].addEventListener("touchend",function(e){
+            Image[i].addEventListener("touchstart",function(e){
               if(Pointer_Button){
                 Sound_branch(Pointer_Button.sound);
                 if(a[6]=="remove"){
