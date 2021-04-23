@@ -91,11 +91,13 @@ $(function(){
   $(window).on("orientationchange",function(event){
     orientationChange();
   });
-
+  
+  /*
   $("#base").on("touchstart",function(event){event.preventDefault();});
   $("#base").on("touchmove",function(event){event.preventDefault();});
   $("#base").on("touchend",function(event){event.preventDefault();});
   $("#base").on("touch",function(event){event.preventDefault();});
+  */
   //余白部分タッチの無効
 
   //ゲームを実行する
