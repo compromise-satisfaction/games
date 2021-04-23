@@ -68,6 +68,7 @@ function Game_load(width,height){
       }
       else{
         if(SE[i].paused==false) SE[i].pause();
+        SE[i].currentTime = 0;
       }
       return;
     }
@@ -919,6 +920,12 @@ function Game_load(width,height){
       Now += Minute + "(文字間隔:20:文字間隔)分(文字間隔:10:文字間隔)" + Seconds + "(文字間隔:20:文字間隔)秒";
 
       Data = Data.replace(/\(変換:現在時間:変換\)/g,Now);
+      if(Setting_Flag.BGM音量 < 10) Data = Data.replace(/\(BGM音量\)/g,"0"+Setting_Flag.BGM音量);
+      else Data = Data.replace(/\(BGM音量\)/g,Setting_Flag.BGM音量);
+      if(Setting_Flag.音声音量 < 10) Data = Data.replace(/\(音声音量\)/g,"0"+Setting_Flag.音声音量);
+      else Data = Data.replace(/\(音声音量\)/g,Setting_Flag.音声音量);
+      if(Setting_Flag.効果音音量 < 10) Data = Data.replace(/\(効果音音量\)/g,"0"+Setting_Flag.効果音音量);
+      else Data = Data.replace(/\(効果音音量\)/g,Setting_Flag.効果音音量);
 
       if(Update==1) Setting_Flag.シーンナンバー = SceneNumber;
 
@@ -952,8 +959,8 @@ function Game_load(width,height){
             I_N++;
             if(I_N==2){
               Data += "(文字情報:20,black,無し,30:文字情報)";
-              Data += "(ボタン:◀,30,490,80,80,メニュー移動,表示-"+Flags_small_Display+"-表示:ボタン)";
-              Data += "(ボタン:▶,295,490,80,80,メニュー移動,表示+"+Flags_small_Display+"+表示:ボタン)";
+              Data += "(ボタン:←,30,490,80,80,メニュー移動,表示-"+Flags_small_Display+"-表示:ボタン)";
+              Data += "(ボタン:→,295,490,80,80,メニュー移動,表示+"+Flags_small_Display+"+表示:ボタン)";
               break;
             }
           }
@@ -1285,6 +1292,36 @@ function Game_load(width,height){
         Button[i]._element.value = a[0];
         Button[i]._element.style.webkitAppearance = "none";
         Button[i].addEventListener("touchstart",function(e){
+          switch (a[6].split("→")[0]) {
+            case "BGM+":
+              a[6] = a[6].substring(5);
+              if(Setting_Flag.BGM音量<10) Setting_Flag.BGM音量++;
+              BGM.volume = Setting_Flag.BGM音量/10;
+              break;
+            case "BGM-":
+              a[6] = a[6].substring(5);
+              if(Setting_Flag.BGM音量>0) Setting_Flag.BGM音量--;
+              BGM.volume = Setting_Flag.BGM音量/10;
+              break;
+            case "音声+":
+              a[6] = a[6].substring(4);
+              if(Setting_Flag.音声音量<10) Setting_Flag.音声音量++;
+              break;
+            case "音声-":
+              a[6] = a[6].substring(4);
+              if(Setting_Flag.音声音量>0) Setting_Flag.音声音量--;
+              break;
+            case "効果音+":
+              a[6] = a[6].substring(5);
+              if(Setting_Flag.効果音音量<10) Setting_Flag.効果音音量++;
+              break;
+            case "効果音-":
+              a[6] = a[6].substring(5);
+              if(Setting_Flag.効果音音量>0) Setting_Flag.効果音音量--;
+              break;
+            default:
+              break;
+          }
           Sound_branch(a[5]);
           Scene_load(a[6]);
           return;
@@ -1684,8 +1721,8 @@ function Game_load(width,height){
               }
               I_N++;
               if(I_N==10){
-                Data += "(ボタン:◀,30,490,80,80,メニュー移動,表示--"+Flags_Display+"--表示:ボタン)";
-                Data += "(ボタン:▶,295,490,80,80,メニュー移動,表示++"+Flags_Display+"++表示:ボタン)";
+                Data += "(ボタン:←,30,490,80,80,メニュー移動,表示--"+Flags_Display+"--表示:ボタン)";
+                Data += "(ボタン:→,295,490,80,80,メニュー移動,表示++"+Flags_Display+"++表示:ボタン)";
                 break;
               }
             }
@@ -1700,8 +1737,8 @@ function Game_load(width,height){
                 }
               }
               else{
-                Data += "(ボタン:◀,30,490,80,80,メニュー移動,表示--"+Flags_Display+"--表示:ボタン)";
-                Data += "(ボタン:▶,295,490,80,80,メニュー移動,表示++"+Flags_Display+"++表示:ボタン)";
+                Data += "(ボタン:←,30,490,80,80,メニュー移動,表示--"+Flags_Display+"--表示:ボタン)";
+                Data += "(ボタン:→,295,490,80,80,メニュー移動,表示++"+Flags_Display+"++表示:ボタン)";
               }
             }
           }
