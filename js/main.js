@@ -4,7 +4,7 @@ document.addEventListener("touchend",event=>{
   event.preventDefault();
 },false);
 
-console.log(window.localStorage);
+if(!window.localStorage.getItem("ID")) window.localStorage.clear();
 
 var BGM = document.createElement("audio");
 BGM.addEventListener("ended",function(e){
