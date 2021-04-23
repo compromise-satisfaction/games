@@ -1,6 +1,6 @@
 enchant();
 
-$("#base").on("touchstart",function(event){event.preventDefault();});
+$("#base").on("touchend",function(event){event.preventDefault();});
 //余白部分タッチの無効
 
 if(!window.localStorage.getItem("ID")) window.localStorage.clear();
@@ -138,7 +138,7 @@ function Game_load(width,height){
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
         Button[i].backgroundColor = "buttonface";
-        Button[i].addEventListener("touchstart",function(e){
+        Button[i].addEventListener("touchend",function(e){
           switch(i){
             case 0:
               game.fps = 30;
@@ -273,7 +273,7 @@ function Game_load(width,height){
         Button[i]._element.style.fontSize = w/(v.length+1);
         Button[i].backgroundColor = "buttonface";
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].addEventListener("touchstart",function(){
+        Button[i].addEventListener("touchend",function(){
           switch(i){
             case 0:
               game.replaceScene(Brain_Training_Scene("メイン",false));
@@ -651,7 +651,7 @@ function Game_load(width,height){
             else var Rank = "通常";
           }
 
-          S_Input2.addEventListener("touchstart",function(){
+          S_Input2.addEventListener("touchend",function(){
             if(S_Input1._element.value.length>6){
               Label1.text = "名前は六文字以下です。";
               return;
@@ -690,7 +690,7 @@ function Game_load(width,height){
             return;
           })
 
-          S_Input3.addEventListener("touchstart",function(){
+          S_Input3.addEventListener("touchend",function(){
             if(hakkou){
               S_Input4._element.value = Code;
               return;
@@ -718,18 +718,18 @@ function Game_load(width,height){
             return;
           })
 
-          S_Input5.addEventListener("touchstart",function(){
+          S_Input5.addEventListener("touchend",function(){
             game.replaceScene(Brain_Training_Scene("メイン",Difficulty));
             game.pushScene(Brain_Training_Scene("COUNTDOWN"));
             return;
           })
 
-          S_Input6.addEventListener("touchstart",function(){
+          S_Input6.addEventListener("touchend",function(){
             game.replaceScene(Start_Menu_Scene());
             return;
           })
 
-          S_Input7.addEventListener("touchstart",function(){
+          S_Input7.addEventListener("touchend",function(){
             game.pushScene(Loading_Scene("読み込み"));
             fetch
             (
@@ -987,7 +987,7 @@ function Game_load(width,height){
             Image[i].fade = a[6].substring(4);
           }
           else{
-            Image[i].addEventListener("touchstart",function(e){
+            Image[i].addEventListener("touchend",function(e){
               if(Pointer_Button){
                 Sound_branch(Pointer_Button.sound);
                 if(a[6]=="remove"){
@@ -1291,7 +1291,7 @@ function Game_load(width,height){
         Button[i]._element.type = "button";
         Button[i]._element.value = a[0];
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i].addEventListener("touchstart",function(e){
+        Button[i].addEventListener("touchend",function(e){
           switch (a[6].split("→")[0]) {
             case "BGM+":
               a[6] = a[6].substring(5);
@@ -1781,13 +1781,13 @@ function Game_load(width,height){
         Pointer_Button._element.type = "button";
         Pointer_Button.backgroundColor = "buttonface";
         Pointer_Button._element.style.webkitAppearance = "none";
-        Pointer_Button.addEventListener("touchstart",function(e){
+        Pointer_Button.addEventListener("touchend",function(e){
           Sound_branch(Pointer_Button.button_sound);
           Scene_load(Pointer_Button.シーンナンバー);
           return;
         });
 
-        scene.addEventListener("touchstart",function(e){
+        scene.addEventListener("touchend",function(e){
           Pointer.x = e.x - a[3]*0.5;
           Pointer.y = e.y - a[4]*0.5;
           console.log(Pointer.x);
@@ -2148,7 +2148,7 @@ function Game_load(width,height){
         return;
       });
 
-      scene.addEventListener("touchstart",function(e){
+      scene.addEventListener("touchend",function(e){
         console.log(e.x);
         console.log(e.y);
       });
@@ -2238,7 +2238,7 @@ function Game_load(width,height){
       Set_button4.y = 455;
       Set_button4.frame = 12;
       scene.addChild(Set_button4);
-      Set_button4.addEventListener('touchstart',function(e){
+      Set_button4.addEventListener('touchend',function(e){
         game.pushScene(R_ReturnScene());
       });
 
@@ -2850,7 +2850,7 @@ function Game_load(width,height){
           console.log(White_Number);
       }
 
-      scene.on("touchstart",function(e){
+      scene.on("touchend",function(e){
         if((Time_Hand>5&&va!=AI)||AI == 100){
           Pointer.x = e.x;
           Pointer.y = e.y;
@@ -2991,7 +2991,7 @@ function Game_load(width,height){
       Set_button.x = 105;
       Set_button.frame = 12;
       scene.addChild(Set_button);
-      Set_button.addEventListener('touchstart',function(e){
+      Set_button.addEventListener('touchend',function(e){
         game.popScene();
         game.replaceScene(R_MainScene());
       });
@@ -3005,7 +3005,7 @@ function Game_load(width,height){
       S_Input._element.type = "submit";
       S_Input._element.fontSize = 90;
       scene.addChild(S_Input);
-      S_Input.addEventListener('touchstart',function(e){
+      S_Input.addEventListener('touchend',function(e){
         game.popScene();
         game.replaceScene(Start_Menu_Scene());
       });
@@ -3016,7 +3016,7 @@ function Game_load(width,height){
       Set_button1.y = 455;
       Set_button1.frame = 10;
       scene.addChild(Set_button1);
-      Set_button1.addEventListener('touchstart',function(e){
+      Set_button1.addEventListener('touchend',function(e){
         game.popScene();
       });
 
@@ -3079,7 +3079,7 @@ function Game_load(width,height){
         }
       }
 
-      scene.on("touchstart",function(e){
+      scene.on("touchend",function(e){
         Hand.x = e.x;
         Hand.y = e.y;
         for (var i = 1; i < 82; i++){
@@ -3135,7 +3135,7 @@ function Game_load(width,height){
       S_Input._element.type = "submit";
       S_Input._element.fontSize = 10;
       scene.addChild(S_Input);
-      S_Input.addEventListener('touchstart',function(e){
+      S_Input.addEventListener('touchend',function(e){
         game.replaceScene(Start_Menu_Scene());
       });
 
@@ -3325,7 +3325,7 @@ function Game_load(width,height){
         }
       })
 
-      scene.on("touchstart",function(e){
+      scene.on("touchend",function(e){
         Hand.x = e.x;
         Hand.y = e.y;
         for (var i = 1; i < 82; i++){
