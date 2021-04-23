@@ -761,12 +761,10 @@ function Game_load(width,height){
           Background.height = height;
           scene.addChild(Background);
 
-          var COUNTDOWN_Text = new Sprite();
-          COUNTDOWN_Text._element = document.createElement("innerHTML");
-          COUNTDOWN_Text._style.font  = "24px monospace";
-          COUNTDOWN_Text._element.textContent = "四";
-          COUNTDOWN_Text.moveTo((width-100)/2,(height-100)/2);
-          scene.addChild(COUNTDOWN_Text);
+          var COUNTDOWN_Button = new Button("四","blue",100,100);
+          COUNTDOWN_Button.moveTo((width-100)/2,(height-100)/2);
+          COUNTDOWN_Button._style["font-size"] = 25;
+          scene.addChild(COUNTDOWN_Button);
 
           var Meter = new Sprite();
           Meter._element = document.createElement("img");
@@ -778,20 +776,20 @@ function Game_load(width,height){
 
           game.fps = 1;
 
-          COUNTDOWN_Text.addEventListener("enterframe",function(){
-            switch (COUNTDOWN_Text._element.textContent) {
+          COUNTDOWN_Button.addEventListener("enterframe",function(){
+            switch (COUNTDOWN_Button.text) {
               case "四":
                 Meter._element.src = "../image/メーター.gif";
-                COUNTDOWN_Text._element.textContent = "三";
+                COUNTDOWN_Button.text = "三";
                 break;
               case "三":
-                COUNTDOWN_Text._element.textContent = "二";
+                COUNTDOWN_Button.text = "二";
                 break;
               case "二":
-                COUNTDOWN_Text._element.textContent = "一";
+                COUNTDOWN_Button.text = "一";
                 break;
               case "一":
-                COUNTDOWN_Text._element.textContent = "スタート！";
+                COUNTDOWN_Button.text = "スタート！";
                 scene.removeChild(Meter);
                 break;
               case "スタート！":
