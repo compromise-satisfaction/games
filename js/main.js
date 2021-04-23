@@ -138,7 +138,7 @@ function Game_load(width,height){
         Button[i]._element.style.borderRadius = "0%";
         Button[i]._element.style.webkitAppearance = "none";
         Button[i].backgroundColor = "buttonface";
-        Button[i]._element.onclick = function(e){
+        Button[i].addEventListener("touchstart",function(e){
           switch(i){
             case 0:
               game.fps = 30;
@@ -224,7 +224,7 @@ function Game_load(width,height){
               break;
           }
           return;
-        };
+        });
         scene.addChild(Button[i]);
       }
 
@@ -1285,11 +1285,11 @@ function Game_load(width,height){
         Button[i]._element.type = "button";
         Button[i]._element.value = a[0];
         Button[i]._element.style.webkitAppearance = "none";
-        Button[i]._element.onclick = function(e){
+        Button[i].addEventListener("touchstart",function(e){
           Sound_branch(a[5]);
           Scene_load(a[6]);
           return;
-        };
+        });
       }
 
       function Branchs(Data,F_Data){
@@ -1745,13 +1745,13 @@ function Game_load(width,height){
         Pointer_Button._element.type = "button";
         Pointer_Button.backgroundColor = "buttonface";
         Pointer_Button._element.style.webkitAppearance = "none";
-        Pointer_Button._element.onclick = function(e){
+        Pointer_Button.addEventListener("touchstart",function(e){
           Sound_branch(Pointer_Button.button_sound);
           Scene_load(Pointer_Button.シーンナンバー);
           return;
-        };
+        });
 
-        scene.addEventListener("touchend",function(e){
+        scene.addEventListener("touchstart",function(e){
           Pointer.x = e.x - a[3]*0.5;
           Pointer.y = e.y - a[4]*0.5;
           console.log(Pointer.x);
