@@ -233,8 +233,6 @@ function Game_load(width,height){
     };
     var Brain_Training_Scene = function(Type,Difficulty,Point){
 
-      var Button = [];
-
       function iro(){
         var Values = [
           ["red","あか"],
@@ -255,18 +253,14 @@ function Game_load(width,height){
         return([Values[aaa][1],Values2[bbb][0]]);
       }
 
+      var Ui_Button = [];
+
       function Buttons(x,y,w,h,v,i){
-        Button[i] = new Entity();
-        Button[i].moveTo(x,y);
-        Button[i].width = w;
-        Button[i].height = h;
-        Button[i]._element = document.createElement("input");
-        Button[i]._element.type = "button";
-        Button[i]._element.value = v;
-        Button[i]._element.style.fontSize = w/(v.length+1);
-        Button[i].backgroundColor = "buttonface";
-        Button[i]._element.style.webkitAppearance = "none";
-        Button[i].addEventListener("touchend",function(e){
+          Ui_Button[i] = new Button(v,"blue",h,w);
+          Ui_Button[i].moveTo(x,y);
+          Ui_Button[i]._style["font-size"] = w/(v.length+1);
+          Ui_Button[i]._style["border-radius"] = "0em";
+          Ui_Button[i].addEventListener("touchend",function(e){
           switch(i){
             case 0:
               game.replaceScene(Brain_Training_Scene("メイン",false));
@@ -325,7 +319,7 @@ function Game_load(width,height){
           }
           return;
         });
-        scene.addChild(Button[i]);
+        scene.addChild(Ui_Button[i]);
       }
 
       switch(Type){
@@ -767,15 +761,12 @@ function Game_load(width,height){
           Background.height = height;
           scene.addChild(Background);
 
-          var Button = new Entity();
-          Button.moveTo((width-100)/2,(height-100)/2);
-          Button.width = 100;
-          Button.height = 100;
-          Button._element = document.createElement("input");
-          Button._element.type = "submit";
-          Button._element.value = "四";
-          Button.backgroundColor = "buttonface";
-          scene.addChild(Button);
+          var COUNTDOWN_Text = new Sprite();
+          COUNTDOWN_Text._element = document.createElement("innerHTML");
+          COUNTDOWN_Text._style.font  = "24px monospace";
+          COUNTDOWN_Text._element.textContent = "四";
+          COUNTDOWN_Text.moveTo((width-100)/2,(height-100)/2);
+          scene.addChild(COUNTDOWN_Text);
 
           var Meter = new Sprite();
           Meter._element = document.createElement("img");
@@ -787,20 +778,20 @@ function Game_load(width,height){
 
           game.fps = 1;
 
-          Button.addEventListener("enterframe",function(){
-            switch (Button._element.value) {
+          COUNTDOWN_Text.addEventListener("enterframe",function(){
+            switch (COUNTDOWN_Text._element.textContent) {
               case "四":
                 Meter._element.src = "../image/メーター.gif";
-                Button._element.value = "三";
+                COUNTDOWN_Text._element.textContent = "三";
                 break;
               case "三":
-                Button._element.value = "二";
+                COUNTDOWN_Text._element.textContent = "二";
                 break;
               case "二":
-                Button._element.value = "一";
+                COUNTDOWN_Text._element.textContent = "一";
                 break;
               case "一":
-                Button._element.value = "スタート！";
+                COUNTDOWN_Text._element.textContent = "スタート！";
                 scene.removeChild(Meter);
                 break;
               case "スタート！":
