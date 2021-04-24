@@ -3330,6 +3330,7 @@ function Game_load(width,height){
               }
               game.popScene();
               scene.removeChild(S_Input1);
+              scene.removeChild(Loadbutton2);
               Loadbutton1.text = "ゲーム開始";
               return;
             },);
@@ -3394,7 +3395,8 @@ function Game_load(width,height){
               }
               game.popScene();
               scene.removeChild(S_Input1);
-              Loadbutton2.text = "ゲーム開始";
+              scene.removeChild(Loadbutton2);
+              Loadbutton1.text = "ゲーム開始";
               return;
             },);
           }
