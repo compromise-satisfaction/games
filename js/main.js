@@ -882,7 +882,7 @@ function Game_load(width,height){
           if(Flag[i].split(":")[0]==Flags_small_Display[0]){
             I_N++;
             if(I_N==2){
-              Data += "(文字情報:20,black,無し,30:文字情報)";
+              Data += "(文字情報:20,black,無し,40:文字情報)";
               Data += "(ボタン:←,30,490,80,80,"+Flags_small_Display[1]+",表示-"+Flags_small_Display[0]+"-表示:ボタン)";
               Data += "(ボタン:→,295,490,80,80,"+Flags_small_Display[1]+",表示+"+Flags_small_Display[0]+"+表示:ボタン)";
               break;
@@ -1648,6 +1648,7 @@ function Game_load(width,height){
               }
               I_N++;
               if(I_N==10){
+                Data += "(文字情報:20,black,無し,40:文字情報)";
                 Data += "(ボタン:←,30,490,80,80,"+Flags_Display[1]+",表示--"+Flags_Display[0]+"--表示:ボタン)";
                 Data += "(ボタン:→,295,490,80,80,"+Flags_Display[1]+",表示++"+Flags_Display[0]+"++表示:ボタン)";
                 break;
@@ -1664,6 +1665,7 @@ function Game_load(width,height){
                 }
               }
               else{
+                Data += "(文字情報:20,black,無し,40:文字情報)";
                 Data += "(ボタン:←,30,490,80,80,"+Flags_Display[1]+",表示--"+Flags_Display[0]+"--表示:ボタン)";
                 Data += "(ボタン:→,295,490,80,80,"+Flags_Display[1]+",表示++"+Flags_Display[0]+"++表示:ボタン)";
               }
