@@ -1320,7 +1320,7 @@ function Game_load(width,height){
         if(Flags_Data&&F_Data==Flag){
           for(var i = 0; i < Flags_Data.length; i++){
             Flags_Data[i] = Flags_Data[i].substring(5,Flags_Data[i].length-5);
-            if(Flags_Data[i]=="リセット") Flag = [];
+            if(Flags_Data[i]=="リセット") Flag = ["セーブ時間=未設定"];
             else{
               if(Flags_Data[i].indexOf("→")==-1&&Flags_Data[i].indexOf("+")==-1&&Flags_Data[i].indexOf("-")==-1&&Flags_Data[i].indexOf("=")==-1){
                 for(var k = 0; k < Flag.length; k++){
@@ -3277,20 +3277,12 @@ function Game_load(width,height){
       if(HTML=="index"||HTML=="管理人") scene.addChild(S_Input1);
 
       if(HTML=="管理人"){
-        var Loadbutton = new Button("ゲームデータロード","light",width/1.2,100);
-        Loadbutton.moveTo((width-width/1.2)/2,200);
-        Loadbutton._style["font-size"] = 25;
-        Loadbutton.addEventListener("touchend",function(e){
-          if(Loadbutton.text=="ゲームデータロード"){
-            switch (S_Input1._element.value) {
-              case "田中家":
-                var Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
-                break;
-              default:
-                var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
-                break;
-            }
-            window.localStorage.setItem("Spread_sheet_ID",Spread_sheet_ID);
+        var Loadbutton1 = new Button("田中家","light",width/1.2,100);
+        Loadbutton1.moveTo((width-width/1.2)/2,200);
+        Loadbutton1._style["font-size"] = 25;
+        Loadbutton1.addEventListener("touchend",function(e){
+          if(Loadbutton1.text=="田中家"){
+            Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
             game.pushScene(Loading_Scene("読み込み"));
             fetch
             (
@@ -3338,7 +3330,7 @@ function Game_load(width,height){
               }
               game.popScene();
               scene.removeChild(S_Input1);
-              Loadbutton.text = "ゲーム開始";
+              Loadbutton1.text = "ゲーム開始";
               return;
             },);
           }
@@ -3348,6 +3340,72 @@ function Game_load(width,height){
           }
           return;
         });
+
+        var Loadbutton2 = new Button("共有用","light",width/1.2,100);
+        Loadbutton2.moveTo((width-width/1.2)/2,400);
+        Loadbutton2._style["font-size"] = 25;
+        Loadbutton2.addEventListener("touchend",function(e){
+          if(Loadbutton2.text=="共有用"){
+            Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
+            game.pushScene(Loading_Scene("読み込み"));
+            fetch
+            (
+              "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
+              {
+                method: "POST",
+                body: Spread_sheet_ID
+              }
+            ).then(res => res.json()).then(result => {
+              Game_Datas = result;
+              SE = [];
+              var SE_Number = 0;
+              for (var i = 0; i < result.length; i++) {
+                if(result[i].Data.match(/\(音:.+?:音\)/)){
+                  result[i].Data = result[i].Data.substring(3,result[i].Data.length-3);
+                  SE[SE_Number] = document.createElement("audio");
+                  SE[SE_Number].src = result[i].Data.split(",")[0];
+                  SE[SE_Number].type = result[i].Data.split(",")[1];
+                  SE[SE_Number].title = result[i].Number;
+                  SE_Number++;
+                }
+                if(result[i].Number=="フラグ管理"){
+                  Flag_Number = [];
+                  for (var j = 0; j < result[i].Data.split(",").length; j++) {
+                    Flag_Number[Flag_Number.length] = result[i].Data.split(",")[j] + ":0";
+                  }
+                }
+              }
+              for (var i = 0; i < result.length; i++) {
+                var Image = result[i].Data.match(/\(画像:.+?:画像\)/g);
+                if(Image){
+                  for (var k = 0; k < Image.length; k++){
+                    Image[k] = Image[k].substring(4);
+                    Image[k] = Image[k].split(",")[1];
+                    var Background = new Sprite();
+                    Background._element = document.createElement("img");
+                    Background._element.src = Image[k];
+                    Background.x = 405;
+                    Background.y = 600;
+                    Background.width = 0;
+                    Background.height = 0;
+                    scene.addChild(Background);
+                  }
+                }
+              }
+              game.popScene();
+              scene.removeChild(S_Input1);
+              Loadbutton2.text = "ゲーム開始";
+              return;
+            },);
+          }
+          else{
+            game.popScene();
+            GAS("読み込み");
+          }
+          return;
+        });
+        scene.addChild(Loadbutton1);
+        scene.addChild(Loadbutton2);
       }
       else{
         var Loadbutton = new Button("ゲームデータロード","light",width/1.2,100);
@@ -3424,8 +3482,8 @@ function Game_load(width,height){
           }
           return;
         });
+        scene.addChild(Loadbutton);
       }
-      scene.addChild(Loadbutton);
 
       var Returnbutton = new Button("戻る","light",80,40);
       Returnbutton.moveTo(30,30);
