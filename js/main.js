@@ -3274,7 +3274,7 @@ function Game_load(width,height){
       S_Input1._element.name = "myText";
       S_Input1._element.value = Spread_sheet_ID;
       S_Input1._element.placeholder = "スプレッドシートのIDを入力";
-      if(HTML=="index"||HTML=="管理人") scene.addChild(S_Input1);
+      if(HTML=="index") scene.addChild(S_Input1);
 
       if(HTML=="管理人"){
         var Loadbutton1 = new Button("田中家","light",width/1.2,100);
