@@ -1579,11 +1579,13 @@ function Game_load(width,height){
       var Flags_Display = Data.match(/\(フラグ表示:.+?:フラグ表示\)/g);
       var Display_while = true;
 
+      if(Flags_Display){
+
+      Flags_Display = Flags_Display[0].substring(7,Flags_Display[0].length-7);
+      Flags_Display = Flags_Display.split(",");
+
       while (Display_while) {
-        Display_while = false;
-        if(Flags_Display){
-          Flags_Display = Flags_Display[0].substring(7,Flags_Display[0].length-7);
-          Flags_Display = Flags_Display.split(",");
+          Display_while = false;
           for(var i = 0; i < Flag_Number.length; i++){
             if(Flag_Number[i].split(":")[0]==Flags_Display[0]){
               var F_S_N = Flag_Number[i].split(":")[1];
@@ -1595,10 +1597,10 @@ function Game_load(width,height){
           var I_Y = 0;
           var I_N = 0;
           var F_S_N_2 = 0;
-          for (var i = 0; i < Flag.length; i++) {
-            if(Flags_Display[0]==Flag[i].split(":")[0]){
+          for (var j = 0; j < Flag.length; j++) {
+            if(Flags_Display[0]==Flag[j].split(":")[0]){
               for (var k = 0; k < Game_Datas.length; k++) {
-                if(Game_Datas[k].Number==Flag[i].split(":")[1].split("=")[0]) break;
+                if(Game_Datas[k].Number==Flag[j].split(":")[1].split("=")[0]) break;
               }
               if(F_S_N > 0){
                 F_S_N--;
@@ -1647,34 +1649,21 @@ function Game_load(width,height){
                 Data += ",表示"+Flags_Display[0]+":"+(I_N+F_S_N_2)+"表示:画像)";
               }
               I_N++;
-              if(I_N==10){
-                Data += "(文字情報:20,black,無し,40:文字情報)";
-                Data += "(ボタン:←,30,490,80,80,"+Flags_Display[1]+",表示--"+Flags_Display[0]+"--表示:ボタン)";
-                Data += "(ボタン:→,295,490,80,80,"+Flags_Display[1]+",表示++"+Flags_Display[0]+"++表示:ボタン)";
-                break;
-              }
-            }
-            if(I_N!=10 && F_S_N_2 > 0){
-              if(I_N==0){
-                Display_while = true;
-                for(var j = 0; j < Flag_Number.length; j++){
-                  if(Flag_Number[j].split(":")[0]==Flags_Display[0]){
-                    Flag_Number[j].split(":")[0] + ":" + (Flag_Number[j].split(":")[1]*1-9);
-                    break;
-                  }
-                }
-              }
-              else{
-                Data += "(文字情報:20,black,無し,40:文字情報)";
-                Data += "(ボタン:←,30,490,80,80,"+Flags_Display[1]+",表示--"+Flags_Display[0]+"--表示:ボタン)";
-                Data += "(ボタン:→,295,490,80,80,"+Flags_Display[1]+",表示++"+Flags_Display[0]+"++表示:ボタン)";
-              }
+              if(I_N==10) break;
             }
           }
+          if(I_N==0&&Flag_Number[i].split(":")[1]*1>0){
+            Display_while = true;
+            Flag_Number[i] = Flag_Number[i].split(":")[0] + ":" + (Flag_Number[i].split(":")[1]*1-9);
+          }
+        }
+        Data = Data.replace(/\(フラグ表示:.+?:フラグ表示\)/g,"");
+        if(I_N==10||Flag_Number[i].split(":")[1]*1>8){
+          Data += "(文字情報:20,black,無し,40:文字情報)";
+          Data += "(ボタン:←,30,490,80,80,"+Flags_Display[1]+",表示--"+Flags_Display[0]+"--表示:ボタン)";
+          Data += "(ボタン:→,295,490,80,80,"+Flags_Display[1]+",表示++"+Flags_Display[0]+"++表示:ボタン)";
         }
       }
-
-      Data = Data.replace(/\(フラグ表示:.+?:フラグ表示\)/g,"");
 
       var Images_Data = Data.match(/\(画像:.+?:画像\)/g);
 
@@ -2068,6 +2057,7 @@ function Game_load(width,height){
         Texts();
         if(game.input.up) console.log(Flag);
         if(game.input.down) console.log(Save_Datas);
+        if(game.input.right) console.log(Flag_Number);
         return;
       });
 
