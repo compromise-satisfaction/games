@@ -1283,11 +1283,20 @@ function Game_load(width,height){
         var Random = Data.match(/\(ランダム:.+?:ランダム\)/g);
 
         if(Random){
+          var Random_set = [];
+          var Random_Number = [];
           for (var i = 0; i < Random.length; i++) {
             Random[i] = Random[i].substring(6,Random[i].length-6);
           }
-          Data = Data.replace(/\(ランダム:.+?:ランダム\)/,Random[rand(Random.length)]);
-          Data = Data.replace(/\(ランダム:.+?:ランダム\)/g,"");
+          for (var i = 0; i < Random.length; i++) {
+            Random_set = [];
+            for (var j = 0; j < Random[i].split("(内容)").length; j++) {
+              for (var k = 0; k < Random[i].split("(内容)")[j].split("(数)")[1]*1; k++) {
+                Random_set[Random_set.length] = Random[i].split("(内容)")[j].split("(数)")[0];
+              }
+            }
+            Data = Data.replace(/\(ランダム:.+?:ランダム\)/,Random_set[rand(Random_set.length)]);
+          }
         }
 
         Data = Data.replace(/\n/g,"");
@@ -1880,7 +1889,13 @@ function Game_load(width,height){
                     Image[Image_Number].tl.fadeOut(Image[Image_Number].fade.substring(3)*1);
                   }
                 }
-                Image[Image_Number]._element.src = Image[Image_Number].imageurl
+                if(Image[Image_Number].imageurl=="使用フラグ"){
+                  for (var Used = 0; Used < Game_Datas.length; Used++) {
+                    if(Game_Datas[Used].Number==Use.split(":")[1].split("=")[0]) break;
+                  }
+                  Image[Image_Number]._element.src = Branchs(Game_Datas[Used].Data,Flag).split(",")[0];
+                }
+                else Image[Image_Number]._element.src = Image[Image_Number].imageurl
                 Image_Number++;
                 break;
               case "ボタン":
@@ -3320,6 +3335,7 @@ function Game_load(width,height){
                   for (var k = 0; k < Image.length; k++){
                     Image[k] = Image[k].substring(4);
                     Image[k] = Image[k].split(",")[1];
+                    if(Image[k]=="使用フラグ") continue;
                     var Background = new Sprite();
                     Background._element = document.createElement("img");
                     Background._element.src = Image[k];
@@ -3385,6 +3401,7 @@ function Game_load(width,height){
                   for (var k = 0; k < Image.length; k++){
                     Image[k] = Image[k].substring(4);
                     Image[k] = Image[k].split(",")[1];
+                    if(Image[k]=="使用フラグ") continue;
                     var Background = new Sprite();
                     Background._element = document.createElement("img");
                     Background._element.src = Image[k];
@@ -3464,6 +3481,7 @@ function Game_load(width,height){
                   for (var k = 0; k < Image.length; k++){
                     Image[k] = Image[k].substring(4);
                     Image[k] = Image[k].split(",")[1];
+                    if(Image[k]=="使用フラグ") continue;
                     var Background = new Sprite();
                     Background._element = document.createElement("img");
                     Background._element.src = Image[k];
