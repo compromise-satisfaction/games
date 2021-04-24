@@ -1,6 +1,27 @@
 enchant();
 
-if(!window.localStorage.getItem("ID")) window.localStorage.clear();
+if(!window.localStorage.getItem("ID")){
+  var ID = window.localStorage.getItem("ID");
+  var Sound_effect_volume = window.localStorage.getItem("ID");
+  var ID = window.localStorage.getItem("ID");
+  var ID = window.localStorage.getItem("ID");
+  console.log(ID);
+  GAS("読込");
+}
+else{
+  window.localStorage.clear();
+  var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
+  "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
+  "1","2","3","4","5","6","7","8","9"];
+  var ID = "";
+  for (var i = 0; i < 10; i++) {
+    ID += Codes[rand(Codes.length)];
+  }
+  window.localStorage.setItem("ID",ID);
+  console.log(ID);
+  game.replaceScene(Start_Menu_Scene());
+  GAS("保存");
+}
 
 var BGM = document.createElement("audio");
 BGM.addEventListener("ended",function(e){
@@ -23,12 +44,7 @@ function Game_load(width,height){
   var Flag7 = [];
   var Flag8 = [];
   var Flag_Number = [];
-  var Setting_Flag = {
-    BGM音量:5,
-    音声音量:5,
-    効果音音量:5,
-    オートセーブ:true,
-    演出スキップ:false,
+  var Save_Datas = {
     シーンナンバー1:"スタート",
     シーンナンバー2:"スタート",
     シーンナンバー3:"スタート",
@@ -36,7 +52,7 @@ function Game_load(width,height){
     シーンナンバー5:"スタート",
     シーンナンバー6:"スタート",
     シーンナンバー7:"スタート",
-    シーンナンバー8:"スタート",
+    シーンナンバー8:"スタート"
   };
   function rand(n){
     return Math.floor(Math.random() * (n));
@@ -48,13 +64,13 @@ function Game_load(width,height){
       }
       switch(SE[i].type){
         case "音声":
-          var Volume = Setting_Flag.音声音量;
+          var Volume = Save_Datas.音声音量;
           break;
         case "効果音":
-          var Volume = Setting_Flag.効果音音量;
+          var Volume = Save_Datas.効果音音量;
           break;
         default:
-          var Volume = Setting_Flag.BGM音量;
+          var Volume = Save_Datas.BGM音量;
           break;
       }
       if(Volume){
@@ -81,7 +97,7 @@ function Game_load(width,height){
           break;
         case "消音":
           BGM_Change = - 0.005;
-          BGM_Volume = Setting_Flag.BGM音量/10;
+          BGM_Volume = Save_Datas.BGM音量/10;
           break;
         default:
           if(BGM.title == BGM_Name && BGM.paused == false) return;
@@ -91,7 +107,7 @@ function Game_load(width,height){
           }
           BGM.src = SE[i].src;
           BGM.currentTime = 0;
-          BGM.volume = Setting_Flag.BGM音量/10;
+          BGM.volume = Save_Datas.BGM音量/10;
           BGM.play();
           BGM.title = BGM_Name;
           BGM.id = SE[i].type;
@@ -221,7 +237,7 @@ function Game_load(width,height){
       Buttons(width/4,60,width/2,height/10,"脳トレ",0);
       Buttons(width/4,180,width/2,height/10,"リバーシ",1);
       Buttons(width/4,300,width/2,height/10,"数独補佐",2);
-      Buttons(width/4,420,width/2,height/10,"ノベルゲーム",3);
+      if(HTML=="Tanakake") Buttons(width/4,420,width/2,height/10,"ノベルゲーム",3);
       //Buttons(width/4,540,width/2,height/20,"動作がおかしい時",4);
 
       return scene;
@@ -873,14 +889,14 @@ function Game_load(width,height){
       Now += Minute + "(文字間隔:20:文字間隔)分(文字間隔:10:文字間隔)" + Seconds + "(文字間隔:20:文字間隔)秒";
 
       Data = Data.replace(/\(変換:現在時間:変換\)/g,Now);
-      if(Setting_Flag.BGM音量 < 10) Data = Data.replace(/\(BGM音量\)/g,"0"+Setting_Flag.BGM音量);
-      else Data = Data.replace(/\(BGM音量\)/g,Setting_Flag.BGM音量);
-      if(Setting_Flag.音声音量 < 10) Data = Data.replace(/\(音声音量\)/g,"0"+Setting_Flag.音声音量);
-      else Data = Data.replace(/\(音声音量\)/g,Setting_Flag.音声音量);
-      if(Setting_Flag.効果音音量 < 10) Data = Data.replace(/\(効果音音量\)/g,"0"+Setting_Flag.効果音音量);
-      else Data = Data.replace(/\(効果音音量\)/g,Setting_Flag.効果音音量);
+      if(Save_Datas.BGM音量 < 10) Data = Data.replace(/\(BGM音量\)/g,"0"+Save_Datas.BGM音量);
+      else Data = Data.replace(/\(BGM音量\)/g,Save_Datas.BGM音量);
+      if(Save_Datas.音声音量 < 10) Data = Data.replace(/\(音声音量\)/g,"0"+Save_Datas.音声音量);
+      else Data = Data.replace(/\(音声音量\)/g,Save_Datas.音声音量);
+      if(Save_Datas.効果音音量 < 10) Data = Data.replace(/\(効果音音量\)/g,"0"+Save_Datas.効果音音量);
+      else Data = Data.replace(/\(効果音音量\)/g,Save_Datas.効果音音量);
 
-      if(Update==1) Setting_Flag.シーンナンバー = SceneNumber;
+      if(Update==1) Save_Datas.シーンナンバー = SceneNumber;
 
       var Flags_small_Display = Data.match(/\(フラグ小表示:.+?:フラグ小表示\)/g);
 
@@ -998,7 +1014,7 @@ function Game_load(width,height){
                   if(Flag[i].split("=")[0]=="セーブ時間") Flag1[i] = "セーブ時間=" + Now;
                   else Flag1[i] = Flag[i];
                 }
-                Setting_Flag.シーンナンバー1 = Setting_Flag.シーンナンバー;
+                Save_Datas.シーンナンバー1 = Save_Datas.シーンナンバー;
                 break;
               case 2:
                 Flag2 = [];
@@ -1006,7 +1022,7 @@ function Game_load(width,height){
                   if(Flag[i].split("=")[0]=="セーブ時間") Flag2[i] = "セーブ時間=" + Now;
                   else Flag2[i] = Flag[i];
                 }
-                Setting_Flag.シーンナンバー2 = Setting_Flag.シーンナンバー;
+                Save_Datas.シーンナンバー2 = Save_Datas.シーンナンバー;
                 break;
               case 3:
                 Flag3 = [];
@@ -1014,7 +1030,7 @@ function Game_load(width,height){
                   if(Flag[i].split("=")[0]=="セーブ時間") Flag3[i] = "セーブ時間=" + Now;
                   else Flag3[i] = Flag[i];
                 }
-                Setting_Flag.シーンナンバー3 = Setting_Flag.シーンナンバー;
+                Save_Datas.シーンナンバー3 = Save_Datas.シーンナンバー;
                 break;
               case 4:
                 Flag4 = [];
@@ -1022,7 +1038,7 @@ function Game_load(width,height){
                   if(Flag[i].split("=")[0]=="セーブ時間") Flag4[i] = "セーブ時間=" + Now;
                   else Flag4[i] = Flag[i];
                 }
-                Setting_Flag.シーンナンバー4 = Setting_Flag.シーンナンバー;
+                Save_Datas.シーンナンバー4 = Save_Datas.シーンナンバー;
                 break;
               case 5:
                 Flag5 = [];
@@ -1030,7 +1046,7 @@ function Game_load(width,height){
                   if(Flag[i].split("=")[0]=="セーブ時間") Flag5[i] = "セーブ時間=" + Now;
                   else Flag5[i] = Flag[i];
                 }
-                Setting_Flag.シーンナンバー5 = Setting_Flag.シーンナンバー;
+                Save_Datas.シーンナンバー5 = Save_Datas.シーンナンバー;
                 break;
               case 6:
                 Flag6 = [];
@@ -1038,7 +1054,7 @@ function Game_load(width,height){
                   if(Flag[i].split("=")[0]=="セーブ時間") Flag6[i] = "セーブ時間=" + Now;
                   else Flag6[i] = Flag[i];
                 }
-                Setting_Flag.シーンナンバー6 = Setting_Flag.シーンナンバー;
+                Save_Datas.シーンナンバー6 = Save_Datas.シーンナンバー;
                 break;
               case 7:
                 Flag7 = [];
@@ -1046,7 +1062,7 @@ function Game_load(width,height){
                   if(Flag[i].split("=")[0]=="セーブ時間") Flag7[i] = "セーブ時間=" + Now;
                   else Flag7[i] = Flag[i];
                 }
-                Setting_Flag.シーンナンバー7 = Setting_Flag.シーンナンバー;
+                Save_Datas.シーンナンバー7 = Save_Datas.シーンナンバー;
                 break;
               case 8:
                 Flag8 = [];
@@ -1054,7 +1070,7 @@ function Game_load(width,height){
                   if(Flag[i].split("=")[0]=="セーブ時間") Flag8[i] = "セーブ時間=" + Now;
                   else Flag8[i] = Flag[i];
                 }
-                Setting_Flag.シーンナンバー8 = Setting_Flag.シーンナンバー;
+                Save_Datas.シーンナンバー8 = Save_Datas.シーンナンバー;
                 break;
             }
             Scene_Name = Scene_Name.split("→")[2];
@@ -1066,56 +1082,56 @@ function Game_load(width,height){
                 for (var i = 0; i < Flag1.length; i++) {
                   Flag[i] = Flag1[i];
                 }
-                Scene_Name = Setting_Flag.シーンナンバー1;
+                Scene_Name = Save_Datas.シーンナンバー1;
                 break;
               case 2:
                 Flag = [];
                 for (var i = 0; i < Flag2.length; i++) {
                   Flag[i] = Flag2[i];
                 }
-                Scene_Name = Setting_Flag.シーンナンバー2;
+                Scene_Name = Save_Datas.シーンナンバー2;
                 break;
               case 3:
                 Flag = [];
                 for (var i = 0; i < Flag3.length; i++) {
                   Flag[i] = Flag3[i];
                 }
-                Scene_Name = Setting_Flag.シーンナンバー3;
+                Scene_Name = Save_Datas.シーンナンバー3;
                 break;
               case 4:
                 Flag = [];
                 for (var i = 0; i < Flag4.length; i++) {
                   Flag[i] = Flag4[i];
                 }
-                Scene_Name = Setting_Flag.シーンナンバー4;
+                Scene_Name = Save_Datas.シーンナンバー4;
                 break;
               case 5:
                 Flag = [];
                 for (var i = 0; i < Flag5.length; i++) {
                   Flag[i] = Flag5[i];
                 }
-                Scene_Name = Setting_Flag.シーンナンバー5;
+                Scene_Name = Save_Datas.シーンナンバー5;
                 break;
               case 6:
                 Flag = [];
                 for (var i = 0; i < Flag6.length; i++) {
                   Flag[i] = Flag6[i];
                 }
-                Scene_Name = Setting_Flag.シーンナンバー6;
+                Scene_Name = Save_Datas.シーンナンバー6;
                 break;
               case 7:
                 Flag = [];
                 for (var i = 0; i < Flag7.length; i++) {
                   Flag[i] = Flag7[i];
                 }
-                Scene_Name = Setting_Flag.シーンナンバー7;
+                Scene_Name = Save_Datas.シーンナンバー7;
                 break;
               case 8:
                 Flag = [];
                 for (var i = 0; i < Flag8.length; i++) {
                   Flag[i] = Flag8[i];
                 }
-                Scene_Name = Setting_Flag.シーンナンバー8;
+                Scene_Name = Save_Datas.シーンナンバー8;
                 break;
             }
             Scene_Name = Scene_Name.split("→")[0];
@@ -1123,7 +1139,7 @@ function Game_load(width,height){
         }
         switch(Scene_Name){
           case "保存箇所":
-            Scene_Name = Setting_Flag.シーンナンバー;
+            Scene_Name = Save_Datas.シーンナンバー;
             break;
         }
         Scene_Name += "";
@@ -1242,29 +1258,29 @@ function Game_load(width,height){
           switch (a[6].split("→")[0]) {
             case "BGM+":
               a[6] = a[6].substring(5);
-              if(Setting_Flag.BGM音量<10) Setting_Flag.BGM音量++;
-              BGM.volume = Setting_Flag.BGM音量/10;
+              if(Save_Datas.BGM音量<10) Save_Datas.BGM音量++;
+              BGM.volume = Save_Datas.BGM音量/10;
               break;
             case "BGM-":
               a[6] = a[6].substring(5);
-              if(Setting_Flag.BGM音量>0) Setting_Flag.BGM音量--;
-              BGM.volume = Setting_Flag.BGM音量/10;
+              if(Save_Datas.BGM音量>0) Save_Datas.BGM音量--;
+              BGM.volume = Save_Datas.BGM音量/10;
               break;
             case "音声+":
               a[6] = a[6].substring(4);
-              if(Setting_Flag.音声音量<10) Setting_Flag.音声音量++;
+              if(Save_Datas.音声音量<10) Save_Datas.音声音量++;
               break;
             case "音声-":
               a[6] = a[6].substring(4);
-              if(Setting_Flag.音声音量>0) Setting_Flag.音声音量--;
+              if(Save_Datas.音声音量>0) Save_Datas.音声音量--;
               break;
             case "効果音+":
               a[6] = a[6].substring(5);
-              if(Setting_Flag.効果音音量<10) Setting_Flag.効果音音量++;
+              if(Save_Datas.効果音音量<10) Save_Datas.効果音音量++;
               break;
             case "効果音-":
               a[6] = a[6].substring(5);
-              if(Setting_Flag.効果音音量>0) Setting_Flag.効果音音量--;
+              if(Save_Datas.効果音音量>0) Save_Datas.効果音音量--;
               break;
             default:
               break;
@@ -1485,35 +1501,35 @@ function Game_load(width,height){
 
         switch (k) {
           case 1:
-            Scene_Number = Setting_Flag.シーンナンバー1;
+            Scene_Number = Save_Datas.シーンナンバー1;
             Save = Data.match(/\(セーブ1:.+?:セーブ1\)/);
             break;
           case 2:
-            Scene_Number = Setting_Flag.シーンナンバー2;
+            Scene_Number = Save_Datas.シーンナンバー2;
             Save = Data.match(/\(セーブ2:.+?:セーブ2\)/);
             break;
           case 3:
-            Scene_Number = Setting_Flag.シーンナンバー3;
+            Scene_Number = Save_Datas.シーンナンバー3;
             Save = Data.match(/\(セーブ3:.+?:セーブ3\)/);
             break;
           case 4:
-            Scene_Number = Setting_Flag.シーンナンバー4;
+            Scene_Number = Save_Datas.シーンナンバー4;
             Save = Data.match(/\(セーブ4:.+?:セーブ4\)/);
             break;
           case 5:
-            Scene_Number = Setting_Flag.シーンナンバー5;
+            Scene_Number = Save_Datas.シーンナンバー5;
             Save = Data.match(/\(セーブ5:.+?:セーブ5\)/);
             break;
           case 6:
-            Scene_Number = Setting_Flag.シーンナンバー6;
+            Scene_Number = Save_Datas.シーンナンバー6;
             Save = Data.match(/\(セーブ6:.+?:セーブ6\)/);
             break;
           case 7:
-            Scene_Number = Setting_Flag.シーンナンバー7;
+            Scene_Number = Save_Datas.シーンナンバー7;
             Save = Data.match(/\(セーブ7:.+?:セーブ7\)/);
             break;
           case 8:
-            Scene_Number = Setting_Flag.シーンナンバー8;
+            Scene_Number = Save_Datas.シーンナンバー8;
             Save = Data.match(/\(セーブ8:.+?:セーブ8\)/);
             break;
         }
@@ -2063,8 +2079,8 @@ function Game_load(width,height){
         if(BGM_Change != 0){
           BGM_Volume += BGM_Change;
           if(BGM_Change > 0){
-            if(BGM_Volume > Setting_Flag.BGM音量/10){
-              BGM.volume = Setting_Flag.BGM音量/10;
+            if(BGM_Volume > Save_Datas.BGM音量/10){
+              BGM.volume = Save_Datas.BGM音量/10;
               BGM_Change = 0;
             }
             else BGM.volume = BGM_Volume;
@@ -2085,7 +2101,7 @@ function Game_load(width,height){
         if(Opacity > 1) Opacitys = -0.02;
         Texts();
         if(game.input.up) console.log(Flag);
-        if(game.input.down) console.log(Setting_Flag);
+        if(game.input.down) console.log(Save_Datas);
         return;
       });
 
@@ -3275,24 +3291,6 @@ function Game_load(width,height){
 
       return scene;
     };
-    if(window.localStorage.length){
-      var ID = window.localStorage.getItem("ID");
-      console.log(ID);
-      GAS("読込");
-    }
-    else{
-      var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-      "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-      "1","2","3","4","5","6","7","8","9"];
-      var ID = "";
-      for (var i = 0; i < 10; i++) {
-        ID += Codes[rand(Codes.length)];
-      }
-      window.localStorage.setItem("ID",ID);
-      console.log(ID);
-      game.replaceScene(Start_Menu_Scene());
-      GAS("保存");
-    }
     function GAS(Type){
       if(Type=="保存"){
         game.pushScene(Loading_Scene("保存"));
@@ -3301,17 +3299,15 @@ function Game_load(width,height){
           "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
           {
             method: 'POST',
-            body: "保存" + ID + "(改行)" + Setting_Flag.BGM音量
-            + "(改行)" + Setting_Flag.音声音量 + "(改行)" + Setting_Flag.効果音音量
-            + "(改行)" + Setting_Flag.オートセーブ + "(改行)" + Setting_Flag.演出スキップ
-            + "(改行)" + Setting_Flag.シーンナンバー1 + "(改行)" + Flag1
-            + "(改行)" + Setting_Flag.シーンナンバー2 + "(改行)" + Flag2
-            + "(改行)" + Setting_Flag.シーンナンバー3 + "(改行)" + Flag3
-            + "(改行)" + Setting_Flag.シーンナンバー4 + "(改行)" + Flag4
-            + "(改行)" + Setting_Flag.シーンナンバー5 + "(改行)" + Flag5
-            + "(改行)" + Setting_Flag.シーンナンバー6 + "(改行)" + Flag6
-            + "(改行)" + Setting_Flag.シーンナンバー7 + "(改行)" + Flag7
-            + "(改行)" + Setting_Flag.シーンナンバー8 + "(改行)" + Flag8
+            body: "保存" + ID
+            + "(改行)" + Save_Datas.シーンナンバー1 + "(改行)" + Flag1
+            + "(改行)" + Save_Datas.シーンナンバー2 + "(改行)" + Flag2
+            + "(改行)" + Save_Datas.シーンナンバー3 + "(改行)" + Flag3
+            + "(改行)" + Save_Datas.シーンナンバー4 + "(改行)" + Flag4
+            + "(改行)" + Save_Datas.シーンナンバー5 + "(改行)" + Flag5
+            + "(改行)" + Save_Datas.シーンナンバー6 + "(改行)" + Flag6
+            + "(改行)" + Save_Datas.シーンナンバー7 + "(改行)" + Flag7
+            + "(改行)" + Save_Datas.シーンナンバー8 + "(改行)" + Flag8
           }
         ).then(res => res.json()).then(result => {
           game.popScene();
@@ -3335,15 +3331,15 @@ function Game_load(width,height){
              GAS("保存");
            }
            else{
-             Setting_Flag = result[i];
-             Flag1 = Setting_Flag.フラグ1.split(",");
-             Flag2 = Setting_Flag.フラグ2.split(",");
-             Flag3 = Setting_Flag.フラグ3.split(",");
-             Flag4 = Setting_Flag.フラグ4.split(",");
-             Flag5 = Setting_Flag.フラグ5.split(",");
-             Flag6 = Setting_Flag.フラグ6.split(",");
-             Flag7 = Setting_Flag.フラグ7.split(",");
-             Flag8 = Setting_Flag.フラグ8.split(",");
+             Save_Datas = result[i];
+             Flag1 = Save_Datas.フラグ1.split(",");
+             Flag2 = Save_Datas.フラグ2.split(",");
+             Flag3 = Save_Datas.フラグ3.split(",");
+             Flag4 = Save_Datas.フラグ4.split(",");
+             Flag5 = Save_Datas.フラグ5.split(",");
+             Flag6 = Save_Datas.フラグ6.split(",");
+             Flag7 = Save_Datas.フラグ7.split(",");
+             Flag8 = Save_Datas.フラグ8.split(",");
            }
            game.replaceScene(Start_Menu_Scene());
            return;
