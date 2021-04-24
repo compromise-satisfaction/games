@@ -19,17 +19,7 @@ else{
   var BGM_volume = 5;
   var Voice_volume = 5;
   var Sound_effect_volume = 5;
-  switch (HTML) {
-    case "Tanakake":
-      var Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
-      break;
-    case "Share":
-      var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
-      break;
-    default:
-      var Spread_sheet_ID = "";
-      break;
-  }
+  var Spread_sheet_ID = "";
   window.localStorage.setItem("ID",ID);
   window.localStorage.setItem("BGM_volume",BGM_volume);
   window.localStorage.setItem("Voice_volume",Voice_volume);
@@ -3282,14 +3272,24 @@ function Game_load(width,height){
       S_Input1._element.name = "myText";
       S_Input1._element.value = Spread_sheet_ID;
       S_Input1._element.placeholder = "スプレッドシートのIDを入力";
-      scene.addChild(S_Input1);
+      if(HTML=="index") scene.addChild(S_Input1);
 
       var Loadbutton = new Button("ゲームデータロード","light",width/1.2,100);
       Loadbutton.moveTo((width-width/1.2)/2,200);
       Loadbutton._style["font-size"] = 25;
       Loadbutton.addEventListener("touchend",function(e){
         if(Loadbutton.text=="ゲームデータロード"){
-          Spread_sheet_ID = S_Input1._element.value;
+          switch (HTML) {
+            case "Tanakake":
+              var Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
+              break;
+            case "Share":
+              var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
+              break;
+            default:
+              Spread_sheet_ID = S_Input1._element.value;
+              break;
+          }
           window.localStorage.setItem("Spread_sheet_ID",Spread_sheet_ID);
           game.pushScene(Loading_Scene("読み込み"));
           fetch
