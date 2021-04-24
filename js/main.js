@@ -1,28 +1,5 @@
 enchant();
 
-if(!window.localStorage.getItem("ID")){
-  var ID = window.localStorage.getItem("ID");
-  var Sound_effect_volume = window.localStorage.getItem("ID");
-  var ID = window.localStorage.getItem("ID");
-  var ID = window.localStorage.getItem("ID");
-  console.log(ID);
-  GAS("読込");
-}
-else{
-  window.localStorage.clear();
-  var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-  "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-  "1","2","3","4","5","6","7","8","9"];
-  var ID = "";
-  for (var i = 0; i < 10; i++) {
-    ID += Codes[rand(Codes.length)];
-  }
-  window.localStorage.setItem("ID",ID);
-  console.log(ID);
-  game.replaceScene(Start_Menu_Scene());
-  GAS("保存");
-}
-
 var BGM = document.createElement("audio");
 BGM.addEventListener("ended",function(e){
   BGM.currentTime = BGM.id*1;
@@ -3345,6 +3322,34 @@ function Game_load(width,height){
            return;
          },);
       }
+    }
+    if(!window.localStorage.getItem("ID")){
+      var ID = window.localStorage.getItem("ID");
+      var BGM_volume = window.localStorage.getItem("BGM_volume");
+      var Voice_volume = window.localStorage.getItem("Voice_volume");
+      var Sound_effect_volume = window.localStorage.getItem("Sound_effect_volume");
+      console.log(ID);
+      GAS("読込");
+    }
+    else{
+      window.localStorage.clear();
+      var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
+      "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
+      "1","2","3","4","5","6","7","8","9"];
+      var ID = "";
+      for (var i = 0; i < 10; i++) {
+        ID += Codes[rand(Codes.length)];
+      }
+      var BGM_volume = 5;
+      var Voice_volume = 5;
+      var Sound_effect_volume = 5;
+      window.localStorage.setItem("ID",ID);
+      window.localStorage.getItem("BGM_volume");
+      window.localStorage.getItem("Voice_volume");
+      window.localStorage.getItem("Sound_effect_volume");
+      console.log(ID);
+      game.replaceScene(Start_Menu_Scene());
+      GAS("保存");
     }
   }
   game.start();
