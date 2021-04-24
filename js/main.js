@@ -3286,7 +3286,7 @@ function Game_load(width,height){
             case "Share":
               var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
               break;
-            default:
+            case "index":
               Spread_sheet_ID = S_Input1._element.value;
               break;
           }
@@ -3348,7 +3348,7 @@ function Game_load(width,height){
         }
         return;
       });
-      scene.addChild(Loadbutton);
+      if(HTML!="管理人") scene.addChild(Loadbutton);
 
       var Returnbutton = new Button("戻る","light",80,40);
       Returnbutton.moveTo(30,30);
