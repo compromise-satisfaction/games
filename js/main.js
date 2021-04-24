@@ -23,6 +23,9 @@ else{
     case "Tanakake":
       var Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
       break;
+    case "Share":
+      var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
+      break;
     default:
       var Spread_sheet_ID = "";
       break;
