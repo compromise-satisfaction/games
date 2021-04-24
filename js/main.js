@@ -39,6 +39,7 @@ var BGM_Volume = 0;
 
 function Game_load(width,height){
 
+  var Use = null;
   var Update = 1;
   var Flag = [];
   var Flag1 = [];
@@ -877,6 +878,7 @@ function Game_load(width,height){
           if(Game_Datas[j].Number==Game_Datas[k].Data.split(",")[2]) break;
         }
         Data += Game_Datas[j].Data;
+        Use = Flag[i].split("=")[0];
         var I_N = 0;
         for(var i = 0; i < Flag.length; i++){
           if(Flag[i].split(":")[0]==Flags_small_Display[0]){
@@ -949,6 +951,15 @@ function Game_load(width,height){
         var Push = false;
         var Do_Save = false;
         switch(Scene_Name.split("→")[0]){
+          case "使用":
+            Update--;
+            game.popScene();
+            Scene_Name = Save_Datas.シーンナンバー + "で" + Use + "を使用";
+            for (var i = 0; i < Game_Datas.length; i++) {
+              if(Game_Datas[i].Number==Scene_Name) break;
+            }
+            if(i==Game_Datas.length) Scene_Name = Save_Datas.シーンナンバー + "で" + Use.split(":")[0] + "を使用";
+            break;
           case "popScene":
             Update--;
             game.popScene();
