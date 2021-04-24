@@ -1534,15 +1534,17 @@ function Game_load(width,height){
                 break;
             }
             Save_Images_Data = Save_Images_Data.match(/\(画像:.+?:画像\)/g);
-            for (var i = 0; i < Save_Images_Data.length; i++) {
-              Save_Images_Data[i] = Save_Images_Data[i].substring(4,Save_Images_Data[i].length-4);
-              Save_Images_Data[i] = Save_Images_Data[i].split(",");
-              Plus_Text += "(画像:無し,"
-              Plus_Text += Save_Images_Data[i][1] + ",";
-              Plus_Text += Save_Images_Data[i][2] * Save[2] + Save[0]*1 + ",";
-              Plus_Text += Save_Images_Data[i][3] * Save[2] + Save[1]*1 + ",";
-              Plus_Text += Save_Images_Data[i][4] * Save[2] + ",";
-              Plus_Text += Save_Images_Data[i][5] * Save[2] + ":画像)";
+            if(Save_Images_Data){
+              for (var i = 0; i < Save_Images_Data.length; i++) {
+                Save_Images_Data[i] = Save_Images_Data[i].substring(4,Save_Images_Data[i].length-4);
+                Save_Images_Data[i] = Save_Images_Data[i].split(",");
+                Plus_Text += "(画像:無し,"
+                Plus_Text += Save_Images_Data[i][1] + ",";
+                Plus_Text += Save_Images_Data[i][2] * Save[2] + Save[0]*1 + ",";
+                Plus_Text += Save_Images_Data[i][3] * Save[2] + Save[1]*1 + ",";
+                Plus_Text += Save_Images_Data[i][4] * Save[2] + ",";
+                Plus_Text += Save_Images_Data[i][5] * Save[2] + ":画像)";
+              }
             }
           }
           switch (k) {
@@ -3272,83 +3274,158 @@ function Game_load(width,height){
       S_Input1._element.name = "myText";
       S_Input1._element.value = Spread_sheet_ID;
       S_Input1._element.placeholder = "スプレッドシートのIDを入力";
-      if(HTML=="index") scene.addChild(S_Input1);
+      if(HTML=="index"||HTML=="管理人") scene.addChild(S_Input1);
 
-      var Loadbutton = new Button("ゲームデータロード","light",width/1.2,100);
-      Loadbutton.moveTo((width-width/1.2)/2,200);
-      Loadbutton._style["font-size"] = 25;
-      Loadbutton.addEventListener("touchend",function(e){
-        if(Loadbutton.text=="ゲームデータロード"){
-          switch (HTML) {
-            case "Tanakake":
-              var Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
-              break;
-            case "Share":
-              var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
-              break;
-            case "index":
-              Spread_sheet_ID = S_Input1._element.value;
-              break;
+      if(HTML=="管理人"){
+        var Loadbutton = new Button("ゲームデータロード","light",width/1.2,100);
+        Loadbutton.moveTo((width-width/1.2)/2,200);
+        Loadbutton._style["font-size"] = 25;
+        Loadbutton.addEventListener("touchend",function(e){
+          if(Loadbutton.text=="ゲームデータロード"){
+            switch (S_Input1._element.value) {
+              case "田中家":
+                var Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
+                break;
+              default:
+                var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
+                break;
+            }
+            window.localStorage.setItem("Spread_sheet_ID",Spread_sheet_ID);
+            game.pushScene(Loading_Scene("読み込み"));
+            fetch
+            (
+              "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
+              {
+                method: "POST",
+                body: Spread_sheet_ID
+              }
+            ).then(res => res.json()).then(result => {
+              Game_Datas = result;
+              SE = [];
+              var SE_Number = 0;
+              for (var i = 0; i < result.length; i++) {
+                if(result[i].Data.match(/\(音:.+?:音\)/)){
+                  result[i].Data = result[i].Data.substring(3,result[i].Data.length-3);
+                  SE[SE_Number] = document.createElement("audio");
+                  SE[SE_Number].src = result[i].Data.split(",")[0];
+                  SE[SE_Number].type = result[i].Data.split(",")[1];
+                  SE[SE_Number].title = result[i].Number;
+                  SE_Number++;
+                }
+                if(result[i].Number=="フラグ管理"){
+                  Flag_Number = [];
+                  for (var j = 0; j < result[i].Data.split(",").length; j++) {
+                    Flag_Number[Flag_Number.length] = result[i].Data.split(",")[j] + ":0";
+                  }
+                }
+              }
+              for (var i = 0; i < result.length; i++) {
+                var Image = result[i].Data.match(/\(画像:.+?:画像\)/g);
+                if(Image){
+                  for (var k = 0; k < Image.length; k++){
+                    Image[k] = Image[k].substring(4);
+                    Image[k] = Image[k].split(",")[1];
+                    var Background = new Sprite();
+                    Background._element = document.createElement("img");
+                    Background._element.src = Image[k];
+                    Background.x = 405;
+                    Background.y = 600;
+                    Background.width = 0;
+                    Background.height = 0;
+                    scene.addChild(Background);
+                  }
+                }
+              }
+              game.popScene();
+              scene.removeChild(S_Input1);
+              Loadbutton.text = "ゲーム開始";
+              return;
+            },);
           }
-          window.localStorage.setItem("Spread_sheet_ID",Spread_sheet_ID);
-          game.pushScene(Loading_Scene("読み込み"));
-          fetch
-          (
-            "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
-            {
-              method: "POST",
-              body: Spread_sheet_ID
-            }
-          ).then(res => res.json()).then(result => {
-            Game_Datas = result;
-            SE = [];
-            var SE_Number = 0;
-            for (var i = 0; i < result.length; i++) {
-              if(result[i].Data.match(/\(音:.+?:音\)/)){
-                result[i].Data = result[i].Data.substring(3,result[i].Data.length-3);
-                SE[SE_Number] = document.createElement("audio");
-                SE[SE_Number].src = result[i].Data.split(",")[0];
-                SE[SE_Number].type = result[i].Data.split(",")[1];
-                SE[SE_Number].title = result[i].Number;
-                SE_Number++;
-              }
-              if(result[i].Number=="フラグ管理"){
-                Flag_Number = [];
-                for (var j = 0; j < result[i].Data.split(",").length; j++) {
-                  Flag_Number[Flag_Number.length] = result[i].Data.split(",")[j] + ":0";
-                }
-              }
-            }
-            for (var i = 0; i < result.length; i++) {
-              var Image = result[i].Data.match(/\(画像:.+?:画像\)/g);
-              if(Image){
-                for (var k = 0; k < Image.length; k++){
-                  Image[k] = Image[k].substring(4);
-                  Image[k] = Image[k].split(",")[1];
-                  var Background = new Sprite();
-                  Background._element = document.createElement("img");
-                  Background._element.src = Image[k];
-                  Background.x = 405;
-                  Background.y = 600;
-                  Background.width = 0;
-                  Background.height = 0;
-                  scene.addChild(Background);
-                }
-              }
-            }
+          else{
             game.popScene();
-            scene.removeChild(S_Input1);
-            Loadbutton.text = "ゲーム開始";
-            return;
-          },);
-        }
-        else{
-          game.popScene();
-          GAS("読み込み");
-        }
-        return;
-      });
-      if(HTML!="管理人") scene.addChild(Loadbutton);
+            GAS("読み込み");
+          }
+          return;
+        });
+      }
+      else{
+        var Loadbutton = new Button("ゲームデータロード","light",width/1.2,100);
+        Loadbutton.moveTo((width-width/1.2)/2,200);
+        Loadbutton._style["font-size"] = 25;
+        Loadbutton.addEventListener("touchend",function(e){
+          if(Loadbutton.text=="ゲームデータロード"){
+            switch (HTML) {
+              case "Tanakake":
+                var Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
+                break;
+              case "Share":
+                var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
+                break;
+              case "index":
+                Spread_sheet_ID = S_Input1._element.value;
+                break;
+            }
+            window.localStorage.setItem("Spread_sheet_ID",Spread_sheet_ID);
+            game.pushScene(Loading_Scene("読み込み"));
+            fetch
+            (
+              "https://script.google.com/macros/s/AKfycbwbxBARHidLzHA52cznZ2VI_x9hdNtW2RHnk5bV_dm1QU7A2eI/exec",
+              {
+                method: "POST",
+                body: Spread_sheet_ID
+              }
+            ).then(res => res.json()).then(result => {
+              Game_Datas = result;
+              SE = [];
+              var SE_Number = 0;
+              for (var i = 0; i < result.length; i++) {
+                if(result[i].Data.match(/\(音:.+?:音\)/)){
+                  result[i].Data = result[i].Data.substring(3,result[i].Data.length-3);
+                  SE[SE_Number] = document.createElement("audio");
+                  SE[SE_Number].src = result[i].Data.split(",")[0];
+                  SE[SE_Number].type = result[i].Data.split(",")[1];
+                  SE[SE_Number].title = result[i].Number;
+                  SE_Number++;
+                }
+                if(result[i].Number=="フラグ管理"){
+                  Flag_Number = [];
+                  for (var j = 0; j < result[i].Data.split(",").length; j++) {
+                    Flag_Number[Flag_Number.length] = result[i].Data.split(",")[j] + ":0";
+                  }
+                }
+              }
+              for (var i = 0; i < result.length; i++) {
+                var Image = result[i].Data.match(/\(画像:.+?:画像\)/g);
+                if(Image){
+                  for (var k = 0; k < Image.length; k++){
+                    Image[k] = Image[k].substring(4);
+                    Image[k] = Image[k].split(",")[1];
+                    var Background = new Sprite();
+                    Background._element = document.createElement("img");
+                    Background._element.src = Image[k];
+                    Background.x = 405;
+                    Background.y = 600;
+                    Background.width = 0;
+                    Background.height = 0;
+                    scene.addChild(Background);
+                  }
+                }
+              }
+              game.popScene();
+              scene.removeChild(S_Input1);
+              Loadbutton.text = "ゲーム開始";
+              return;
+            },);
+          }
+          else{
+            game.popScene();
+            GAS("読み込み");
+          }
+          return;
+        });
+      }
+      scene.addChild(Loadbutton);
 
       var Returnbutton = new Button("戻る","light",80,40);
       Returnbutton.moveTo(30,30);
