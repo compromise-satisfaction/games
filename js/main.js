@@ -943,22 +943,36 @@ function Game_load(width,height){
         return;
       }
 
+      var Text_Area = [];
       var Ui_Button = [];
       var Button_fontSize = 15;
       var Button_color = "buttonface";
 
       function Scene_load(Scene_Name){
+        for (var i = 0; i < Text_Area.length; i++) {
+          Flag_get(Text_Area[i]._element.name+"="+Text_Area[i]._element.value)
+        }
         var Push = false;
         var Do_Save = false;
         switch(Scene_Name.split("→")[0]){
           case "使用":
-            Update--;
-            game.popScene();
             Scene_Name = Save_Datas.シーンナンバー + "で" + Use + "を使用";
             for (var i = 0; i < Game_Datas.length; i++) {
               if(Game_Datas[i].Number==Scene_Name) break;
             }
             if(i==Game_Datas.length) Scene_Name = Save_Datas.シーンナンバー + "で" + Use.split(":")[0] + "を使用";
+            for (var i = 0; i < Game_Datas.length; i++) {
+              if(Game_Datas[i].Number==Scene_Name) break;
+            }
+            if(i==Game_Datas.length) Scene_Name = Use + "を使用";
+            for (var i = 0; i < Game_Datas.length; i++) {
+              if(Game_Datas[i].Number==Scene_Name) break;
+            }
+            if(i==Game_Datas.length) Scene_Name = Use.split(":")[0] + "を使用";
+            for (var i = 0; i < Game_Datas.length; i++) {
+              if(Game_Datas[i].Number==Scene_Name) break;
+            }
+            if(i==Game_Datas.length) Scene_Name = "フラグを使用";
             break;
           case "popScene":
             Update--;
@@ -1216,6 +1230,51 @@ function Game_load(width,height){
         return;
       }
 
+      function Flag_get(Get_Data){
+        if(Get_Data=="リセット") Flag = ["セーブ時間=未設定"];
+        else{
+          if(Get_Data.indexOf("→")==-1&&Get_Data.indexOf("+")==-1&&Get_Data.indexOf("-")==-1&&Get_Data.indexOf("=")==-1){
+            for(var k = 0; k < Flag.length; k++){
+              if(Flag[k] == Get_Data) break;
+            }
+            if(k==Flag.length) Flag[Flag.length] = Get_Data;
+          }
+          else{
+            if(Get_Data.indexOf("→")>0){
+              for(var k = 0; k < Flag.length; k++){
+                if(Flag[k].split("=")[0] == Get_Data.split("→")[0]) break;
+              }
+              if(k!=Flag.length){
+                if(Get_Data.split("→")[1]=="消滅") Flag.splice(k,1);
+                else Flag[k] = Get_Data.split("→")[1];
+              }
+            }
+            if(Get_Data.indexOf("=")>0){
+              for(var k = 0; k < Flag.length; k++){
+                if(Flag[k].split("=")[0] == Get_Data.split("=")[0]) break;
+              }
+              if(k!=Flag.length) Flag[k] = Flag[k].split("=")[0] + "=" + Get_Data.split("=")[1];
+              else Flag[Flag.length] = Get_Data.split("=")[0] + "=" + Get_Data.split("=")[1];
+            }
+            if(Get_Data.indexOf("+")>0){
+              for(var k = 0; k < Flag.length; k++){
+                if(Flag[k].split("=")[0] == Get_Data.split("+")[0]) break;
+              }
+              if(k!=Flag.length) Flag[k] = Flag[k].split("=")[0] + "=" + (Flag[k].split("=")[1]*1 + Get_Data.split("+")[1]*1);
+              else Flag[Flag.length] = Get_Data.split("+")[0] + "=" + Get_Data.split("+")[1];
+            }
+            if(Get_Data.indexOf("-")>0){
+              for(var k = 0; k < Flag.length; k++){
+                if(Flag[k].split("=")[0] == Get_Data.split("-")[0]) break;
+              }
+              if(k!=Flag.length) Flag[k] = Flag[k].split("=")[0] + "=" + (Flag[k].split("=")[1]*1 - Get_Data.split("-")[1]*1);
+              else Flag[Flag.length] = Get_Data.split("-")[0] + "=-" + Get_Data.split("-")[1];
+            }
+          }
+        }
+        return;
+      }
+
       function Buttons(a){
         a = a.split(",");
         Ui_Button[i] = new Button(a[0],"light",a[3],a[4]);
@@ -1340,47 +1399,7 @@ function Game_load(width,height){
         if(Flags_Data&&F_Data==Flag){
           for(var i = 0; i < Flags_Data.length; i++){
             Flags_Data[i] = Flags_Data[i].substring(5,Flags_Data[i].length-5);
-            if(Flags_Data[i]=="リセット") Flag = ["セーブ時間=未設定"];
-            else{
-              if(Flags_Data[i].indexOf("→")==-1&&Flags_Data[i].indexOf("+")==-1&&Flags_Data[i].indexOf("-")==-1&&Flags_Data[i].indexOf("=")==-1){
-                for(var k = 0; k < Flag.length; k++){
-                  if(Flag[k] == Flags_Data[i]) break;
-                }
-                if(k==Flag.length) Flag[Flag.length] = Flags_Data[i];
-              }
-              else{
-                if(Flags_Data[i].indexOf("→")>0){
-                  for(var k = 0; k < Flag.length; k++){
-                    if(Flag[k].split("=")[0] == Flags_Data[i].split("→")[0]) break;
-                  }
-                  if(k!=Flag.length){
-                    if(Flags_Data[i].split("→")[1]=="消滅") Flag.splice(k,1);
-                    else Flag[k] = Flags_Data[i].split("→")[1];
-                  }
-                }
-                if(Flags_Data[i].indexOf("=")>0){
-                  for(var k = 0; k < Flag.length; k++){
-                    if(Flag[k].split("=")[0] == Flags_Data[i].split("=")[0]) break;
-                  }
-                  if(k!=Flag.length) Flag[k] = Flag[k].split("=")[0] + "=" + Flags_Data[i].split("=")[1];
-                  else Flag[Flag.length] = Flags_Data[i].split("=")[0] + "=" + Flags_Data[i].split("=")[1];
-                }
-                if(Flags_Data[i].indexOf("+")>0){
-                  for(var k = 0; k < Flag.length; k++){
-                    if(Flag[k].split("=")[0] == Flags_Data[i].split("+")[0]) break;
-                  }
-                  if(k!=Flag.length) Flag[k] = Flag[k].split("=")[0] + "=" + (Flag[k].split("=")[1]*1 + Flags_Data[i].split("+")[1]*1);
-                  else Flag[Flag.length] = Flags_Data[i].split("+")[0] + "=" + Flags_Data[i].split("+")[1];
-                }
-                if(Flags_Data[i].indexOf("-")>0){
-                  for(var k = 0; k < Flag.length; k++){
-                    if(Flag[k].split("=")[0] == Flags_Data[i].split("-")[0]) break;
-                  }
-                  if(k!=Flag.length) Flag[k] = Flag[k].split("=")[0] + "=" + (Flag[k].split("=")[1]*1 - Flags_Data[i].split("-")[1]*1);
-                  else Flag[Flag.length] = Flags_Data[i].split("-")[0] + "=-" + Flags_Data[i].split("-")[1];
-                }
-              }
-            }
+            Flag_get(Flags_Data[i]);
           }
           Data = Data.replace(/\(フラグ:.+?:フラグ\)/g,"");
         }
@@ -1613,6 +1632,7 @@ function Game_load(width,height){
               break;
             }
           }
+          console.log(Flag_Number[i]);
           var I_X = 0;
           var I_Y = 0;
           var I_N = 0;
@@ -1694,6 +1714,30 @@ function Game_load(width,height){
           Images(Images_Data[i]);
         }
         Data = Data.replace(/\(画像:.+?:画像\)/g,"(変換:画像)");
+      }
+
+      var Text_Areas_Data = Data.match(/\(入力:.+?:入力\)/g);
+
+      if(Text_Areas_Data){
+        var Text_Area_Number = 0;
+        for (var i = 0; i < Text_Areas_Data.length; i++) {
+          Text_Areas_Data[i] = Text_Areas_Data[i].substring(4,Text_Areas_Data[i].length-4);
+          Text_Areas_Data[i] = Text_Areas_Data[i].split(",");
+          for (var j = 0; j < Flag.length; j++) {
+            if(Text_Areas_Data[i][0]==Flag[j].split("=")[0]) break;
+          }
+          Text_Area[i] = new Entity();
+          Text_Area[i].moveTo(Text_Areas_Data[i][1]*1,Text_Areas_Data[i][2]*1);
+          Text_Area[i].width = Text_Areas_Data[i][3]*1;
+          Text_Area[i].height = Text_Areas_Data[i][4]*1;
+          Text_Area[i]._element = document.createElement("input");
+          Text_Area[i]._element.type = "text";
+          Text_Area[i]._element.name = Text_Areas_Data[i][0];
+          if(j!=Flag.length) Text_Area[i]._element.value = Flag[j].split("=")[1];
+          if(Text_Areas_Data[i][5]) Text_Area[i]._element.placeholder = Text_Areas_Data[i][5];
+          else Text_Area[i]._element.placeholder = Text_Areas_Data[i][0] + "を入力";
+        }
+        Data = Data.replace(/\(入力:.+?:入力\)/g,"(変換:入力)");
       }
 
       var Pointer = Data.match(/\(ポインタ:.+?:ポインタ\)/g);
@@ -1898,6 +1942,10 @@ function Game_load(width,height){
                 else Image[Image_Number]._element.src = Image[Image_Number].imageurl
                 Image_Number++;
                 break;
+              case "入力":
+                scene.addChild(Text_Area[Text_Area_Number]);
+                Text_Area_Number++;
+                break;
               case "ボタン":
                 Ui_Button[Button_Number].backgroundColor = Button_color;
                 Ui_Button[Button_Number]._style["font-size"] = Button_fontSize;
@@ -1965,7 +2013,7 @@ function Game_load(width,height){
                   }
                 }
                 switch (Image_TL_Data[Image_TL_Number].split(",")[1]){
-                  case "消滅する":
+                  case "消滅":
                     scene.removeChild(Move_Image);
                     break;
                   case "fadein":
