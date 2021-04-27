@@ -2021,7 +2021,7 @@ function Game_load(width,height){
                   }
                 }
                 switch (Image_TL_Data[Image_TL_Number].split(",")[1]){
-                  case "消滅する":
+                  case "消滅":
                     scene.removeChild(Move_Image);
                     break;
                   case "fadein":
