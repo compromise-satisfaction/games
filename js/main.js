@@ -956,7 +956,6 @@ function Game_load(width,height){
         var Do_Save = false;
         switch(Scene_Name.split("→")[0]){
           case "使用":
-    
             Scene_Name = Save_Datas.シーンナンバー + "で" + Use + "を使用";
             for (var i = 0; i < Game_Datas.length; i++) {
               if(Game_Datas[i].Number==Scene_Name) break;
