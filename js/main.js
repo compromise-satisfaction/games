@@ -956,6 +956,7 @@ function Game_load(width,height){
         var Do_Save = false;
         switch(Scene_Name.split("→")[0]){
           case "使用":
+    
             Scene_Name = Save_Datas.シーンナンバー + "で" + Use + "を使用";
             for (var i = 0; i < Game_Datas.length; i++) {
               if(Game_Datas[i].Number==Scene_Name) break;
@@ -964,15 +965,10 @@ function Game_load(width,height){
             for (var i = 0; i < Game_Datas.length; i++) {
               if(Game_Datas[i].Number==Scene_Name) break;
             }
-            if(i==Game_Datas.length) Scene_Name = Use + "を使用";
-            for (var i = 0; i < Game_Datas.length; i++) {
-              if(Game_Datas[i].Number==Scene_Name) break;
-            }
-            if(i==Game_Datas.length) Scene_Name = Use.split(":")[0] + "を使用";
-            for (var i = 0; i < Game_Datas.length; i++) {
-              if(Game_Datas[i].Number==Scene_Name) break;
-            }
             if(i==Game_Datas.length) Scene_Name = "フラグを使用";
+            if(Scene_Name != "フラグを使用"){
+
+            }
             break;
           case "popScene":
             Update--;
@@ -2013,7 +2009,7 @@ function Game_load(width,height){
                   }
                 }
                 switch (Image_TL_Data[Image_TL_Number].split(",")[1]){
-                  case "消滅":
+                  case "消滅する":
                     scene.removeChild(Move_Image);
                     break;
                   case "fadein":
