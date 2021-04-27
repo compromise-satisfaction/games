@@ -1567,17 +1567,30 @@ function Game_load(width,height){
                 var Save_Images_Data = Branchs(Game_Datas[i].Data,Flag8);
                 break;
             }
-            Save_Images_Data = Save_Images_Data.match(/\(画像:.+?:画像\)/g);
-            if(Save_Images_Data){
-              for (var i = 0; i < Save_Images_Data.length; i++) {
-                Save_Images_Data[i] = Save_Images_Data[i].substring(4,Save_Images_Data[i].length-4);
-                Save_Images_Data[i] = Save_Images_Data[i].split(",");
-                Plus_Text += "(画像:無し,"
-                Plus_Text += Save_Images_Data[i][1] + ",";
-                Plus_Text += Save_Images_Data[i][2] * Save[2] + Save[0]*1 + ",";
-                Plus_Text += Save_Images_Data[i][3] * Save[2] + Save[1]*1 + ",";
-                Plus_Text += Save_Images_Data[i][4] * Save[2] + ",";
-                Plus_Text += Save_Images_Data[i][5] * Save[2] + ":画像)";
+            var Save_Images_Data1 = Save_Images_Data.match(/\(画像:.+?:画像\)/g);
+            var Save_Images_Data2 = Save_Images_Data.match(/\(画像移動:.+?:画像移動\)/g);
+            if(Save_Images_Data1){
+              for (var i = 0; i < Save_Images_Data1.length; i++) {
+                Save_Images_Data1[i] = Save_Images_Data1[i].substring(4,Save_Images_Data1[i].length-4);
+                Save_Images_Data1[i] = Save_Images_Data1[i].split(",");
+                Plus_Text += "(画像:";
+                Plus_Text += Save_Images_Data1[i][0] + ",";
+                Plus_Text += Save_Images_Data1[i][1] + ",";
+                Plus_Text += Save_Images_Data1[i][2] * Save[2] + Save[0]*1 + ",";
+                Plus_Text += Save_Images_Data1[i][3] * Save[2] + Save[1]*1 + ",";
+                Plus_Text += Save_Images_Data1[i][4] * Save[2] + ",";
+                Plus_Text += Save_Images_Data1[i][5] * Save[2] + ":画像)";
+              }
+            }
+            if(Save_Images_Data2){
+              for (var i = 0; i < Save_Images_Data2.length; i++) {
+                Save_Images_Data2[i] = Save_Images_Data2[i].substring(6,Save_Images_Data2[i].length-6);
+                Save_Images_Data2[i] = Save_Images_Data2[i].split(",");
+                Plus_Text += "(画像移動:";
+                Plus_Text += Save_Images_Data2[i][0] + ",";
+                Plus_Text += Save_Images_Data2[i][1] + ",";
+                Plus_Text += Save_Images_Data2[i][2] + ",";
+                Plus_Text += Save_Images_Data2[i][3] + ":画像移動)";
               }
             }
           }
