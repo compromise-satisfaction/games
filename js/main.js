@@ -2017,6 +2017,10 @@ function Game_load(width,height){
                   case "fadeout":
                     Move_Image.tl.fadeOut(Image_TL_Data[Image_TL_Number].split(",")[2]*1);
                     break;
+                  case "scale変更":
+                    Move_Image.scaleX = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                    Move_Image.scaleY = Image_TL_Data[Image_TL_Number].split(",")[3]*1;
+                    break;
                   default:
                     Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
                     Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
