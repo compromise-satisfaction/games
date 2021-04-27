@@ -1334,10 +1334,15 @@ function Game_load(width,height){
           for (var i = 0; i < Conversion.length; i++) {
             Conversion[i] = Conversion[i].substring(4,Conversion[i].length-4);
             for (var j = 0; j < Game_Datas.length; j++) {
-              if(Game_Datas[j].Number==Conversion[i]){
-                Conversion[i] = Branchs(Game_Datas[j].Data,F_Data);
-                Data = Data.replace(/\(変換:.+?:変換\)/,Conversion[i]);
-                break;
+              if(Conversion[i]=="カンマ"){
+                Data = Data.replace(/\(変換:.+?:変換\)/,",");
+              }
+              else {
+                if(Game_Datas[j].Number==Conversion[i]){
+                  Conversion[i] = Branchs(Game_Datas[j].Data,F_Data);
+                  Data = Data.replace(/\(変換:.+?:変換\)/,Conversion[i]);
+                  break;
+                }
               }
             }
           }
