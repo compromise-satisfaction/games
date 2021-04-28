@@ -821,6 +821,12 @@ function Game_load(width,height){
 
       var scene = new Scene();                                // 新しいシーンを作る
 
+      if(!Data){
+        Data  = "(画像:無し,../image/黒.png,0,0,405,227.8125:画像)(文字情報:20,black,無し,40:文字情報)";
+        Data += "(ボタン:戻る,40,350,325,100,無し,保存箇所:ボタン)(名前:"+SceneNumber+":名前)";
+        Data += "(待機時間:5:待機時間)シーンデータの中身がありません。";
+        SceneNumber = Save_Datas.シーンナンバー;
+      }
       console.log(Data);
 
       var Now = new Date();
@@ -1212,8 +1218,12 @@ function Game_load(width,height){
               break;
             default:
               console.log(Scene_Name);
-              Scene_Name = "(文字情報:20,black,無し,65:文字情報)(ボタン:エラー,0,0,405,600,無し,スタート:ボタン)";
-              game.replaceScene(Novel_MainScene(Scene_Name,"スタート"));
+              Scene_Name  = "(名前:"+Scene_Name+":名前)";
+              Scene_Name += "(画像:無し,../image/黒.png,0,0,405,227.8125:画像)";
+              Scene_Name += "(文字情報:20,black,無し,40:文字情報)";
+              Scene_Name += "(ボタン:戻る,40,350,325,100,無し,保存箇所:ボタン)";
+              Scene_Name += "(待機時間:5:待機時間)シーンデータがありません。";
+              game.replaceScene(Novel_MainScene(Scene_Name,Save_Datas.シーンナンバー));
               break;
           }
         }
