@@ -1620,7 +1620,7 @@ function Game_load(width,height){
                 Save_Images_Data1[i] = Save_Images_Data1[i].substring(4,Save_Images_Data1[i].length-4);
                 Save_Images_Data1[i] = Save_Images_Data1[i].split(",");
                 Plus_Text += "(画像:";
-                Plus_Text += Save_Images_Data1[i][0] + ",";
+                Plus_Text += Save_Images_Data1[i][0] + k + ",";
                 Plus_Text += Save_Images_Data1[i][1] + ",";
                 Plus_Text += Save_Images_Data1[i][2] * Save[2] + Save[0]*1 + ",";
                 Plus_Text += Save_Images_Data1[i][3] * Save[2] + Save[1]*1 + ",";
@@ -1633,7 +1633,7 @@ function Game_load(width,height){
                 Save_Images_Data2[i] = Save_Images_Data2[i].substring(6,Save_Images_Data2[i].length-6);
                 Save_Images_Data2[i] = Save_Images_Data2[i].split(",");
                 Plus_Text += "(画像移動:";
-                Plus_Text += Save_Images_Data2[i][0] + ",";
+                Plus_Text += Save_Images_Data2[i][0] + k + ",";
                 Plus_Text += Save_Images_Data2[i][1] + ",";
                 Plus_Text += Save_Images_Data2[i][2] + ",";
                 Plus_Text += Save_Images_Data2[i][3] + ":画像移動)";
