@@ -857,16 +857,15 @@ function Game_load(width,height){
 
       if(Flags_small_Display){
         Flags_small_Display = Flags_small_Display[0].substring(8,Flags_small_Display[0].length-8);
-        Flags_small_Display = Flags_small_Display.split(",");
         for(var i = 0; i < Flag_Number.length; i++){
-          if(Flag_Number[i].split(":")[0]==Flags_small_Display[0]){
+          if(Flag_Number[i].split(":")[0]==Flags_small_Display){
             var F_S_N = Flag_Number[i].split(":")[1];
             break;
           }
         }
         var k = 0;
         for (var i = 0; i < Flag.length; i++) {
-          if(Flag[i].split(":")[0]==Flags_small_Display[0]){
+          if(Flag[i].split(":")[0]==Flags_small_Display){
             if(k==F_S_N) break;
             k++;
           }
@@ -879,18 +878,6 @@ function Game_load(width,height){
         }
         Data += Game_Datas[j].Data;
         Use = Flag[i].split("=")[0];
-        var I_N = 0;
-        for(var i = 0; i < Flag.length; i++){
-          if(Flag[i].split(":")[0]==Flags_small_Display[0]){
-            I_N++;
-            if(I_N==2){
-              Data += "(文字情報:20,black,無し,40:文字情報)";
-              Data += "(ボタン:←,30,490,80,80,"+Flags_small_Display[1]+",表示-"+Flags_small_Display[0]+"-表示:ボタン)";
-              Data += "(ボタン:→,295,490,80,80,"+Flags_small_Display[1]+",表示+"+Flags_small_Display[0]+"+表示:ボタン)";
-              break;
-            }
-          }
-        }
         Data = Data.replace(/\(フラグ小表示:.+?:フラグ小表示\)/g,"");
       }
 
@@ -1377,10 +1364,45 @@ function Game_load(width,height){
             Branch[i] = Branch[i].substring(7,Branch[i].length-7);
             for (var k = 0; k < F_Data.length; k++) {
               if(Branch[i].split("(内容)")[0].indexOf(">")>0){
-                if(F_Data[k].split("=")[0]==Branch[i].split("(内容)")[0].split(">")[0]){
-                  if(F_Data[k].split("=")[1]*1 > Branch[i].split("(内容)")[0].split(">")[1]*1){
+                if(Branch[i].split("(内容)")[0].indexOf("数>")>0){
+                  if(Branch[i].split("(内容)")[0].split("数>")[1]=="現在の表示フラグ"){
+                    for(var n = 0; n < Flag_Number.length; n++){
+                      if(Flag_Number[n].split(":")[0]==Branch[i].split("(内容)")[0].split("数>")[0]){
+                        var Required_Number1 = Flag_Number[n].split(":")[1]*1;
+                        Required_Number1++;
+                        break;
+                      }
+                    }
+                  }
+                  else var Required_Number1 = Branch[i].split("(内容)")[0].split("数>")[1]*1;
+                  if(Branch[i].split("(内容)")[0].split("数>")[0].indexOf("表示")>0){
+                    for(var n = 0; n < Flag_Number.length; n++){
+                      if(Flag_Number[n].split(":")[0]==Branch[i].split("(内容)")[0].split("表示数>")[0]){
+                        var Required_Number2 = Flag_Number[n].split(":")[1]*1;
+                        Required_Number2++;
+                        break;
+                      }
+                    }
+                  }
+                  else{
+                    var Required_Number2 = 0;
+                    for (var j = 0; j < F_Data.length; j++) {
+                      if(F_Data[j].split(":")[0]==Branch[i].split("(内容)")[0].split("数>")[0]){
+                        Required_Number2++;
+                      }
+                    }
+                  }
+                  if(Required_Number2 > Required_Number1){
                     Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[1]);
                     break;
+                  }
+                }
+                else{
+                  if(F_Data[k].split("=")[0]==Branch[i].split("(内容)")[0].split(">")[0]){
+                    if(F_Data[k].split("=")[1]*1 > Branch[i].split("(内容)")[0].split(">")[1]*1){
+                      Data = Data.replace(/\(フラグ所持:.+?:フラグ所持\)/,Branch[i].split("(内容)")[1]);
+                      break;
+                    }
                   }
                 }
               }
