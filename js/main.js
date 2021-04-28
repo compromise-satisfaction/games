@@ -2081,7 +2081,7 @@ function Game_load(width,height){
                     Move_Image.scaleY = Image_TL_Data[Image_TL_Number].split(",")[3]*1;
                     break;
                   case "画像変更":
-                    Move_Image.src = Image_TL_Data[Image_TL_Number].split(",")[2];
+                    Move_Image._element.src = Image_TL_Data[Image_TL_Number].split(",")[2];
                     break;
                   default:
                     Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
