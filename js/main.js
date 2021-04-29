@@ -882,9 +882,8 @@ function Game_load(width,height){
         for (var j = 0; j < Game_Datas.length; j++) {
           if(Game_Datas[j].Number==Game_Datas[k].Data.split(",")[2]) break;
         }
-        Data += Game_Datas[j].Data;
         Use = Flag[i].split("=")[0];
-        Data = Data.replace(/\(フラグ小表示:.+?:フラグ小表示\)/g,"");
+        Data = Data.replace(/\(フラグ小表示:.+?:フラグ小表示\)/g,Game_Datas[j].Data);
       }
 
       var Image = [];
