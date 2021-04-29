@@ -943,7 +943,7 @@ function Game_load(width,height){
 
       function Scene_load(Scene_Name){
         for (var i = 0; i < Text_Area.length; i++) {
-          Flag_get(Text_Area[i]._element.name+"="+Text_Area[i]._element.value)
+          Flag_get(Text_Area[i]._element.name+"="+Text_Area[i]._element.value.replace(/,/g,"(変換:カンマ:変換)"))
         }
         var Push = false;
         var Do_Save = false;
@@ -1332,7 +1332,7 @@ function Game_load(width,height){
             Conversion[i] = Conversion[i].substring(4,Conversion[i].length-4);
             for (var j = 0; j < Game_Datas.length; j++) {
               if(Conversion[i]=="カンマ"){
-                Data = Data.replace(/\(変換:.+?:変換\)/,",");
+                Data = Data.replace(/\(変換:カンマ:変換\)/,",");
               }
               else {
                 if(Game_Datas[j].Number==Conversion[i]){
