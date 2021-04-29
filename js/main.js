@@ -1231,7 +1231,18 @@ function Game_load(width,height){
       }
 
       function Flag_get(Get_Data){
-        if(Get_Data=="リセット") Flag = ["セーブ時間=未設定"];
+        if(Get_Data=="リセット"){
+          var Log_Flag = [];
+          for (var i = 0; i < Flag.length; i++) {
+            if(Flag[i].split(":")[0]=="記録"){
+              Log_Flag[Log_Flag.length] = Flag[i];
+            }
+          }
+          Flag = ["セーブ時間=未設定"];
+          for (var i = 0; i < Log_Flag.length; i++) {
+            Flag[Flag.length] = Log_Flag[i];
+          }
+        }
         else{
           if(Get_Data.indexOf("→")==-1&&Get_Data.indexOf("+")==-1&&Get_Data.indexOf("-")==-1&&Get_Data.indexOf("=")==-1){
             for(var k = 0; k < Flag.length; k++){
