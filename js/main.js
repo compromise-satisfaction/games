@@ -935,6 +935,23 @@ function Game_load(width,height){
         return;
       }
 
+      var Youtube = [];
+
+      function Youtubes(a){
+        a = a.split(",");
+        a[0]  = '<iframe src="https://www.youtube.com/embed/' + a[0];
+        a[0] += '?enablejsapi=1&controls=0&showinfo=0&autoplay=0&rel=0&vq=small"  width="' + a[3];
+        a[0] += '" height="' + a[4];
+        a[0] += '" frameborder="0" id="player"></iframe>';
+        Youtube[i] = new Entity()
+        Youtube[i].visible =  true;
+        Youtube[i]._element = document.createElement('div');
+        Youtube[i].x = a[1];
+        Youtube[i].y = a[2];
+        Youtube[i]._element.innerHTML = a[0];
+        return;
+      }
+
       var Text_Area = [];
       var Ui_Button = [];
       var Button_fontSize = 15;
@@ -1780,6 +1797,17 @@ function Game_load(width,height){
         Data = Data.replace(/\(画像:.+?:画像\)/g,"(変換:画像)");
       }
 
+      var Youtubes_Data = Data.match(/\(Youtube:.+?:Youtube\)/g);
+
+      if(Youtubes_Data){
+        var Youtube_Number = 0;
+        for (var i = 0; i < Youtubes_Data.length; i++) {
+          Youtubes_Data[i] = Youtubes_Data[i].substring(9,Youtubes_Data[i].length-9);
+          Youtubes(Youtubes_Data[i]);
+        }
+        Data = Data.replace(/\(Youtube:.+?:Youtube\)/g,"(変換:Youtube)");
+      }
+
       var Text_Areas_Data = Data.match(/\(入力:.+?:入力\)/g);
 
       if(Text_Areas_Data){
@@ -2005,6 +2033,10 @@ function Game_load(width,height){
                 }
                 else Image[Image_Number]._element.src = Image[Image_Number].imageurl
                 Image_Number++;
+                break;
+              case "Youtube":
+                scene.addChild(Youtube[Youtube_Number]);
+                Youtube_Number++;
                 break;
               case "入力":
                 scene.addChild(Text_Area[Text_Area_Number]);
