@@ -2361,22 +2361,62 @@ function Game_load(width,height){
             }
           }
         }
-        if(Map_Time==7){
+        if(Map_Time==20){
           switch(Character.今){
             case Character.動上1:
-              Character.今 = Character.動上2;
+              Character.今 = Character.上;
               Character._element.src = Character.今;
               break;
             case Character.動下1:
-              Character.今 = Character.動下2;
+              Character.今 = Character.下;
               Character._element.src = Character.今;
               break;
             case Character.動左1:
-              Character.今 = Character.動左2;
+              Character.今 = Character.左;
               Character._element.src = Character.今;
               break;
             case Character.動右1:
+              Character.今 = Character.右;
+              Character._element.src = Character.今;
+              break;
+          }
+        }
+        if(Map_Time==13){
+          switch(Character.今){
+            case Character.上:
+              Character.今 = Character.動上2;
+              Character._element.src = Character.今;
+              break;
+            case Character.下:
+              Character.今 = Character.動下2;
+              Character._element.src = Character.今;
+              break;
+            case Character.左:
+              Character.今 = Character.動左2;
+              Character._element.src = Character.今;
+              break;
+            case Character.右:
               Character.今 = Character.動右2;
+              Character._element.src = Character.今;
+              break;
+          }
+        }
+        if(Map_Time==7){
+          switch(Character.今){
+            case Character.動上2:
+              Character.今 = Character.上;
+              Character._element.src = Character.今;
+              break;
+            case Character.動下2:
+              Character.今 = Character.下;
+              Character._element.src = Character.今;
+              break;
+            case Character.動左2:
+              Character.今 = Character.左;
+              Character._element.src = Character.今;
+              break;
+            case Character.動右2:
+              Character.今 = Character.右;
               Character._element.src = Character.今;
               break;
           }
