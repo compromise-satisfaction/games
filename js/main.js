@@ -1341,11 +1341,26 @@ function Game_load(width,height){
               if(Sound_effect_volume>0) Sound_effect_volume--;
               window.localStorage.setItem("Sound_effect_volume",Sound_effect_volume);
               break;
+            case "マップ調べる":
+              if(Map_Time>0) return;
+              for (var M = 0; M < Map_area.length; M++) {
+                if(Map_area[M].x==Character_front.x&&Map_area[M].y==Character_front.y){
+                  if(Map_area[M].調べる){
+                    a[6] = Map_area[M].調べる;
+                    break;
+                  }
+                }
+              }
+              break;
             default:
+              console.log(a[6]);
               break;
           }
           Sound_branch(a[5]);
-          Scene_load(a[6]);
+          if(a[6]=="マップ調べる"){
+            Scene_load("pushScene→マップ調べる");
+          }
+          else Scene_load(a[6]);
           return;
         });
       }
@@ -1813,22 +1828,109 @@ function Game_load(width,height){
         Data = Data.replace(/\(Pad:.+?:Pad\)/g,"(変換:Pad)");
       }
 
-      var Maps_Data = Data.match(/\(Map:.+?:Map\)/);
+      var Characters_Data = Data.match(/\(キャラ:.+?:キャラ\)/);
+
+      if(Characters_Data){
+
+        Characters_Data = Characters_Data[0].substring(5,Characters_Data[0].length-5);
+        Characters_Data = Characters_Data.split(",");
+
+        var Character_front = new Sprite();
+        Character_front._element = document.createElement("img");
+        Character_front._element.src = "../image/透明.png";
+
+        var Character = new Sprite();
+        Character._element = document.createElement("img");
+        Character.x = Characters_Data[1]*27;
+        Character.y = Characters_Data[2]*27;
+        Character.上 = Characters_Data[3];
+        Character.下 = Characters_Data[4];
+        Character.左 = Characters_Data[5];
+        Character.右 = Characters_Data[6];
+        Character.動上1 = Characters_Data[7];
+        Character.動下1 = Characters_Data[8];
+        Character.動左1 = Characters_Data[9];
+        Character.動右1 = Characters_Data[10];
+        Character.動上2 = Characters_Data[11];
+        Character.動下2 = Characters_Data[12];
+        Character.動左2 = Characters_Data[13];
+        Character.動右2 = Characters_Data[14];
+        switch (Characters_Data[0]) {
+          case "上":
+            Character_front.x = Character.x;
+            Character_front.y = Character.y-27;
+            Character.今 = Character.上;
+            break;
+          case "下":
+            Character_front.x = Character.x;
+            Character_front.y = Character.y+27;
+            Character.今 = Character.下;
+            break;
+          case "左":
+            Character_front.x = Character.x-27;
+            Character_front.y = Character.y;
+            Character.今 = Character.左;
+            break;
+          case "右":
+            Character_front.x = Character.x+27;
+            Character_front.y = Character.y;
+            Character.今 = Character.右;
+            break;
+        }
+        Character._element.src = Character.今;
+        Character.width = 27*1;
+        Character.height = 27*1;
+
+        Character_front.width = 27;
+        Character_front.height = 27;
+
+        Data = Data.replace(/\(キャラ:.+?:キャラ\)/g,"(変換:キャラ)");
+      }
+
+      var Maps_Data = Data.match(/\(マップ:.+?:マップ\)/);
+
+      var Map_area = [];
 
       if(Maps_Data){
-        Maps_Data = Maps_Data[0].substring(5,Maps_Data[0].length-5);
+        var Map_area_Number = 0;
+        for (var i = 0; i < Maps_Data.length; i++) {
 
-        var map = new Map(27,27);
-        map.image = game.assets["../image/icon1.png"];
-        map.loadData(
-          [
-            [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
-          ]
-        );
+          Maps_Data[i] = Maps_Data[i].substring(5,Maps_Data[i].length-5);
+          Maps_Data[i] = Maps_Data[i].split(",");
 
-        scene.addChild(map);
+          Map_area[i] = new Sprite();
+          Map_area[i]._element = document.createElement("img");
+          switch (Maps_Data[i][0]) {
+            case "赤":
+              Map_area[i]._element.src = "../image/半透明赤.png";
+              break;
+            case "無し":
+              Map_area[i]._element.src = "../image/透明.png";
+              break;
+            default:
+              Map_area[i]._element.src = Maps_Data[i][0];
+              break;
+          }
 
-        Data = Data.replace(/\(Map:.+?:Map\)/g,"");
+          Map_area[i].x = Maps_Data[i][1]*27;
+          Map_area[i].y = Maps_Data[i][2]*27;
+          Map_area[i].データ = Maps_Data[i][3];
+          switch (Map_area[i].データ) {
+            case "■":
+              if(Maps_Data[i][4]) Map_area[i].調べる = Maps_Data[i][4];
+              break;
+            case "調べる":
+              Map_area[i].調べる = Maps_Data[i][4];
+              break;
+            case "シーン":
+              Map_area[i].シーン = Maps_Data[i][4];
+              break;
+          }
+          Map_area[i].width = 27;
+          Map_area[i].height = 27;
+
+        }
+        Data = Data.replace(/\(マップ:.+?:マップ\)/g,"(変換:マップ)");
       }
 
       var Youtubes_Data = Data.match(/\(Youtube:.+?:Youtube\)/g);
@@ -2072,6 +2174,10 @@ function Game_load(width,height){
                 scene.addChild(Youtube[Youtube_Number]);
                 Youtube_Number++;
                 break;
+              case "キャラ":
+                scene.addChild(Character);
+                scene.addChild(Character_front);
+                break;
               case "入力":
                 scene.addChild(Text_Area[Text_Area_Number]);
                 Text_Area_Number++;
@@ -2172,6 +2278,10 @@ function Game_load(width,height){
                 scene.addChild(Ui_Pad[Pad_Number]);
                 Pad_Number++;
                 break;
+              case "マップ":
+                scene.addChild(Map_area[Map_area_Number]);
+                Map_area_Number++;
+                break;
               case "次に進む":
                 Next = Next_Data;
                 break;
@@ -2237,8 +2347,60 @@ function Game_load(width,height){
       }
 
       Texts();
+      var Map_Time = 0;
 
       scene.addEventListener("enterframe",function(){
+        if(Map_Time!=0){
+          Map_Time--;
+        }
+        for (var i = 0; i < Map_area.length; i++) {
+          if(Map_area[i].シーン){
+            if(Map_area[i].x==Character.x&&Map_area[i].y==Character.y){
+              Scene_load(Map_area[i].シーン);
+              return;
+            }
+          }
+        }
+        if(Map_Time==7){
+          switch(Character.今){
+            case Character.動上1:
+              Character.今 = Character.動上2;
+              Character._element.src = Character.今;
+              break;
+            case Character.動下1:
+              Character.今 = Character.動下2;
+              Character._element.src = Character.今;
+              break;
+            case Character.動左1:
+              Character.今 = Character.動左2;
+              Character._element.src = Character.今;
+              break;
+            case Character.動右1:
+              Character.今 = Character.動右2;
+              Character._element.src = Character.今;
+              break;
+          }
+        }
+        if(Map_Time==0&&Character){
+          switch(Character.今){
+            case Character.動上2:
+              Character.今 = Character.上;
+              Character._element.src = Character.今;
+              break;
+            case Character.動下2:
+              Character.今 = Character.下;
+              Character._element.src = Character.今;
+              break;
+            case Character.動左2:
+              Character.今 = Character.左;
+              Character._element.src = Character.今;
+              break;
+            case Character.動右2:
+              Character.今 = Character.右;
+              Character._element.src = Character.今;
+              break;
+          }
+        }
         if(Next){
           if(Next_Time==0){
             Scene_load(Next);
@@ -2275,27 +2437,98 @@ function Game_load(width,height){
           Ui_Pad[i].rotation = 0;
         }
         if(game.input.up){
+          if(Character&&Map_Time==0){
+            //Map.tl.moveTo(Map.x,Map.y+27,27);
+            Character_front.x = Character.x;
+            Character_front.y = Character.y-27;
+            for (var i = 0; i < Map_area.length; i++) {
+              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                if(Map_area[i].データ=="■") break;
+              }
+            }
+            if(i==Map_area.length){
+              Map_Time = 27;
+              Character_front.tl.moveTo(Character_front.x,Character_front.y-27,27);
+              Character.tl.moveTo(Character.x,Character.y-27,27);
+              Character.今 = Character.動上1;
+              Character._element.src = Character.今;
+            }
+            else Character.今 = Character.動上2;
+          }
           for (var i = 0; i < Ui_Pad.length; i++) {
             Ui_Pad[i].frame = 5;
             Ui_Pad[i].rotation = 0;
           }
         }
         if(game.input.down){
+          if(Character&&Map_Time==0){
+            //Map.tl.moveTo(Map.x,Map.y-27,27);
+            Character_front.x = Character.x;
+            Character_front.y = Character.y+27;
+            for (var i = 0; i < Map_area.length; i++) {
+              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                if(Map_area[i].データ=="■") break;
+              }
+            }
+            if(i==Map_area.length){
+              Map_Time = 27;
+              Character_front.tl.moveTo(Character_front.x,Character_front.y+27,27);
+              Character.tl.moveTo(Character.x,Character.y+27,27);
+              Character.今 = Character.動下1;
+              Character._element.src = Character.今;
+            }
+            else Character.今 = Character.動下2;
+          }
           for (var i = 0; i < Ui_Pad.length; i++) {
             Ui_Pad[i].frame = 5;
             Ui_Pad[i].rotation = 180;
           }
         }
-        if(game.input.right){
-          for (var i = 0; i < Ui_Pad.length; i++) {
-            Ui_Pad[i].frame = 5;
-            Ui_Pad[i].rotation = 90;
-          }
-        }
         if(game.input.left){
+          if(Character&&Map_Time==0){
+            //Map.tl.moveTo(Map.x+27,Map.y,27);
+            Character_front.x = Character.x-27;
+            Character_front.y = Character.y;
+            for (var i = 0; i < Map_area.length; i++) {
+              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                if(Map_area[i].データ=="■") break;
+              }
+            }
+            if(i==Map_area.length){
+              Map_Time = 27;
+              Character_front.tl.moveTo(Character_front.x-27,Character_front.y,27);
+              Character.tl.moveTo(Character.x-27,Character.y,27);
+              Character.今 = Character.動左1;
+              Character._element.src = Character.今;
+            }
+            else Character.今 = Character.動左2;
+          }
           for (var i = 0; i < Ui_Pad.length; i++) {
             Ui_Pad[i].frame = 5;
             Ui_Pad[i].rotation = -90;
+          }
+        }
+        if(game.input.right){
+          if(Character&&Map_Time==0){
+            Character_front.x = Character.x+27;
+            Character_front.y = Character.y;
+            for (var i = 0; i < Map_area.length; i++) {
+              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                if(Map_area[i].データ=="■") break;
+              }
+            }
+            if(i==Map_area.length){
+              Map_Time = 27;
+              Character_front.tl.moveTo(Character_front.x+27,Character_front.y,27);
+              Character.tl.moveTo(Character.x+27,Character.y,27);
+              Character.今 = Character.動右1;
+              Character._element.src = Character.今;
+            }
+            else Character.今 = Character.動右2;
+          }
+          for (var i = 0; i < Ui_Pad.length; i++) {
+            Ui_Pad[i].frame = 5;
+            Ui_Pad[i].rotation = 90;
           }
         }
         return;
