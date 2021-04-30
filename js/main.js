@@ -1351,6 +1351,7 @@ function Game_load(width,height){
                   }
                 }
               }
+              if(M==Map_area.length) a[6]=="マップ調べる";
               break;
             default:
               console.log(a[6]);
@@ -1887,7 +1888,7 @@ function Game_load(width,height){
         Data = Data.replace(/\(キャラ:.+?:キャラ\)/g,"(変換:キャラ)");
       }
 
-      var Maps_Data = Data.match(/\(マップ:.+?:マップ\)/);
+      var Maps_Data = Data.match(/\(マップ:.+?:マップ\)/g);
 
       var Map_area = [];
 
@@ -1931,6 +1932,46 @@ function Game_load(width,height){
 
         }
         Data = Data.replace(/\(マップ:.+?:マップ\)/g,"(変換:マップ)");
+      }
+
+      if(HTML=="管理人"){
+        var Test = [
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
+        ];
+
+        for (var i = 0; i < Test.length; i++) {
+          for (var j = 0; j < Test[i].length; j++) {
+            Test[i][j] = new Sprite();
+            Test[i][j]._element = document.createElement("img");
+            Test[i][j]._element.src = "../image/半透明赤.png";
+            Test[i][j].x = j*27;
+            Test[i][j].y = i*27;
+            Test[i][j].width = 27;
+            Test[i][j].height = 27;
+            scene.addChild(Test[i][j]);
+            Test[i][j].addEventListener("touchstart",function(e){
+              this._element.src = "../image/透明.png";
+              return;
+            });
+          }
+        }
       }
 
       var Youtubes_Data = Data.match(/\(Youtube:.+?:Youtube\)/g);
