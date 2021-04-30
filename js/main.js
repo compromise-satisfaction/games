@@ -1797,6 +1797,40 @@ function Game_load(width,height){
         Data = Data.replace(/\(画像:.+?:画像\)/g,"(変換:画像)");
       }
 
+
+      var Ui_Pad = [];
+      var Pads_Data = Data.match(/\(Pad:.+?:Pad\)/g);
+
+      if(Pads_Data){
+        var Pad_Number = 0;
+        for (var i = 0; i < Pads_Data.length; i++) {
+          Pads_Data[i] = Pads_Data[i].substring(5,Pads_Data[i].length-5);
+          Pads_Data[i] = Pads_Data[i].split(",");
+          Ui_Pad[i] = new Pad();
+          Ui_Pad[i].x = Pads_Data[i][0]*1;
+          Ui_Pad[i].y = Pads_Data[i][1]*1;
+        }
+        Data = Data.replace(/\(Pad:.+?:Pad\)/g,"(変換:Pad)");
+      }
+
+      var Maps_Data = Data.match(/\(Map:.+?:Map\)/);
+
+      if(Maps_Data){
+        Maps_Data = Maps_Data[0].substring(5,Maps_Data[0].length-5);
+
+        var map = new Map(27,27);
+        map.image = game.assets["../image/icon1.png"];
+        map.loadData(
+          [
+            [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+          ]
+        );
+
+        scene.addChild(map);
+
+        Data = Data.replace(/\(Map:.+?:Map\)/g,"");
+      }
+
       var Youtubes_Data = Data.match(/\(Youtube:.+?:Youtube\)/g);
 
       if(Youtubes_Data){
@@ -2068,7 +2102,7 @@ function Game_load(width,height){
                 Sound_Number++
                 break;
               case "ポインタ":
-              scene.addChild(Pointer);
+                scene.addChild(Pointer);
                 break;
               case "BGM":
                 BGM_ON(BGMs_Data[BGM_Number]);
@@ -2133,6 +2167,10 @@ function Game_load(width,height){
                     break;
                 }
                 Image_TL_Number++
+                break;
+              case "Pad":
+                scene.addChild(Ui_Pad[Pad_Number]);
+                Pad_Number++;
                 break;
               case "次に進む":
                 Next = Next_Data;
@@ -2232,9 +2270,34 @@ function Game_load(width,height){
         if(Opacity < 0) Opacitys = 0.02;
         if(Opacity > 1) Opacitys = -0.02;
         Texts();
-        if(game.input.up) console.log(Flag);
-        if(game.input.down) console.log(Save_Datas);
-        if(game.input.right) console.log(Flag_Number);
+        for (var i = 0; i < Ui_Pad.length; i++) {
+          Ui_Pad[i].frame = 0;
+          Ui_Pad[i].rotation = 0;
+        }
+        if(game.input.up){
+          for (var i = 0; i < Ui_Pad.length; i++) {
+            Ui_Pad[i].frame = 5;
+            Ui_Pad[i].rotation = 0;
+          }
+        }
+        if(game.input.down){
+          for (var i = 0; i < Ui_Pad.length; i++) {
+            Ui_Pad[i].frame = 5;
+            Ui_Pad[i].rotation = 180;
+          }
+        }
+        if(game.input.right){
+          for (var i = 0; i < Ui_Pad.length; i++) {
+            Ui_Pad[i].frame = 5;
+            Ui_Pad[i].rotation = 90;
+          }
+        }
+        if(game.input.left){
+          for (var i = 0; i < Ui_Pad.length; i++) {
+            Ui_Pad[i].frame = 5;
+            Ui_Pad[i].rotation = -90;
+          }
+        }
         return;
       });
 
