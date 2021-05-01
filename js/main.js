@@ -1901,12 +1901,13 @@ function Game_load(width,height){
 
           Map_area[i] = new Sprite();
           Map_area[i]._element = document.createElement("img");
+          Map_area[i].描写 = true;
           switch (Maps_Data[i][0]) {
             case "赤":
               Map_area[i]._element.src = "../image/半透明赤.png";
               break;
             case "無し":
-              Map_area[i][0] = false;
+              Map_area[i].描写 = false;
               break;
             default:
               Map_area[i]._element.src = Maps_Data[i][0];
@@ -2320,7 +2321,7 @@ function Game_load(width,height){
                 Pad_Number++;
                 break;
               case "マップ":
-                if(Map_area[Map_area_Number][0]) scene.addChild(Map_area[Map_area_Number]);
+                if(Map_area[Map_area_Number].描写) scene.addChild(Map_area[Map_area_Number]);
                 Map_area_Number++;
                 break;
               case "次に進む":
