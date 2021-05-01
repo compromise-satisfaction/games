@@ -857,6 +857,7 @@ function Game_load(width,height){
       if(Sound_effect_volume < 10) Data = Data.replace(/\(効果音音量\)/g,"0"+Sound_effect_volume);
       else Data = Data.replace(/\(効果音音量\)/g,Sound_effect_volume);
 
+      console.log(Update);
       if(Update==1) Save_Datas.シーンナンバー = SceneNumber;
 
       var Flags_small_Display = Data.match(/\(フラグ小表示:.+?:フラグ小表示\)/g);
@@ -1928,54 +1929,6 @@ function Game_load(width,height){
 
         }
         Data = Data.replace(/\(マップ:.+?:マップ\)/g,"(変換:マップ)");
-        if(HTML=="管理人"){
-          var Test = [
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
-          ];
-
-          for (var i = 0; i < Test.length; i++) {
-            for (var j = 0; j < Test[i].length; j++) {
-              Test[i][j] = new Sprite();
-              Test[i][j]._element = document.createElement("img");
-              Test[i][j]._element.src = "../image/透明.png";
-              Test[i][j].x = j*27;
-              Test[i][j].y = i*27;
-              Test[i][j].width = 27;
-              Test[i][j].height = 27;
-              var Test_box = null;
-              scene.addChild(Test[i][j]);
-              Test[i][j].addEventListener("touchstart",function(e){
-                this._element.src = "../image/半透明赤.png";
-                this.データ = "■";
-                Test_box = "";
-                for (var m = 0; m < Test.length; m++) {
-                  for (var n = 0; n < Test[m].length; n++) {
-                    if(Test[m][n].データ) Test_box += "(マップ:赤,"+n+","+m+",■:マップ)"
-                  }
-                }
-                console.log(Test_box);
-                return;
-              });
-            }
-          }
-        }
       }
 
       var Youtubes_Data = Data.match(/\(Youtube:.+?:Youtube\)/g);
@@ -2188,8 +2141,7 @@ function Game_load(width,height){
         Name_text._element.textContent = Name_texts;
         Name_text.x = 0;
         Name_text.y = width/30 + width/16*9;
-        scene.addChild(Name_text);
-        Data = Data.replace(/\(名前:.+?:名前\)/g,"");
+        Data = Data.replace(/\(名前:.+?:名前\)/g,"(変換:名前)");
       }
 
       var Itimozis_Data = Data.match(/\(変換:.+?\)/g);
@@ -2283,6 +2235,54 @@ function Game_load(width,height){
                 Sound_branch(Sounds_Data[Sound_Number]);
                 Sound_Number++
                 break;
+              case "マップ作製":
+                var Test = [
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
+                ];
+
+                for (var i = 0; i < Test.length; i++) {
+                  for (var j = 0; j < Test[i].length; j++) {
+                    Test[i][j] = new Sprite();
+                    Test[i][j]._element = document.createElement("img");
+                    Test[i][j]._element.src = "../image/透明.png";
+                    Test[i][j].x = j*27;
+                    Test[i][j].y = i*27;
+                    Test[i][j].width = 27;
+                    Test[i][j].height = 27;
+                    var Test_box = null;
+                    scene.addChild(Test[i][j]);
+                    Test[i][j].addEventListener("touchstart",function(e){
+                      this._element.src = "../image/半透明赤.png";
+                      this.データ = "■";
+                      Test_box = "";
+                      for (var m = 0; m < Test.length; m++) {
+                        for (var n = 0; n < Test[m].length; n++) {
+                          if(Test[m][n].データ) Test_box += "(マップ:赤,"+n+","+m+",■:マップ)"
+                        }
+                      }
+                      console.log(Test_box);
+                      return;
+                    });
+                  }
+                }
+                break;
               case "ポインタ":
                 scene.addChild(Pointer);
                 break;
@@ -2349,6 +2349,9 @@ function Game_load(width,height){
                     break;
                 }
                 Image_TL_Number++
+                break;
+              case "名前":
+                scene.addChild(Name_text);
                 break;
               case "Pad":
                 scene.addChild(Ui_Pad[Pad_Number]);
