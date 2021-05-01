@@ -1823,7 +1823,7 @@ function Game_load(width,height){
 
         var Character_front = new Sprite();
         Character_front._element = document.createElement("img");
-        Character_front._element.src = "../image/透明.png";
+        Character_front._element.src = "../image/半透明赤.png";
 
         var Character = new Sprite();
         Character._element = document.createElement("img");
@@ -2090,8 +2090,10 @@ function Game_load(width,height){
         Map_Button.default_SceneNumber = Map_Button_Data[7];
         Map_Button.シーンナンバー = Map_Button.default_SceneNumber;
         Map_Button.addEventListener("touchend",function(e){
-          Sound_branch(Map_Button.sound);
-          Scene_load(Map_Button.シーンナンバー);
+          if(Map_Time==0){
+            Sound_branch(Map_Button.sound);
+            Scene_load(Map_Button.シーンナンバー);
+          }
           return;
         });
 
@@ -2562,29 +2564,43 @@ function Game_load(width,height){
           Ui_Pad[i].rotation = 0;
         }
         if(game.input.up){
+          //Map.tl.moveTo(Map.x,Map.y+27,27);
           if(Character&&Map_Time==0){
-            //Map.tl.moveTo(Map.x,Map.y+27,27);
-            Character_front.x = Character.x;
-            Character_front.y = Character.y-27;
-            for (var i = 0; i < Map_area.length; i++) {
-              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
-                if(Map_area[i].データ=="■") break;
+            if(Character.今==Character.上){
+              for (var i = 0; i < Map_area.length; i++) {
+                if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                  if(Map_area[i].データ=="■") break;
+                }
               }
+              if(i==Map_area.length){
+                for (var i = 0; i < Flag.length; i++) {
+                  if(Flag[i].split("=")[0]=="キャラY"){
+                    Flag[i] = "キャラY=" + Character_front.y/27;
+                    break;
+                  }
+                }
+                console.log(Flag[i]);
+                Map_Time = 27;
+                Character_front.tl.moveTo(Character_front.x,Character_front.y-27,27);
+                Character.tl.moveTo(Character.x,Character.y-27,27);
+                Character.今 = Character.動上1;
+                Character._element.src = Character.今;
+              }
+              else Character.今 = Character.動上2;
             }
-            if(i==Map_area.length){
-              for (var i = 0; i < Flag.length; i++) {
-                if(Flag[i].split("=")[0]=="キャラ向き") Flag[i] = "キャラ向き=上";
-                if(Flag[i].split("=")[0]=="キャラY") Flag[i] = "キャラY=" + Character_front.y/27;
-              }
-              console.log(Character_front.x/27);
-              console.log(Character_front.y/27);
-              Map_Time = 27;
-              Character_front.tl.moveTo(Character_front.x,Character_front.y-27,27);
-              Character.tl.moveTo(Character.x,Character.y-27,27);
-              Character.今 = Character.動上1;
+            else{
+              Map_Time = 6;
+              Character.今 = Character.上;
+              Character_front.x = Character.x;
+              Character_front.y = Character.y-27;
               Character._element.src = Character.今;
+              for (var i = 0; i < Flag.length; i++) {
+                if(Flag[i].split("=")[0]=="キャラ向き"){
+                  Flag[i] = "キャラ向き=上";
+                  break;
+                }
+              }
             }
-            else Character.今 = Character.動上2;
           }
           for (var i = 0; i < Ui_Pad.length; i++) {
             Ui_Pad[i].frame = 5;
@@ -2592,29 +2608,43 @@ function Game_load(width,height){
           }
         }
         if(game.input.down){
+          //Map.tl.moveTo(Map.x,Map.y-27,27);
           if(Character&&Map_Time==0){
-            //Map.tl.moveTo(Map.x,Map.y-27,27);
-            Character_front.x = Character.x;
-            Character_front.y = Character.y+27;
-            for (var i = 0; i < Map_area.length; i++) {
-              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
-                if(Map_area[i].データ=="■") break;
+            if(Character.今==Character.下){
+              for (var i = 0; i < Map_area.length; i++) {
+                if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                  if(Map_area[i].データ=="■") break;
+                }
               }
+              if(i==Map_area.length){
+                for (var i = 0; i < Flag.length; i++) {
+                  if(Flag[i].split("=")[0]=="キャラY"){
+                    Flag[i] = "キャラY=" + Character_front.y/27;
+                    break;
+                  }
+                }
+                console.log(Flag[i]);
+                Map_Time = 27;
+                Character_front.tl.moveTo(Character_front.x,Character_front.y+27,27);
+                Character.tl.moveTo(Character.x,Character.y+27,27);
+                Character.今 = Character.動下1;
+                Character._element.src = Character.今;
+              }
+              else Character.今 = Character.動下2;
             }
-            if(i==Map_area.length){
-              for (var i = 0; i < Flag.length; i++) {
-                if(Flag[i].split("=")[0]=="キャラ向き") Flag[i] = "キャラ向き=下";
-                if(Flag[i].split("=")[0]=="キャラY") Flag[i] = "キャラY=" + Character_front.y/27;
-              }
-              console.log(Character_front.x/27);
-              console.log(Character_front.y/27);
-              Map_Time = 27;
-              Character_front.tl.moveTo(Character_front.x,Character_front.y+27,27);
-              Character.tl.moveTo(Character.x,Character.y+27,27);
-              Character.今 = Character.動下1;
+            else{
+              Map_Time = 6;
+              Character.今 = Character.下;
+              Character_front.x = Character.x;
+              Character_front.y = Character.y+27;
               Character._element.src = Character.今;
+              for (var i = 0; i < Flag.length; i++) {
+                if(Flag[i].split("=")[0]=="キャラ向き"){
+                  Flag[i] = "キャラ向き=下";
+                  break;
+                }
+              }
             }
-            else Character.今 = Character.動下2;
           }
           for (var i = 0; i < Ui_Pad.length; i++) {
             Ui_Pad[i].frame = 5;
@@ -2622,29 +2652,43 @@ function Game_load(width,height){
           }
         }
         if(game.input.left){
+          //Map.tl.moveTo(Map.x+27,Map.y,27);
           if(Character&&Map_Time==0){
-            //Map.tl.moveTo(Map.x+27,Map.y,27);
-            Character_front.x = Character.x-27;
-            Character_front.y = Character.y;
-            for (var i = 0; i < Map_area.length; i++) {
-              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
-                if(Map_area[i].データ=="■") break;
+            if(Character.今==Character.左){
+              for (var i = 0; i < Map_area.length; i++) {
+                if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                  if(Map_area[i].データ=="■") break;
+                }
               }
+              if(i==Map_area.length){
+                for (var i = 0; i < Flag.length; i++) {
+                  if(Flag[i].split("=")[0]=="キャラX"){
+                    Flag[i] = "キャラX=" + Character_front.x/27;
+                    break;
+                  }
+                }
+                console.log(Flag[i]);
+                Map_Time = 27;
+                Character_front.tl.moveTo(Character_front.x-27,Character_front.y,27);
+                Character.tl.moveTo(Character.x-27,Character.y,27);
+                Character.今 = Character.動左1;
+                Character._element.src = Character.今;
+              }
+              else Character.今 = Character.動左2;
             }
-            if(i==Map_area.length){
-              for (var i = 0; i < Flag.length; i++) {
-                if(Flag[i].split("=")[0]=="キャラ向き") Flag[i] = "キャラ向き=左";
-                if(Flag[i].split("=")[0]=="キャラX") Flag[i] = "キャラX=" + Character_front.x/27;
-              }
-              console.log(Character_front.x/27);
-              console.log(Character_front.y/27);
-              Map_Time = 27;
-              Character_front.tl.moveTo(Character_front.x-27,Character_front.y,27);
-              Character.tl.moveTo(Character.x-27,Character.y,27);
-              Character.今 = Character.動左1;
+            else{
+              Map_Time = 6;
+              Character.今 = Character.左;
+              Character_front.x = Character.x-27;
+              Character_front.y = Character.y;
               Character._element.src = Character.今;
+              for (var i = 0; i < Flag.length; i++) {
+                if(Flag[i].split("=")[0]=="キャラ向き"){
+                  Flag[i] = "キャラ向き=左";
+                  break;
+                }
+              }
             }
-            else Character.今 = Character.動左2;
           }
           for (var i = 0; i < Ui_Pad.length; i++) {
             Ui_Pad[i].frame = 5;
@@ -2653,33 +2697,48 @@ function Game_load(width,height){
         }
         if(game.input.right){
           if(Character&&Map_Time==0){
-            Character_front.x = Character.x+27;
-            Character_front.y = Character.y;
-            for (var i = 0; i < Map_area.length; i++) {
-              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
-                if(Map_area[i].データ=="■") break;
+            if(Character.今==Character.右){
+              for (var i = 0; i < Map_area.length; i++) {
+                if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                  if(Map_area[i].データ=="■") break;
+                }
               }
+              if(i==Map_area.length){
+                for (var i = 0; i < Flag.length; i++) {
+                  if(Flag[i].split("=")[0]=="キャラX"){
+                    Flag[i] = "キャラX=" + Character_front.x/27;
+                    break;
+                  }
+                }
+                console.log(Flag[i]);
+                Map_Time = 27;
+                Character_front.tl.moveTo(Character_front.x+27,Character_front.y,27);
+                Character.tl.moveTo(Character.x+27,Character.y,27);
+                Character.今 = Character.動右1;
+                Character._element.src = Character.今;
+              }
+              else Character.今 = Character.動右2;
             }
-            if(i==Map_area.length){
-              for (var i = 0; i < Flag.length; i++) {
-                if(Flag[i].split("=")[0]=="キャラ向き") Flag[i] = "キャラ向き=右";
-                if(Flag[i].split("=")[0]=="キャラX") Flag[i] = "キャラX=" + Character_front.x/27;
-              }
-              console.log(Character_front.x/27);
-              console.log(Character_front.y/27);
-              Map_Time = 27;
-              Character_front.tl.moveTo(Character_front.x+27,Character_front.y,27);
-              Character.tl.moveTo(Character.x+27,Character.y,27);
-              Character.今 = Character.動右1;
+            else{
+              Map_Time = 6;
+              Character.今 = Character.右;
+              Character_front.x = Character.x+27;
+              Character_front.y = Character.y;
               Character._element.src = Character.今;
+              for (var i = 0; i < Flag.length; i++) {
+                if(Flag[i].split("=")[0]=="キャラ向き"){
+                  Flag[i] = "キャラ向き=右";
+                  break;
+                }
+              }
             }
-            else Character.今 = Character.動右2;
           }
           for (var i = 0; i < Ui_Pad.length; i++) {
             Ui_Pad[i].frame = 5;
             Ui_Pad[i].rotation = 90;
           }
         }
+        if(game.input.R) console.log("R");
         return;
       });
 
