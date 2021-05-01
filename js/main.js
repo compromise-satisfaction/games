@@ -1919,10 +1919,14 @@ function Game_load(width,height){
           Map_area[i].データ = Maps_Data[i][3];
           switch (Map_area[i].データ) {
             case "■":
-              if(Maps_Data[i][4]) Map_area[i].調べる = Maps_Data[i][4];
+              if(Maps_Data[i][4]){
+                Map_area[i].ボタン = Maps_Data[i][4];
+                Map_area[i].調べる = Maps_Data[i][5];
+              }
               break;
             case "調べる":
-              Map_area[i].調べる = Maps_Data[i][4];
+              Map_area[i].ボタン = Maps_Data[i][4];
+              Map_area[i].調べる = Maps_Data[i][5];
               break;
             case "シーン":
               Map_area[i].シーン = Maps_Data[i][4];
