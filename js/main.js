@@ -1341,21 +1341,6 @@ function Game_load(width,height){
               if(Sound_effect_volume>0) Sound_effect_volume--;
               window.localStorage.setItem("Sound_effect_volume",Sound_effect_volume);
               break;
-            case "マップ調べる":
-              if(Map_Time>0) return;
-              for (var M = 0; M < Map_area.length; M++) {
-                if(Map_area[M].x==Character_front.x&&Map_area[M].y==Character_front.y){
-                  if(Map_area[M].調べる){
-                    Sound_branch(a[5]);
-                    Scene_load(Map_area[M].調べる);
-                    return;
-                  }
-                }
-              }
-              Sound_branch(a[5]);
-              Scene_load("pushScene→マップ調べる");
-              return;
-              break;
             default:
               console.log(a[6]);
               break;
@@ -1842,21 +1827,24 @@ function Game_load(width,height){
 
         var Character = new Sprite();
         Character._element = document.createElement("img");
-        Character.x = Characters_Data[1]*27;
-        Character.y = Characters_Data[2]*27;
-        Character.上 = Characters_Data[3];
-        Character.下 = Characters_Data[4];
-        Character.左 = Characters_Data[5];
-        Character.右 = Characters_Data[6];
-        Character.動上1 = Characters_Data[7];
-        Character.動下1 = Characters_Data[8];
-        Character.動左1 = Characters_Data[9];
-        Character.動右1 = Characters_Data[10];
-        Character.動上2 = Characters_Data[11];
-        Character.動下2 = Characters_Data[12];
-        Character.動左2 = Characters_Data[13];
-        Character.動右2 = Characters_Data[14];
-        switch (Characters_Data[0]) {
+        Character.上 = Characters_Data[0];
+        Character.下 = Characters_Data[1];
+        Character.左 = Characters_Data[2];
+        Character.右 = Characters_Data[3];
+        Character.動上1 = Characters_Data[4];
+        Character.動下1 = Characters_Data[5];
+        Character.動左1 = Characters_Data[6];
+        Character.動右1 = Characters_Data[7];
+        Character.動上2 = Characters_Data[8];
+        Character.動下2 = Characters_Data[9];
+        Character.動左2 = Characters_Data[10];
+        Character.動右2 = Characters_Data[11];
+        for (var i = 0; i < Flag.length; i++) {
+          if(Flag[i].split("=")[0]=="キャラX") Character.x = Flag[i].split("=")[1]*27;
+          if(Flag[i].split("=")[0]=="キャラY") Character.y = Flag[i].split("=")[1]*27;
+          if(Flag[i].split("=")[0]=="キャラ向き") Character.今 = Flag[i].split("=")[1];
+        }
+        switch (Character.今) {
           case "上":
             Character_front.x = Character.x;
             Character_front.y = Character.y-27;
@@ -1921,12 +1909,16 @@ function Game_load(width,height){
             case "■":
               if(Maps_Data[i][4]){
                 Map_area[i].ボタン = Maps_Data[i][4];
-                Map_area[i].調べる = Maps_Data[i][5];
+                Map_area[i].ボタンサイズ = Maps_Data[i][5];
+                Map_area[i].ボタン音 = Maps_Data[i][6];
+                Map_area[i].調べる = Maps_Data[i][7];
               }
               break;
             case "調べる":
               Map_area[i].ボタン = Maps_Data[i][4];
-              Map_area[i].調べる = Maps_Data[i][5];
+              Map_area[i].ボタンサイズ = Maps_Data[i][5];
+              Map_area[i].ボタン音 = Maps_Data[i][6];
+              Map_area[i].調べる = Maps_Data[i][7];
               break;
             case "シーン":
               Map_area[i].シーン = Maps_Data[i][4];
@@ -2081,6 +2073,31 @@ function Game_load(width,height){
         Data = Data.replace(/\(ボタン:.+?:ボタン\)/g,"(変換:ボタン)");
       }
 
+      var Map_Button_Data = Data.match(/\(マップボタン:.+?:マップボタン\)/g);
+
+      if(Map_Button_Data){
+
+        Map_Button_Data = Map_Button_Data[0].substring(8,Map_Button_Data[0].length-8);
+        Map_Button_Data = Map_Button_Data.split(",");
+
+        var Map_Button = new Button(Map_Button_Data[0],"light",Map_Button_Data[3],Map_Button_Data[4]);
+        Map_Button.moveTo(Map_Button_Data[1]*1,Map_Button_Data[2]*1);
+        Map_Button.default_text = Map_Button.text;
+        Map_Button.default_font_size = Map_Button_Data[5];
+        Map_Button._style["font-size"] = Map_Button.default_font_size;
+        Map_Button.default_sound = Map_Button_Data[6];
+        Map_Button.sound = Map_Button.default_sound;
+        Map_Button.default_SceneNumber = Map_Button_Data[7];
+        Map_Button.シーンナンバー = Map_Button.default_SceneNumber;
+        Map_Button.addEventListener("touchend",function(e){
+          Sound_branch(Map_Button.sound);
+          Scene_load(Map_Button.シーンナンバー);
+          return;
+        });
+
+        Data = Data.replace(/\(マップボタン:.+?:マップボタン\)/g,"(変換:マップボタン)");
+      }
+
       var Text_informations_Data = Data.match(/\(文字情報:.+?:文字情報\)/g);
 
       if(Text_informations_Data){
@@ -2227,6 +2244,9 @@ function Game_load(width,height){
               case "入力":
                 scene.addChild(Text_Area[Text_Area_Number]);
                 Text_Area_Number++;
+                break;
+              case "マップボタン":
+                scene.addChild(Map_Button);
                 break;
               case "ボタン":
                 Ui_Button[Button_Number].backgroundColor = Button_color;
@@ -2399,6 +2419,25 @@ function Game_load(width,height){
         if(Map_Time!=0){
           Map_Time--;
         }
+        if(Map_Button){
+          for (var i = 0; i < Map_area.length; i++) {
+            if(Map_area[i].調べる){
+              if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
+                Map_Button.text = Map_area[i].ボタン;
+                Map_Button._style["font-size"] = Map_area[i].ボタンサイズ;
+                Map_Button.sound = Map_area[i].ボタン音;
+                Map_Button.シーンナンバー = Map_area[i].調べる;
+                break;
+              }
+            }
+          }
+          if(i==Map_area.length){
+            Map_Button.text = Map_Button.default_text;
+            Map_Button._style["font-size"] = Map_Button.default_font_size;
+            Map_Button.sound = Map_Button.default_sound;
+            Map_Button.シーンナンバー = Map_Button.default_SceneNumber;
+          }
+        }
         for (var i = 0; i < Map_area.length; i++) {
           if(Map_area[i].シーン){
             if(Map_area[i].x==Character.x&&Map_area[i].y==Character.y){
@@ -2533,6 +2572,12 @@ function Game_load(width,height){
               }
             }
             if(i==Map_area.length){
+              for (var i = 0; i < Flag.length; i++) {
+                if(Flag[i].split("=")[0]=="キャラ向き") Flag[i] = "キャラ向き=上";
+                if(Flag[i].split("=")[0]=="キャラY") Flag[i] = "キャラY=" + Character_front.y/27;
+              }
+              console.log(Character_front.x/27);
+              console.log(Character_front.y/27);
               Map_Time = 27;
               Character_front.tl.moveTo(Character_front.x,Character_front.y-27,27);
               Character.tl.moveTo(Character.x,Character.y-27,27);
@@ -2557,6 +2602,12 @@ function Game_load(width,height){
               }
             }
             if(i==Map_area.length){
+              for (var i = 0; i < Flag.length; i++) {
+                if(Flag[i].split("=")[0]=="キャラ向き") Flag[i] = "キャラ向き=下";
+                if(Flag[i].split("=")[0]=="キャラY") Flag[i] = "キャラY=" + Character_front.y/27;
+              }
+              console.log(Character_front.x/27);
+              console.log(Character_front.y/27);
               Map_Time = 27;
               Character_front.tl.moveTo(Character_front.x,Character_front.y+27,27);
               Character.tl.moveTo(Character.x,Character.y+27,27);
@@ -2581,6 +2632,12 @@ function Game_load(width,height){
               }
             }
             if(i==Map_area.length){
+              for (var i = 0; i < Flag.length; i++) {
+                if(Flag[i].split("=")[0]=="キャラ向き") Flag[i] = "キャラ向き=左";
+                if(Flag[i].split("=")[0]=="キャラX") Flag[i] = "キャラX=" + Character_front.x/27;
+              }
+              console.log(Character_front.x/27);
+              console.log(Character_front.y/27);
               Map_Time = 27;
               Character_front.tl.moveTo(Character_front.x-27,Character_front.y,27);
               Character.tl.moveTo(Character.x-27,Character.y,27);
@@ -2604,6 +2661,12 @@ function Game_load(width,height){
               }
             }
             if(i==Map_area.length){
+              for (var i = 0; i < Flag.length; i++) {
+                if(Flag[i].split("=")[0]=="キャラ向き") Flag[i] = "キャラ向き=右";
+                if(Flag[i].split("=")[0]=="キャラX") Flag[i] = "キャラX=" + Character_front.x/27;
+              }
+              console.log(Character_front.x/27);
+              console.log(Character_front.y/27);
               Map_Time = 27;
               Character_front.tl.moveTo(Character_front.x+27,Character_front.y,27);
               Character.tl.moveTo(Character.x+27,Character.y,27);
