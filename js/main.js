@@ -1307,37 +1307,38 @@ function Game_load(width,height){
         a = a.split(",");
         Ui_Button[i] = new Button(a[0],"light",a[3],a[4]);
         Ui_Button[i].moveTo(a[1]*1,a[2]*1);
+        Ui_Button[i].シーンナンバー = a[6];
         Ui_Button[i].addEventListener("touchend",function(e){
           switch (a[6].split("→")[0]) {
             case "BGM+":
-              a[6] = a[6].substring(5);
+              this.シーンナンバー = a[6].substring(5);
               if(BGM_volume<10) BGM_volume++;
               BGM.volume = BGM_volume/10;
               window.localStorage.setItem("BGM_volume",BGM_volume);
               break;
             case "BGM-":
-              a[6] = a[6].substring(5);
+              this.シーンナンバー = a[6].substring(5);
               if(BGM_volume>0) BGM_volume--;
               BGM.volume = BGM_volume/10;
               window.localStorage.setItem("BGM_volume",BGM_volume);
               break;
             case "音声+":
-              a[6] = a[6].substring(4);
+              this.シーンナンバー = a[6].substring(4);
               if(Voice_volume<10) Voice_volume++;
               window.localStorage.setItem("Voice_volume",Voice_volume);
               break;
             case "音声-":
-              a[6] = a[6].substring(4);
+              this.シーンナンバー = a[6].substring(4);
               if(Voice_volume>0) Voice_volume--;
               window.localStorage.setItem("Voice_volume",Voice_volume);
               break;
             case "効果音+":
-              a[6] = a[6].substring(5);
+              this.シーンナンバー = a[6].substring(5);
               if(Sound_effect_volume<10) Sound_effect_volume++;
               window.localStorage.setItem("Sound_effect_volume",Sound_effect_volume);
               break;
             case "効果音-":
-              a[6] = a[6].substring(5);
+              this.シーンナンバー = a[6].substring(5);
               if(Sound_effect_volume>0) Sound_effect_volume--;
               window.localStorage.setItem("Sound_effect_volume",Sound_effect_volume);
               break;
@@ -1346,22 +1347,22 @@ function Game_load(width,height){
               for (var M = 0; M < Map_area.length; M++) {
                 if(Map_area[M].x==Character_front.x&&Map_area[M].y==Character_front.y){
                   if(Map_area[M].調べる){
-                    a[6] = Map_area[M].調べる;
+                    this.シーンナンバー = Map_area[M].調べる;
                     break;
                   }
                 }
               }
-              if(M==Map_area.length) a[6]=="マップ調べる";
+              if(M==Map_area.length) this.シーンナンバー=="マップ調べる";
               break;
             default:
               console.log(a[6]);
               break;
           }
           Sound_branch(a[5]);
-          if(a[6]=="マップ調べる"){
+          if(this.シーンナンバー=="マップ調べる"){
             Scene_load("pushScene→マップ調べる");
           }
-          else Scene_load(a[6]);
+          else Scene_load(this.シーンナンバー);
           return;
         });
       }
