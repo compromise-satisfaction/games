@@ -931,7 +931,6 @@ function Game_load(width,height){
             });
           }
         }
-        scene.addChild(Image[i]);
         return;
       }
 
@@ -1929,44 +1928,52 @@ function Game_load(width,height){
 
         }
         Data = Data.replace(/\(マップ:.+?:マップ\)/g,"(変換:マップ)");
-      }
+        if(HTML=="管理人"){
+          var Test = [
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+            [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
+          ];
 
-      if(HTML=="管理人"){
-        var Test = [
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-          [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
-        ];
-
-        for (var i = 0; i < Test.length; i++) {
-          for (var j = 0; j < Test[i].length; j++) {
-            Test[i][j] = new Sprite();
-            Test[i][j]._element = document.createElement("img");
-            Test[i][j]._element.src = "../image/半透明赤.png";
-            Test[i][j].x = j*27;
-            Test[i][j].y = i*27;
-            Test[i][j].width = 27;
-            Test[i][j].height = 27;
-            scene.addChild(Test[i][j]);
-            Test[i][j].addEventListener("touchstart",function(e){
-              this._element.src = "../image/透明.png";
-              return;
-            });
+          for (var i = 0; i < Test.length; i++) {
+            for (var j = 0; j < Test[i].length; j++) {
+              Test[i][j] = new Sprite();
+              Test[i][j]._element = document.createElement("img");
+              Test[i][j]._element.src = "../image/透明.png";
+              Test[i][j].x = j*27;
+              Test[i][j].y = i*27;
+              Test[i][j].width = 27;
+              Test[i][j].height = 27;
+              var Test_box = null;
+              scene.addChild(Test[i][j]);
+              Test[i][j].addEventListener("touchstart",function(e){
+                this._element.src = "../image/半透明赤.png";
+                this.データ = "■";
+                Test_box = "";
+                for (var m = 0; m < Test.length; m++) {
+                  for (var n = 0; n < Test[m].length; n++) {
+                    if(Test[m][n].データ) Test_box += "(マップ:赤,"+n+","+m+",■:マップ)"
+                  }
+                }
+                console.log(Test_box);
+                return;
+              });
+            }
           }
         }
       }
@@ -2233,6 +2240,7 @@ function Game_load(width,height){
                   Image[Image_Number]._element.src = Branchs(Game_Datas[Used].Data,Flag).split(",")[0];
                 }
                 else Image[Image_Number]._element.src = Image[Image_Number].imageurl
+                scene.addChild(Image[Image_Number]);
                 Image_Number++;
                 break;
               case "Youtube":
