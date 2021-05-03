@@ -126,7 +126,7 @@ function Game_load(width,height){
   var game = new Game(width,height);
   game.fps = 100;
   game.preload("../image/白.png");
-  game.preload("../image/Main.png")
+  game.preload("../image/Main.png");
   game.preload("../image/Hand.png");
   game.preload("../image/stone.png");
   game.preload("../image/V_or_D.png");
