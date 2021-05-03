@@ -2155,10 +2155,10 @@ function Game_load(width,height){
       }
 
       var Text = [];
-      var PX = width/20;
+      var PX = 20;//width/20;
       var Text_Interval = PX;
-      var Text_X = width/20;
-      var Text_Y = width/20 + width/20 + width/16*9;
+      var Text_X = PX;//width/20;
+      var Text_Y = 270;//width/20 + width/20 + width/16*9;
       var Text_Sound = "無し";
       var Text_Color = "black";
       var Text_Number = 0;
@@ -2419,6 +2419,10 @@ function Game_load(width,height){
           Text[Text.length-1]._style.color = Text_Color;
         }
         Text_X += Text_Interval;
+        if(Text_X + Text_Interval > 405){
+          Text_X  = PX;
+          Text_Y += PX*1.5;
+        }
         if(FPS > 0) Sound_branch(Text_Sound);
         scene.addChild(Text[Text.length-1]);
         Text_Number++;
