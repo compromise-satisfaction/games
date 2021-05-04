@@ -62,7 +62,7 @@ enchant.ui.Pad = enchant.Class.create(enchant.Sprite, {
      */
     initialize: function() {
         var core = enchant.Core.instance;
-        var image = core.assets['../image/pad.png'];
+        var image = core.assets["../image/pad.png"];
         enchant.Sprite.call(this, image.width / 2, image.height);
         this.image = image;
         this.input = { left: false, right: false, up: false, down: false };
