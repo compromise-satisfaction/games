@@ -60,11 +60,13 @@ enchant.ui.Pad = enchant.Class.create(enchant.Sprite, {
      * @constructs
      * @extends enchant.Sprite
      */
-    initialize: function() {
+    initialize: function(Pad_image,Pad_width,Pad_height) {
         var core = enchant.Core.instance;
-        var image = core.assets["../image/pad.png"];
-        enchant.Sprite.call(this, image.width / 2, image.height);
-        this.image = image;
+        //var image = "../image/透明.png";
+        enchant.Sprite.call(this,Pad_width,Pad_height);
+        this._element = document.createElement("img");
+        this._element.src = Pad_image;
+        //this.image = image;
         this.input = { left: false, right: false, up: false, down: false };
         this.addEventListener('touchstart', function(e) {
             this._updateInput(this._detectInput(e.localX, e.localY));
@@ -80,7 +82,7 @@ enchant.ui.Pad = enchant.Class.create(enchant.Sprite, {
         x -= this.width * 0.5;
         y -= this.height * 0.5;
         var input = { left: false, right: false, up: false, down: false };
-        if (x * x + y * y <= 2500 && x * x + y * y > 200) {
+        if (x * x + y * y <= (this.width/2)^2 && x * x + y * y > this.width * 2) {
             if (x < 0 && y < x * x * 0.1 && y > x * x * -0.1) {
                 input.left = true;
             }

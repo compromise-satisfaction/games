@@ -1811,9 +1811,11 @@ function Game_load(width,height){
         for (var i = 0; i < Pads_Data.length; i++) {
           Pads_Data[i] = Pads_Data[i].substring(5,Pads_Data[i].length-5);
           Pads_Data[i] = Pads_Data[i].split(",");
-          Ui_Pad[i] = new Pad();
-          Ui_Pad[i].x = Pads_Data[i][0]*1;
-          Ui_Pad[i].y = Pads_Data[i][1]*1;
+          Ui_Pad[i] = new Pad(Pads_Data[i][0],Pads_Data[i][4]*1,Pads_Data[i][5]*1);
+          Ui_Pad[i].default_imageurl = Pads_Data[i][0];
+          Ui_Pad[i].keyDOWN_imageurl = Pads_Data[i][1];
+          Ui_Pad[i].x = Pads_Data[i][2]*1;
+          Ui_Pad[i].y = Pads_Data[i][3]*1;
         }
         Data = Data.replace(/\(Pad:.+?:Pad\)/g,"(変換:Pad)");
       }
@@ -2579,7 +2581,7 @@ function Game_load(width,height){
         if(Opacity > 1) Opacitys = -0.02;
         Texts();
         for (var i = 0; i < Ui_Pad.length; i++) {
-          Ui_Pad[i].frame = 0;
+          Ui_Pad[i]._element.src = Ui_Pad[i].default_imageurl;
           Ui_Pad[i].rotation = 0;
         }
         if(game.input.up){
@@ -2622,8 +2624,8 @@ function Game_load(width,height){
             }
           }
           for (var i = 0; i < Ui_Pad.length; i++) {
-            Ui_Pad[i].frame = 5;
             Ui_Pad[i].rotation = 0;
+            Ui_Pad[i]._element.src = Ui_Pad[i].keyDOWN_imageurl;
           }
         }
         if(game.input.down){
@@ -2666,8 +2668,8 @@ function Game_load(width,height){
             }
           }
           for (var i = 0; i < Ui_Pad.length; i++) {
-            Ui_Pad[i].frame = 5;
             Ui_Pad[i].rotation = 180;
+            Ui_Pad[i]._element.src = Ui_Pad[i].keyDOWN_imageurl;
           }
         }
         if(game.input.left){
@@ -2710,8 +2712,8 @@ function Game_load(width,height){
             }
           }
           for (var i = 0; i < Ui_Pad.length; i++) {
-            Ui_Pad[i].frame = 5;
             Ui_Pad[i].rotation = -90;
+            Ui_Pad[i]._element.src = Ui_Pad[i].keyDOWN_imageurl;
           }
         }
         if(game.input.right){
@@ -2753,8 +2755,8 @@ function Game_load(width,height){
             }
           }
           for (var i = 0; i < Ui_Pad.length; i++) {
-            Ui_Pad[i].frame = 5;
             Ui_Pad[i].rotation = 90;
+            Ui_Pad[i]._element.src = Ui_Pad[i].keyDOWN_imageurl;
           }
         }
         if(game.input.R) console.log("R");
