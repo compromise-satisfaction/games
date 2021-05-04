@@ -958,6 +958,10 @@ function Game_load(width,height){
       var Button_color = "buttonface";
 
       function Scene_load(Scene_Name){
+        game.input.up = false;
+        game.input.down = false;
+        game.input.left = false;
+        game.input.right = false;
         for (var i = 0; i < Text_Area.length; i++) {
           Flag_get(Text_Area[i]._element.name+"="+Text_Area[i]._element.value.replace(/,/g,"(変換:カンマ:変換)"))
         }
