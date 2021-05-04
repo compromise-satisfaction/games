@@ -47,7 +47,6 @@
 /**
  * @type {Object}
  */
- enchant.ui = { assets: ["../image/pad.png"] };
  //enchant.ui = { assets: ['../image/pad.png', '../image/apad.png', '../image/icon0.png', '../image/font0.png'] };
 
 /**
