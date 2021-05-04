@@ -2346,8 +2346,24 @@ function Game_load(width,height){
                     Move_Image._element.src = Image_TL_Data[Image_TL_Number].split(",")[2];
                     break;
                   default:
-                    Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
-                    Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                    if(Image_TL_Data[Image_TL_Number].split(",")[1].indexOf("+")==0){
+                      Move_Image.VX = Image_TL_Data[Image_TL_Number].x + Image_TL_Data[Image_TL_Number].split(",")[1]*1;
+                    }
+                    else if(Image_TL_Data[Image_TL_Number].split(",")[1].indexOf("-")==0){
+                      Move_Image.VX = Image_TL_Data[Image_TL_Number].x - Image_TL_Data[Image_TL_Number].split(",")[1]*1;
+                    }
+                    else{
+                      Move_Image.VX = Image_TL_Data[Image_TL_Number].split(",")[1]*1;
+                    }
+                    if(Image_TL_Data[Image_TL_Number].split(",")[2].indexOf("+")==0){
+                      Move_Image.VY = Image_TL_Data[Image_TL_Number].y + Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                    }
+                    else if(Image_TL_Data[Image_TL_Number].split(",")[2].indexOf("-")==0){
+                      Move_Image.VY = Image_TL_Data[Image_TL_Number].y - Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                    }
+                    else{
+                      Move_Image.VY = Image_TL_Data[Image_TL_Number].split(",")[2]*1;
+                    }
                     Move_Image.VA = Image_TL_Data[Image_TL_Number].split(",")[3]*1;
                     Move_Image.tl.moveTo(Move_Image.VX,Move_Image.VY,Move_Image.VA);
                     break;
