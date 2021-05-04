@@ -60,10 +60,10 @@ enchant.ui.Pad = enchant.Class.create(enchant.Sprite, {
      * @constructs
      * @extends enchant.Sprite
      */
-    initialize: function(Pad_image,Pad_width,Pad_height) {
+    initialize: function(Pad_image,Pad_size) {
         var core = enchant.Core.instance;
         //var image = "../image/透明.png";
-        enchant.Sprite.call(this,Pad_width,Pad_height);
+        enchant.Sprite.call(this,Pad_size,Pad_size);
         this._element = document.createElement("img");
         this._element.src = Pad_image;
         //this.image = image;

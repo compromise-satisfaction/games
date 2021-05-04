@@ -1811,7 +1811,7 @@ function Game_load(width,height){
         for (var i = 0; i < Pads_Data.length; i++) {
           Pads_Data[i] = Pads_Data[i].substring(5,Pads_Data[i].length-5);
           Pads_Data[i] = Pads_Data[i].split(",");
-          Ui_Pad[i] = new Pad(Pads_Data[i][0],Pads_Data[i][4]*1,Pads_Data[i][5]*1);
+          Ui_Pad[i] = new Pad(Pads_Data[i][0],Pads_Data[i][4]*1);
           Ui_Pad[i].default_imageurl = Pads_Data[i][0];
           Ui_Pad[i].keyDOWN_imageurl = Pads_Data[i][1];
           Ui_Pad[i].x = Pads_Data[i][2]*1;
