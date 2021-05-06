@@ -2846,6 +2846,15 @@ function Game_load(width,height){
       scene.addEventListener("touchend",function(e){
         console.log(e.x);
         console.log(e.y);
+        for (var k = 0; k < Flag.length; k++) {
+          if(Flag[k].split("=")[0]=="マップX") var Map_X = Flag[k].split("=")[1]*1;
+          if(Flag[k].split("=")[0]=="マップY") var Map_Y = Flag[k].split("=")[1]*1;
+        }
+        var EX = e.x/27 + "";
+        var EY = e.y/27 + "";
+        EX = EX.split(".")[0]*1;
+        EY = EY.split(".")[0]*1;
+        console.log("(マップ:赤,"+ (EX + Map_X) +"," + (EY + Map_Y) + ",■:マップ)");
       });
 
       return scene;
