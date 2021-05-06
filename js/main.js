@@ -2476,13 +2476,15 @@ function Game_load(width,height){
             Map_Button.シーンナンバー = Map_Button.default_SceneNumber;
           }
         }
-        for (var i = 0; i < Map_area.length; i++) {
-          if(Map_area[i].シーン){
-            if(Map_area[i].x==Character.x&&Map_area[i].y==Character.y){
-              Scene_load(Map_area[i].シーン);
-              return;
+        if(Map_Time==0){
+          for (var i = 0; i < Map_area.length; i++) {
+            if(Map_area[i].シーン){
+              if(Map_area[i].x==Character.x&&Map_area[i].y==Character.y){
+                Scene_load(Map_area[i].シーン);
+                return;
+              }
             }
-          }
+          }  
         }
         if(Map_Time==20){
           switch(Character.今){
