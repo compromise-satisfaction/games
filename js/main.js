@@ -1916,7 +1916,6 @@ function Game_load(width,height){
       if(Maps_Data){
         var Map_area_Number = 0;
         for (var i = 0; i < Maps_Data.length; i++) {
-
           Maps_Data[i] = Maps_Data[i].substring(5,Maps_Data[i].length-5);
           Maps_Data[i] = Maps_Data[i].split(",");
 
@@ -1966,7 +1965,6 @@ function Game_load(width,height){
           }
           Map_area[i].width = 27;
           Map_area[i].height = 27;
-
         }
         Data = Data.replace(/\(マップ:.+?:マップ\)/g,"(変換:マップ)");
       }
@@ -2280,52 +2278,31 @@ function Game_load(width,height){
                 Sound_Number++
                 break;
               case "マップ作製":
-                var Test = [
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-                  [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
-                ];
-
-                for (var i = 0; i < Test.length; i++) {
-                  for (var j = 0; j < Test[i].length; j++) {
-                    Test[i][j] = new Sprite();
-                    Test[i][j]._element = document.createElement("img");
-                    Test[i][j]._element.src = "../image/透明.png";
-                    Test[i][j].x = j*27;
-                    Test[i][j].y = i*27;
-                    Test[i][j].width = 27;
-                    Test[i][j].height = 27;
-                    var Test_box = null;
-                    scene.addChild(Test[i][j]);
-                    Test[i][j].addEventListener("touchstart",function(e){
-                      this._element.src = "../image/半透明赤.png";
-                      this.データ = "■";
-                      Test_box = "";
-                      for (var m = 0; m < Test.length; m++) {
-                        for (var n = 0; n < Test[m].length; n++) {
-                          if(Test[m][n].データ) Test_box += "(マップ:赤,"+n+","+m+",■:マップ)"
-                        }
-                      }
-                      console.log(Test_box);
-                      return;
-                    });
+                var Map_text = "";
+                scene.addEventListener("touchend",function(e){
+                  Map_area[Map_area.length] = new Sprite();
+                  Map_area[Map_area.length-1]._element = document.createElement("img");
+                  Map_area[Map_area.length-1].描写 = true;
+                  Map_area[Map_area.length-1]._element.src = "../image/半透明赤.png";
+                  for (var k = 0; k < Flag.length; k++) {
+                    if(Flag[k].split("=")[0]=="マップX") var Map_X = Flag[k].split("=")[1]*1;
+                    if(Flag[k].split("=")[0]=="マップY") var Map_Y = Flag[k].split("=")[1]*1;
                   }
-                }
+                  var EX = e.x/27 + "";
+                  var EY = e.y/27 + "";
+                  EX = EX.split(".")[0]*1;
+                  EY = EY.split(".")[0]*1;
+                  Map_area[Map_area.length-1].x = EX;
+                  Map_area[Map_area.length-1].y = EY;
+                  Map_area[Map_area.length-1].x *= 27;
+                  Map_area[Map_area.length-1].y *= 27;
+                  Map_area[Map_area.length-1].データ = "■";
+                  Map_area[Map_area.length-1].width = 27;
+                  Map_area[Map_area.length-1].height = 27;
+                  scene.addChild(Map_area[Map_area.length-1]);
+                  Map_text += "(マップ:赤,"+ (EX + Map_X) +"," + (EY + Map_Y) +",■:マップ)";
+                  console.log(Map_text);
+                });
                 break;
               case "ポインタ":
                 scene.addChild(Pointer);
