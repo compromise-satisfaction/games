@@ -959,7 +959,7 @@ function Game_load(width,height){
           Map_Images_Data[i] = Map_Images_Data[i].substring(7,Map_Images_Data[i].length-7);
           Map_Images(Map_Images_Data[i]);
         }
-        Data = Data.replace(/\(マップ画像:.+?:マップ画像\)/g,"(変換:マップ画像)");
+        Data = Data.replace(/\(マップ画像:.+?:マップ画像\)/g,"(変換:マップ画像)(画像:白背景,../image/白.png,-100,227.8125,605,600:画像)");
       }
 
       var Youtube = [];
@@ -1935,8 +1935,15 @@ function Game_load(width,height){
               break;
           }
 
-          Map_area[i].x = Maps_Data[i][1]*27;
-          Map_area[i].y = Maps_Data[i][2]*27;
+          for (var k = 0; k < Flag.length; k++) {
+            if(Flag[k].split("=")[0]=="マップX") var Map_X = Flag[k].split("=")[1]*1;
+            if(Flag[k].split("=")[0]=="マップY") var Map_Y = Flag[k].split("=")[1]*1;
+          }
+
+          Map_area[i].x = Maps_Data[i][1]*1 - Map_X;
+          Map_area[i].y = Maps_Data[i][2]*1 - Map_Y;
+          Map_area[i].x *= 27;
+          Map_area[i].y *= 27;
           Map_area[i].データ = Maps_Data[i][3];
           switch (Map_area[i].データ) {
             case "■":
