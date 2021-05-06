@@ -2620,7 +2620,8 @@ function Game_load(width,height){
                   }
                   console.log(Flag[i]);
                   for (var k = 0; k < Map_area.length; k++) {
-                    Map_area[k].tl.moveTo(Map_area[k].x,Map_area[k].y+27,27);
+                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x,Map_area[k].y+27,27);
+                    else Map_area[k].y += 27;
                   }
                   for (var k = 0; k < Map_Image.length; k++) {
                     Map_Image[k].tl.moveTo(Map_Image[k].x,Map_Image[k].y+27,27);
@@ -2680,7 +2681,8 @@ function Game_load(width,height){
                   }
                   console.log(Flag[i]);
                   for (var k = 0; k < Map_area.length; k++) {
-                    Map_area[k].tl.moveTo(Map_area[k].x,Map_area[k].y-27,27);
+                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x,Map_area[k].y-27,27);
+                    else Map_area[k].y -= 27;
                   }
                   for (var k = 0; k < Map_Image.length; k++) {
                     Map_Image[k].tl.moveTo(Map_Image[k].x,Map_Image[k].y-27,27);
@@ -2740,7 +2742,8 @@ function Game_load(width,height){
                   }
                   console.log(Flag[i]);
                   for (var k = 0; k < Map_area.length; k++) {
-                    Map_area[k].tl.moveTo(Map_area[k].x+27,Map_area[k].y,27);
+                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x+27,Map_area[k].y,27);
+                    else Map_area[k].x += 27;
                   }
                   for (var k = 0; k < Map_Image.length; k++) {
                     Map_Image[k].tl.moveTo(Map_Image[k].x+27,Map_Image[k].y,27);
@@ -2800,7 +2803,8 @@ function Game_load(width,height){
                   }
                   console.log(Flag[i]);
                   for (var k = 0; k < Map_area.length; k++) {
-                    Map_area[k].tl.moveTo(Map_area[k].x-27,Map_area[k].y,27);
+                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x-27,Map_area[k].y,27);
+                    else Map_area[k].x -= 27;
                   }
                   for (var k = 0; k < Map_Image.length; k++) {
                     Map_Image[k].tl.moveTo(Map_Image[k].x-27,Map_Image[k].y,27);
