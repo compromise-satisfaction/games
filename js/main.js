@@ -172,16 +172,7 @@ function Game_load(width,height){
               return;
               break;
             case 4:
-              var Codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-              "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-              "1","2","3","4","5","6","7","8","9"];
-              ID = "";
-              for (var k = 0; k < 10; k++) {
-                ID += Codes[rand(Codes.length)];
-              }
-              window.localStorage.setItem("ID",ID);
-              console.log(ID);
-              //GAS("保存");
+              window.localStorage.clear();
               break;
           }
           return;
@@ -193,7 +184,7 @@ function Game_load(width,height){
       Buttons(width/4,180,width/2,height/10,"リバーシ",1);
       Buttons(width/4,300,width/2,height/10,"数独補佐",2);
       Buttons(width/4,420,width/2,height/10,"ノベルゲーム",3);
-      //Buttons(width/4,540,width/2,height/20,"動作がおかしい時",4);
+      Buttons(width/4,540,width/2,height/20,"データ消去",4);
 
       return scene;
     };
@@ -1930,7 +1921,28 @@ function Game_load(width,height){
               Map_area[i].描写 = false;
               break;
             default:
-              Map_area[i]._element.src = Maps_Data[i][0];
+              Map_area[i]._element.src = Maps_Data[i][0].split("→")[0];
+              if(Maps_Data[i][0].split("→")[1]){
+                Map_area[i].上 = Maps_Data[i][0].split("→")[0];
+                Map_area[i].下 = Maps_Data[i][0].split("→")[1];
+                Map_area[i].左 = Maps_Data[i][0].split("→")[2];
+                Map_area[i].右 = Maps_Data[i][0].split("→")[3];
+                switch(Maps_Data[i][0].split("→")[4]){
+                  case "上":
+                    Map_area[i]._element.src = Map_area[i].上
+                    break;
+                  case "下":
+                    Map_area[i]._element.src = Map_area[i].下
+                    break;
+                  case "左":
+                    Map_area[i]._element.src = Map_area[i].左
+                    break;
+                  case "右":
+                    Map_area[i]._element.src = Map_area[i].右
+                    break;
+                }
+              }
+              else Map_area[i]._element.src = Maps_Data[i][0];
               break;
           }
 
@@ -1960,6 +1972,9 @@ function Game_load(width,height){
               Map_area[i].調べる = Maps_Data[i][7];
               break;
             case "シーン":
+              Map_area[i].シーン = Maps_Data[i][4];
+              break;
+            case "□":
               Map_area[i].シーン = Maps_Data[i][4];
               break;
           }
@@ -2088,6 +2103,33 @@ function Game_load(width,height){
         Map_Button.default_SceneNumber = Map_Button_Data[7];
         Map_Button.シーンナンバー = Map_Button.default_SceneNumber;
         Map_Button.addEventListener("touchend",function(e){
+          if(Map_Button.ボタンナンバー!="無し"){
+            for (var j = 0; j < Flag.length; j++) {
+              if(Flag[j].split("=")[0]=="キャラ向き") break;
+            }
+            switch(Flag[j].split("=")[1]){
+              case "上":
+                if(Map_area[Map_Button.ボタンナンバー].上){
+                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].上;
+                }
+                break;
+              case "下":
+                if(Map_area[Map_Button.ボタンナンバー].下){
+                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].下;
+                }
+                break;
+              case "左":
+                if(Map_area[Map_Button.ボタンナンバー].左){
+                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].左;
+                }
+                break;
+              case "右":
+                if(Map_area[Map_Button.ボタンナンバー].右){
+                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].右;
+                }
+                break;
+            }
+          }
           if(Map_Time==0){
             Sound_branch(Map_Button.sound);
             Scene_load(Map_Button.シーンナンバー);
@@ -2465,6 +2507,7 @@ function Game_load(width,height){
                 Map_Button._style["font-size"] = Map_area[i].ボタンサイズ;
                 Map_Button.sound = Map_area[i].ボタン音;
                 Map_Button.シーンナンバー = Map_area[i].調べる;
+                Map_Button.ボタンナンバー = i;
                 break;
               }
             }
@@ -2474,6 +2517,7 @@ function Game_load(width,height){
             Map_Button._style["font-size"] = Map_Button.default_font_size;
             Map_Button.sound = Map_Button.default_sound;
             Map_Button.シーンナンバー = Map_Button.default_SceneNumber;
+            Map_Button.ボタンナンバー = "無し";
           }
         }
         if(Map_Time==0){
@@ -2484,7 +2528,7 @@ function Game_load(width,height){
                 return;
               }
             }
-          }  
+          }
         }
         if(Map_Time==20){
           switch(Character.今){
@@ -2607,6 +2651,10 @@ function Game_load(width,height){
               for (var i = 0; i < Map_area.length; i++) {
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
+                  if(Map_area[i].データ=="□"){
+                    Scene_load(Map_area[i].シーン);
+                    return;
+                  }
                 }
               }
               if(i==Map_area.length){
@@ -2668,6 +2716,10 @@ function Game_load(width,height){
               for (var i = 0; i < Map_area.length; i++) {
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
+                  if(Map_area[i].データ=="□"){
+                    Scene_load(Map_area[i].シーン);
+                    return;
+                  }
                 }
               }
               if(i==Map_area.length){
@@ -2729,6 +2781,10 @@ function Game_load(width,height){
               for (var i = 0; i < Map_area.length; i++) {
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
+                  if(Map_area[i].データ=="□"){
+                    Scene_load(Map_area[i].シーン);
+                    return;
+                  }
                 }
               }
               if(i==Map_area.length){
@@ -2790,6 +2846,10 @@ function Game_load(width,height){
               for (var i = 0; i < Map_area.length; i++) {
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
+                  if(Map_area[i].データ=="□"){
+                    Scene_load(Map_area[i].シーン);
+                    return;
+                  }
                 }
               }
               if(i==Map_area.length){
@@ -4208,10 +4268,10 @@ function Game_load(width,height){
           if(Loadbutton.text=="ゲームデータロード"){
             switch (HTML) {
               case "Tanakake":
-                var Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
+                Spread_sheet_ID = "11p8AdCuPzb02IGNJCKS2M6LrUCZEFGNu_rNdqSMchSo";
                 break;
               case "Share":
-                var Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
+                Spread_sheet_ID = "15D_zCckP9NuN-HsFb9Z-Y2NiyO7mWO4yfvH_irzeIrw";
                 break;
               case "index":
                 Spread_sheet_ID = S_Input1._element.value;
