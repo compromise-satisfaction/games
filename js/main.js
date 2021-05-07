@@ -2506,6 +2506,7 @@ function Game_load(width,height){
 
       Texts();
       var Map_Time = 0;
+      var Map_move = true;
 
       scene.addEventListener("enterframe",function(){
         if(Map_Time!=0){
@@ -2537,7 +2538,7 @@ function Game_load(width,height){
             if(Map_area[i].シーン){
               if(Map_area[i].x==Character.x&&Map_area[i].y==Character.y){
                 Map_Time--;
-                Scene_load(Map_area[i].シーン);
+                if(Map_move) Scene_load(Map_area[i].シーン);
                 return;
               }
             }
@@ -2604,6 +2605,7 @@ function Game_load(width,height){
           }
         }
         if(Map_Time==0&&Character){
+          Map_move = true;
           switch(Character.今){
             case Character.動上2:
               Character.今 = Character.上;
@@ -2706,6 +2708,7 @@ function Game_load(width,height){
             }
             else{
               Map_Time = 6;
+              Map_move = false;
               Character.今 = Character.上;
               Character_front.x = Character.x;
               Character_front.y = Character.y-27;
@@ -2771,6 +2774,7 @@ function Game_load(width,height){
             }
             else{
               Map_Time = 6;
+              Map_move = false;
               Character.今 = Character.下;
               Character_front.x = Character.x;
               Character_front.y = Character.y+27;
@@ -2836,6 +2840,7 @@ function Game_load(width,height){
             }
             else{
               Map_Time = 6;
+              Map_move = false;
               Character.今 = Character.左;
               Character_front.x = Character.x-27;
               Character_front.y = Character.y;
@@ -2901,6 +2906,7 @@ function Game_load(width,height){
             }
             else{
               Map_Time = 6;
+              Map_move = false;
               Character.今 = Character.右;
               Character_front.x = Character.x+27;
               Character_front.y = Character.y;
