@@ -1976,6 +1976,12 @@ function Game_load(width,height){
               break;
             case "□":
               Map_area[i].向かう = Maps_Data[i][4];
+              if(Maps_Data[i][5]){
+                Map_area[i].ボタン = Maps_Data[i][5];
+                Map_area[i].ボタンサイズ = Maps_Data[i][6];
+                Map_area[i].ボタン音 = Maps_Data[i][7];
+                Map_area[i].調べる = Maps_Data[i][8];
+              }
               break;
           }
           Map_area[i].width = 27;
