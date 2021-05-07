@@ -1847,7 +1847,7 @@ function Game_load(width,height){
 
         var Character_front = new Sprite();
         Character_front._element = document.createElement("img");
-        Character_front._element.src = "../image/透明.png";
+        Character_front._element.src = "../image/半透明赤.png";
 
         var Character = new Sprite();
         Character._element = document.createElement("img");
@@ -1975,7 +1975,7 @@ function Game_load(width,height){
               Map_area[i].シーン = Maps_Data[i][4];
               break;
             case "□":
-              Map_area[i].シーン = Maps_Data[i][4];
+              Map_area[i].向かう = Maps_Data[i][4];
               break;
           }
           Map_area[i].width = 27;
@@ -2652,7 +2652,7 @@ function Game_load(width,height){
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
                   if(Map_area[i].データ=="□"){
-                    Scene_load(Map_area[i].シーン);
+                    Scene_load(Map_area[i].向かう);
                     return;
                   }
                 }
@@ -2717,7 +2717,7 @@ function Game_load(width,height){
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
                   if(Map_area[i].データ=="□"){
-                    Scene_load(Map_area[i].シーン);
+                    Scene_load(Map_area[i].向かう);
                     return;
                   }
                 }
@@ -2782,7 +2782,7 @@ function Game_load(width,height){
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
                   if(Map_area[i].データ=="□"){
-                    Scene_load(Map_area[i].シーン);
+                    Scene_load(Map_area[i].向かう);
                     return;
                   }
                 }
@@ -2847,7 +2847,7 @@ function Game_load(width,height){
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
                   if(Map_area[i].データ=="□"){
-                    Scene_load(Map_area[i].シーン);
+                    Scene_load(Map_area[i].向かう);
                     return;
                   }
                 }
