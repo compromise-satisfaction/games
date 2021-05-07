@@ -2526,10 +2526,11 @@ function Game_load(width,height){
             Map_Button.ボタンナンバー = "無し";
           }
         }
-        if(Map_Time==0){
+        if(Map_Time==1){
           for (var i = 0; i < Map_area.length; i++) {
             if(Map_area[i].シーン){
               if(Map_area[i].x==Character.x&&Map_area[i].y==Character.y){
+                Map_Time--;
                 Scene_load(Map_area[i].シーン);
                 return;
               }
@@ -2664,7 +2665,7 @@ function Game_load(width,height){
                 }
               }
               if(i==Map_area.length){
-                Map_Time = 27;
+                Map_Time = 28;
                 Character.今 = Character.動上1;
                 Character._element.src = Character.今;
                 if(Character.y < 135 && Map_Image[0].y < 0){
@@ -2729,7 +2730,7 @@ function Game_load(width,height){
                 }
               }
               if(i==Map_area.length){
-                Map_Time = 27;
+                Map_Time = 28;
                 Character.今 = Character.動下1;
                 Character._element.src = Character.今;
                 if(Character.y > 81 && Map_Image[0].height + Map_Image[0].y > 243){
@@ -2794,7 +2795,7 @@ function Game_load(width,height){
                 }
               }
               if(i==Map_area.length){
-                Map_Time = 27;
+                Map_Time = 28;
                 Character.今 = Character.動左1;
                 Character._element.src = Character.今;
                 if(Character.x < 216 && Map_Image[0].x < 0){
@@ -2859,7 +2860,7 @@ function Game_load(width,height){
                 }
               }
               if(i==Map_area.length){
-                Map_Time = 27;
+                Map_Time = 28;
                 Character.今 = Character.動右1;
                 Character._element.src = Character.今;
                 if(Character.x > 162 && Map_Image[0].width + Map_Image[0].x > 405){
