@@ -2115,23 +2115,23 @@ function Game_load(width,height){
             }
             switch(Flag[j].split("=")[1]){
               case "上":
-                if(Map_area[Map_Button.ボタンナンバー].上){
-                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].上;
-                }
-                break;
-              case "下":
                 if(Map_area[Map_Button.ボタンナンバー].下){
                   Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].下;
                 }
                 break;
+              case "下":
+                if(Map_area[Map_Button.ボタンナンバー].上){
+                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].上;
+                }
+                break;
               case "左":
-                if(Map_area[Map_Button.ボタンナンバー].左){
-                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].左;
+                if(Map_area[Map_Button.ボタンナンバー].右){
+                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].右;
                 }
                 break;
               case "右":
-                if(Map_area[Map_Button.ボタンナンバー].右){
-                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].右;
+                if(Map_area[Map_Button.ボタンナンバー].左){
+                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].左;
                 }
                 break;
             }
