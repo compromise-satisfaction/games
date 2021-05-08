@@ -1907,11 +1907,12 @@ function Game_load(width,height){
           Maps_Data[i] = Maps_Data[i].substring(5,Maps_Data[i].length-5);
           Maps_Data[i] = Maps_Data[i].split(",");
 
-          Map_area_Data[i] = new Sprite(Maps_Data[i][1]*3,Maps_Data[i][1]*4);
-          Map_area[i] = new Sprite(Maps_Data[i][1],Maps_Data[i][1]);
+          Map_area_Data[i] = new Sprite(Maps_Data[i][2]*3,Maps_Data[i][2]*4);
+          Map_area[i] = new Sprite(Maps_Data[i][2],Maps_Data[i][2]);
           Map_area_Data[i]._element = document.createElement("img");
           Map_area[i].描写 = true;
-          switch (Maps_Data[i][0]) {
+          Map_area[i].name = Maps_Data[i][0];
+          switch (Maps_Data[i][1]) {
             case "赤":
               Map_area_Data[i]._element.src = "../image/半透明赤.png";
               Map_area[i].image = Map_area_Data[i];
@@ -1920,13 +1921,13 @@ function Game_load(width,height){
               Map_area[i].描写 = false;
               break;
             default:
-              Maps_Data[i][0] = Maps_Data[i][0].split("→");
-              Map_area_Data[i]._element.src = Maps_Data[i][0][0];
+              Maps_Data[i][1] = Maps_Data[i][1].split("→");
+              Map_area_Data[i]._element.src = Maps_Data[i][1][0];
               Map_area[i].image = Map_area_Data[i];
               Map_area[i].動 = false;
               Map_area[i].向き = false;
-              if(Maps_Data[i][0][1]){
-                switch (Maps_Data[i][0][1]) {
+              if(Maps_Data[i][1][1]){
+                switch (Maps_Data[i][1][1]) {
                   case "上":
                     Map_area[i].向き = true;
                     Map_area[i].frame = 10;
@@ -1947,7 +1948,7 @@ function Game_load(width,height){
                     Map_area[i].動 = true;
                     break;
                   default:
-                    Map_area[i].frame = Maps_Data[i][0][1]*1;
+                    Map_area[i].frame = Maps_Data[i][1][1]*1;
                     break;
                 }
               }
@@ -1955,50 +1956,50 @@ function Game_load(width,height){
           }
           Map_area[i].originX = 0;
           Map_area[i].originY = 0;
-          Map_area[i].scaleX = 27/Maps_Data[i][1];
-          Map_area[i].scaleY = 27/Maps_Data[i][1];
+          Map_area[i].scaleX = 27/Maps_Data[i][2];
+          Map_area[i].scaleY = 27/Maps_Data[i][2];
 
           for (var k = 0; k < Flag.length; k++) {
             if(Flag[k].split("=")[0]=="マップX") var Map_X = Flag[k].split("=")[1]*1;
             if(Flag[k].split("=")[0]=="マップY") var Map_Y = Flag[k].split("=")[1]*1;
           }
 
-          Map_area[i].x = Maps_Data[i][2]*1 - Map_X;
-          Map_area[i].y = Maps_Data[i][3]*1 - Map_Y;
+          Map_area[i].x = Maps_Data[i][3]*1 - Map_X;
+          Map_area[i].y = Maps_Data[i][4]*1 - Map_Y;
           Map_area[i].x *= 27;
           Map_area[i].y *= 27;
-          Map_area[i].データ = Maps_Data[i][4];
+          Map_area[i].データ = Maps_Data[i][5];
           switch (Map_area[i].データ) {
             case "■":
-              if(Maps_Data[i][5]){
-                Map_area[i].ボタン = Maps_Data[i][5];
-                Map_area[i].ボタンサイズ = Maps_Data[i][6];
-                Map_area[i].ボタン音 = Maps_Data[i][7];
-                Map_area[i].調べる = Maps_Data[i][8];
+              if(Maps_Data[i][6]){
+                Map_area[i].ボタン = Maps_Data[i][6];
+                Map_area[i].ボタンサイズ = Maps_Data[i][7];
+                Map_area[i].ボタン音 = Maps_Data[i][8];
+                Map_area[i].調べる = Maps_Data[i][9];
               }
               break;
             case "調べる":
-              Map_area[i].ボタン = Maps_Data[i][5];
-              Map_area[i].ボタンサイズ = Maps_Data[i][6];
-              Map_area[i].ボタン音 = Maps_Data[i][7];
-              Map_area[i].調べる = Maps_Data[i][8];
+              Map_area[i].ボタン = Maps_Data[i][6];
+              Map_area[i].ボタンサイズ = Maps_Data[i][7];
+              Map_area[i].ボタン音 = Maps_Data[i][8];
+              Map_area[i].調べる = Maps_Data[i][9];
               break;
             case "シーン":
-              Map_area[i].シーン = Maps_Data[i][5];
-              if(Maps_Data[i][6]){
-                Map_area[i].ボタン = Maps_Data[i][6];
-                Map_area[i].ボタンサイズ = Maps_Data[i][7];
-                Map_area[i].ボタン音 = Maps_Data[i][8];
-                Map_area[i].調べる = Maps_Data[i][9];
+              Map_area[i].シーン = Maps_Data[i][6];
+              if(Maps_Data[i][7]){
+                Map_area[i].ボタン = Maps_Data[i][7];
+                Map_area[i].ボタンサイズ = Maps_Data[i][8];
+                Map_area[i].ボタン音 = Maps_Data[i][9];
+                Map_area[i].調べる = Maps_Data[i][10];
               }
               break;
             case "□":
-              Map_area[i].向かう = Maps_Data[i][5];
-              if(Maps_Data[i][6]){
-                Map_area[i].ボタン = Maps_Data[i][6];
-                Map_area[i].ボタンサイズ = Maps_Data[i][7];
-                Map_area[i].ボタン音 = Maps_Data[i][8];
-                Map_area[i].調べる = Maps_Data[i][9];
+              Map_area[i].向かう = Maps_Data[i][6];
+              if(Maps_Data[i][7]){
+                Map_area[i].ボタン = Maps_Data[i][7];
+                Map_area[i].ボタンサイズ = Maps_Data[i][8];
+                Map_area[i].ボタン音 = Maps_Data[i][9];
+                Map_area[i].調べる = Maps_Data[i][10];
               }
               break;
           }
