@@ -1853,7 +1853,7 @@ function Game_load(width,height){
 
         var Character_front = new Sprite(27,27);
         Character_front._element = document.createElement("img");
-        Character_front._element.src = "../image/半透明赤.png";
+        Character_front._element.src = "../image/透明.png";
 
         var Character_image = new Sprite(Characters_Data[1]*3,Characters_Data[1]*4);
         Character_image._element = document.createElement("img");
