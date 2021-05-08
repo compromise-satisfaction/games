@@ -928,11 +928,16 @@ function Game_load(width,height){
 
       function Map_Images(a){
         a = a.split(",");
-        Map_Image[i] = new Sprite();
-        Map_Image[i]._element = document.createElement("img");
-        Map_Image[i]._element.src = a[0];
-        Map_Image[i].width = a[1]*27;
-        Map_Image[i].height = a[2]*27;
+        Map_scale = a[1];
+        Map_Image_array[i] = new Sprite(a[2]*Map_scale,a[3]*Map_scale);
+        Map_Image_array[i]._element = document.createElement("img");
+        Map_Image_array[i]._element.src = a[0];
+        Map_Image[i] = new Sprite(a[2]*Map_scale,a[3]*Map_scale);
+        Map_Image[i].image = Map_Image_array[i];
+        Map_Image[i].originX = 0;
+        Map_Image[i].originY = 0;
+        Map_Image[i].scaleX = 27/Map_scale;
+        Map_Image[i].scaleY = 27/Map_scale;
         for (var k = 0; k < Flag.length; k++) {
           if(Flag[k].split("=")[0]=="マップX") Map_Image[i].x = Flag[k].split("=")[1]*-27;
           if(Flag[k].split("=")[0]=="マップY") Map_Image[i].y = Flag[k].split("=")[1]*-27;
@@ -941,6 +946,7 @@ function Game_load(width,height){
       }
 
       var Map_Image = [];
+      var Map_Image_array = [];
 
       var Map_Images_Data = Data.match(/\(マップ画像:.+?:マップ画像\)/g);
 
@@ -1845,57 +1851,47 @@ function Game_load(width,height){
         Characters_Data = Characters_Data[0].substring(5,Characters_Data[0].length-5);
         Characters_Data = Characters_Data.split(",");
 
-        var Character_front = new Sprite();
+        var Character_front = new Sprite(27,27);
         Character_front._element = document.createElement("img");
-        Character_front._element.src = "../image/透明.png";
+        Character_front._element.src = "../image/半透明赤.png";
 
-        var Character = new Sprite();
-        Character._element = document.createElement("img");
-        Character.上 = Characters_Data[0];
-        Character.下 = Characters_Data[1];
-        Character.左 = Characters_Data[2];
-        Character.右 = Characters_Data[3];
-        Character.動上1 = Characters_Data[4];
-        Character.動下1 = Characters_Data[5];
-        Character.動左1 = Characters_Data[6];
-        Character.動右1 = Characters_Data[7];
-        Character.動上2 = Characters_Data[8];
-        Character.動下2 = Characters_Data[9];
-        Character.動左2 = Characters_Data[10];
-        Character.動右2 = Characters_Data[11];
+        var Character_image = new Sprite(Characters_Data[1]*3,Characters_Data[1]*4);
+        Character_image._element = document.createElement("img");
+        Character_image._element.src = Characters_Data[0];
+
+        var Character = new Sprite(Characters_Data[1],Characters_Data[1]);
+        Character.image = Character_image;
+        Character.originX = 0;
+        Character.originY = 0;
+        Character.scaleX = 27/Characters_Data[1];
+        Character.scaleY = 27/Characters_Data[1];
         for (var i = 0; i < Flag.length; i++) {
           if(Flag[i].split("=")[0]=="キャラX") Character.x = Flag[i].split("=")[1]*27;
           if(Flag[i].split("=")[0]=="キャラY") Character.y = Flag[i].split("=")[1]*27;
-          if(Flag[i].split("=")[0]=="キャラ向き") Character.今 = Flag[i].split("=")[1];
+          if(Flag[i].split("=")[0]=="キャラ向き") Character.向き = Flag[i].split("=")[1];
         }
-        switch (Character.今) {
+        switch (Character.向き) {
           case "上":
             Character_front.x = Character.x;
             Character_front.y = Character.y-27;
-            Character.今 = Character.上;
+            Character.frame = 10;
             break;
           case "下":
             Character_front.x = Character.x;
             Character_front.y = Character.y+27;
-            Character.今 = Character.下;
+            Character.frame = 1;
             break;
           case "左":
             Character_front.x = Character.x-27;
             Character_front.y = Character.y;
-            Character.今 = Character.左;
+            Character.frame = 4;
             break;
           case "右":
             Character_front.x = Character.x+27;
             Character_front.y = Character.y;
-            Character.今 = Character.右;
+            Character.frame = 7;
             break;
         }
-        Character._element.src = Character.今;
-        Character.width = 27*1;
-        Character.height = 27*1;
-
-        Character_front.width = 27;
-        Character_front.height = 27;
 
         Data = Data.replace(/\(キャラ:.+?:キャラ\)/g,"(変換:キャラ)");
       }
@@ -1903,6 +1899,7 @@ function Game_load(width,height){
       var Maps_Data = Data.match(/\(マップ:.+?:マップ\)/g);
 
       var Map_area = [];
+      var Map_area_Data = [];
 
       if(Maps_Data){
         var Map_area_Number = 0;
@@ -1910,88 +1907,101 @@ function Game_load(width,height){
           Maps_Data[i] = Maps_Data[i].substring(5,Maps_Data[i].length-5);
           Maps_Data[i] = Maps_Data[i].split(",");
 
-          Map_area[i] = new Sprite();
-          Map_area[i]._element = document.createElement("img");
+          Map_area_Data[i] = new Sprite(Maps_Data[i][1]*3,Maps_Data[i][1]*4);
+          Map_area[i] = new Sprite(Maps_Data[i][1],Maps_Data[i][1]);
+          Map_area_Data[i]._element = document.createElement("img");
           Map_area[i].描写 = true;
           switch (Maps_Data[i][0]) {
             case "赤":
-              Map_area[i]._element.src = "../image/半透明赤.png";
+              Map_area_Data[i]._element.src = "../image/半透明赤.png";
+              Map_area[i].image = Map_area_Data[i];
               break;
             case "無し":
               Map_area[i].描写 = false;
               break;
             default:
-              Map_area[i]._element.src = Maps_Data[i][0].split("→")[0];
-              if(Maps_Data[i][0].split("→")[1]){
-                Map_area[i].上 = Maps_Data[i][0].split("→")[0];
-                Map_area[i].下 = Maps_Data[i][0].split("→")[1];
-                Map_area[i].左 = Maps_Data[i][0].split("→")[2];
-                Map_area[i].右 = Maps_Data[i][0].split("→")[3];
-                switch(Maps_Data[i][0].split("→")[4]){
+              Maps_Data[i][0] = Maps_Data[i][0].split("→");
+              Map_area_Data[i]._element.src = Maps_Data[i][0][0];
+              Map_area[i].image = Map_area_Data[i];
+              Map_area[i].動 = false;
+              Map_area[i].向き = false;
+              if(Maps_Data[i][0][1]){
+                switch (Maps_Data[i][0][1]) {
                   case "上":
-                    Map_area[i]._element.src = Map_area[i].上
+                    Map_area[i].向き = true;
+                    Map_area[i].frame = 10;
                     break;
                   case "下":
-                    Map_area[i]._element.src = Map_area[i].下
+                    Map_area[i].向き = true;
+                    Map_area[i].frame = 1;
                     break;
                   case "左":
-                    Map_area[i]._element.src = Map_area[i].左
+                    Map_area[i].向き = true;
+                    Map_area[i].frame = 4;
                     break;
                   case "右":
-                    Map_area[i]._element.src = Map_area[i].右
+                    Map_area[i].向き = true;
+                    Map_area[i].frame = 7;
+                    break;
+                  case "動":
+                    Map_area[i].動 = true;
+                    break;
+                  default:
+                    Map_area[i].frame = Maps_Data[i][0][1]*1;
                     break;
                 }
               }
-              else Map_area[i]._element.src = Maps_Data[i][0];
               break;
           }
+          Map_area[i].originX = 0;
+          Map_area[i].originY = 0;
+          Map_area[i].scaleX = 27/Maps_Data[i][1];
+          Map_area[i].scaleY = 27/Maps_Data[i][1];
 
           for (var k = 0; k < Flag.length; k++) {
             if(Flag[k].split("=")[0]=="マップX") var Map_X = Flag[k].split("=")[1]*1;
             if(Flag[k].split("=")[0]=="マップY") var Map_Y = Flag[k].split("=")[1]*1;
           }
 
-          Map_area[i].x = Maps_Data[i][1]*1 - Map_X;
-          Map_area[i].y = Maps_Data[i][2]*1 - Map_Y;
+          Map_area[i].x = Maps_Data[i][2]*1 - Map_X;
+          Map_area[i].y = Maps_Data[i][3]*1 - Map_Y;
           Map_area[i].x *= 27;
           Map_area[i].y *= 27;
-          Map_area[i].データ = Maps_Data[i][3];
+          Map_area[i].データ = Maps_Data[i][4];
           switch (Map_area[i].データ) {
             case "■":
-              if(Maps_Data[i][4]){
-                Map_area[i].ボタン = Maps_Data[i][4];
-                Map_area[i].ボタンサイズ = Maps_Data[i][5];
-                Map_area[i].ボタン音 = Maps_Data[i][6];
-                Map_area[i].調べる = Maps_Data[i][7];
+              if(Maps_Data[i][5]){
+                Map_area[i].ボタン = Maps_Data[i][5];
+                Map_area[i].ボタンサイズ = Maps_Data[i][6];
+                Map_area[i].ボタン音 = Maps_Data[i][7];
+                Map_area[i].調べる = Maps_Data[i][8];
               }
               break;
             case "調べる":
-              Map_area[i].ボタン = Maps_Data[i][4];
-              Map_area[i].ボタンサイズ = Maps_Data[i][5];
-              Map_area[i].ボタン音 = Maps_Data[i][6];
-              Map_area[i].調べる = Maps_Data[i][7];
+              Map_area[i].ボタン = Maps_Data[i][5];
+              Map_area[i].ボタンサイズ = Maps_Data[i][6];
+              Map_area[i].ボタン音 = Maps_Data[i][7];
+              Map_area[i].調べる = Maps_Data[i][8];
               break;
             case "シーン":
-              Map_area[i].シーン = Maps_Data[i][4];
-              if(Maps_Data[i][5]){
-                Map_area[i].ボタン = Maps_Data[i][5];
-                Map_area[i].ボタンサイズ = Maps_Data[i][6];
-                Map_area[i].ボタン音 = Maps_Data[i][7];
-                Map_area[i].調べる = Maps_Data[i][8];
+              Map_area[i].シーン = Maps_Data[i][5];
+              if(Maps_Data[i][6]){
+                Map_area[i].ボタン = Maps_Data[i][6];
+                Map_area[i].ボタンサイズ = Maps_Data[i][7];
+                Map_area[i].ボタン音 = Maps_Data[i][8];
+                Map_area[i].調べる = Maps_Data[i][9];
               }
               break;
             case "□":
-              Map_area[i].向かう = Maps_Data[i][4];
-              if(Maps_Data[i][5]){
-                Map_area[i].ボタン = Maps_Data[i][5];
-                Map_area[i].ボタンサイズ = Maps_Data[i][6];
-                Map_area[i].ボタン音 = Maps_Data[i][7];
-                Map_area[i].調べる = Maps_Data[i][8];
+              Map_area[i].向かう = Maps_Data[i][5];
+              if(Maps_Data[i][6]){
+                Map_area[i].ボタン = Maps_Data[i][6];
+                Map_area[i].ボタンサイズ = Maps_Data[i][7];
+                Map_area[i].ボタン音 = Maps_Data[i][8];
+                Map_area[i].調べる = Maps_Data[i][9];
               }
               break;
           }
-          Map_area[i].width = 27;
-          Map_area[i].height = 27;
         }
         Data = Data.replace(/\(マップ:.+?:マップ\)/g,"(変換:マップ)");
       }
@@ -2121,24 +2131,16 @@ function Game_load(width,height){
             }
             switch(Flag[j].split("=")[1]){
               case "上":
-                if(Map_area[Map_Button.ボタンナンバー].下){
-                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].下;
-                }
+                if(Map_area[Map_Button.ボタンナンバー].向き) Map_area[Map_Button.ボタンナンバー].frame = 1;
                 break;
               case "下":
-                if(Map_area[Map_Button.ボタンナンバー].上){
-                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].上;
-                }
+                if(Map_area[Map_Button.ボタンナンバー].向き) Map_area[Map_Button.ボタンナンバー].frame = 10;
                 break;
               case "左":
-                if(Map_area[Map_Button.ボタンナンバー].右){
-                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].右;
-                }
+                if(Map_area[Map_Button.ボタンナンバー].向き) Map_area[Map_Button.ボタンナンバー].frame = 7;
                 break;
               case "右":
-                if(Map_area[Map_Button.ボタンナンバー].左){
-                  Map_area[Map_Button.ボタンナンバー]._element.src = Map_area[Map_Button.ボタンナンバー].左;
-                }
+                if(Map_area[Map_Button.ボタンナンバー].向き) Map_area[Map_Button.ボタンナンバー].frame = 4;
                 break;
             }
           }
@@ -2509,6 +2511,7 @@ function Game_load(width,height){
       var Map_move = true;
 
       scene.addEventListener("enterframe",function(){
+        for (var i = 0; i < Map_area.length; i++) if(Map_area[i].動) Map_area[i].frame++;
         if(Map_Time!=0){
           Map_Time--;
         }
@@ -2533,98 +2536,21 @@ function Game_load(width,height){
             Map_Button.ボタンナンバー = "無し";
           }
         }
-        if(Map_Time==1){
+        if(Map_Time==7&&Map_move) Character.frame++;
+        if(Map_Time==5&&Map_move) Character.frame++;
+        if(Map_Time==3&&Map_move) Character.frame--;
+        if(Map_Time==1&&Map_move){
           for (var i = 0; i < Map_area.length; i++) {
             if(Map_area[i].シーン){
               if(Map_area[i].x==Character.x&&Map_area[i].y==Character.y){
                 Map_Time--;
-                if(Map_move) Scene_load(Map_area[i].シーン);
+                Scene_load(Map_area[i].シーン);
                 return;
               }
             }
           }
         }
-        if(Map_Time==20){
-          switch(Character.今){
-            case Character.動上1:
-              Character.今 = Character.上;
-              Character._element.src = Character.今;
-              break;
-            case Character.動下1:
-              Character.今 = Character.下;
-              Character._element.src = Character.今;
-              break;
-            case Character.動左1:
-              Character.今 = Character.左;
-              Character._element.src = Character.今;
-              break;
-            case Character.動右1:
-              Character.今 = Character.右;
-              Character._element.src = Character.今;
-              break;
-          }
-        }
-        if(Map_Time==13){
-          switch(Character.今){
-            case Character.上:
-              Character.今 = Character.動上2;
-              Character._element.src = Character.今;
-              break;
-            case Character.下:
-              Character.今 = Character.動下2;
-              Character._element.src = Character.今;
-              break;
-            case Character.左:
-              Character.今 = Character.動左2;
-              Character._element.src = Character.今;
-              break;
-            case Character.右:
-              Character.今 = Character.動右2;
-              Character._element.src = Character.今;
-              break;
-          }
-        }
-        if(Map_Time==7){
-          switch(Character.今){
-            case Character.動上2:
-              Character.今 = Character.上;
-              Character._element.src = Character.今;
-              break;
-            case Character.動下2:
-              Character.今 = Character.下;
-              Character._element.src = Character.今;
-              break;
-            case Character.動左2:
-              Character.今 = Character.左;
-              Character._element.src = Character.今;
-              break;
-            case Character.動右2:
-              Character.今 = Character.右;
-              Character._element.src = Character.今;
-              break;
-          }
-        }
-        if(Map_Time==0&&Character){
-          Map_move = true;
-          switch(Character.今){
-            case Character.動上2:
-              Character.今 = Character.上;
-              Character._element.src = Character.今;
-              break;
-            case Character.動下2:
-              Character.今 = Character.下;
-              Character._element.src = Character.今;
-              break;
-            case Character.動左2:
-              Character.今 = Character.左;
-              Character._element.src = Character.今;
-              break;
-            case Character.動右2:
-              Character.今 = Character.右;
-              Character._element.src = Character.今;
-              break;
-          }
-        }
+        if(Map_Time==0&&Character) Map_move = true;
         if(Next){
           if(Next_Time==0){
             Scene_load(Next);
@@ -2662,7 +2588,7 @@ function Game_load(width,height){
         }
         if(game.input.up){
           if(Character&&Map_Time==0){
-            if(Character.今==Character.上){
+            if(Character.frame==10){
               for (var i = 0; i < Map_area.length; i++) {
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
@@ -2673,9 +2599,8 @@ function Game_load(width,height){
                 }
               }
               if(i==Map_area.length){
-                Map_Time = 28;
-                Character.今 = Character.動上1;
-                Character._element.src = Character.今;
+                Map_Time = 9;
+                Character.frame = 9;
                 if(Character.y < 135 && Map_Image[0].y < 0){
                   for (var i = 0; i < Flag.length; i++) {
                     if(Flag[i].split("=")[0]=="マップY"){
@@ -2685,11 +2610,11 @@ function Game_load(width,height){
                   }
                   console.log(Flag[i]);
                   for (var k = 0; k < Map_area.length; k++) {
-                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x,Map_area[k].y+27,27);
+                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x,Map_area[k].y+27,8);
                     else Map_area[k].y += 27;
                   }
                   for (var k = 0; k < Map_Image.length; k++) {
-                    Map_Image[k].tl.moveTo(Map_Image[k].x,Map_Image[k].y+27,27);
+                    Map_Image[k].tl.moveTo(Map_Image[k].x,Map_Image[k].y+27,8);
                   }
                 }
                 else{
@@ -2700,19 +2625,18 @@ function Game_load(width,height){
                     }
                   }
                   console.log(Flag[i]);
-                  Character_front.tl.moveTo(Character_front.x,Character_front.y-27,27);
-                  Character.tl.moveTo(Character.x,Character.y-27,27);
+                  Character_front.tl.moveTo(Character_front.x,Character_front.y-27,8);
+                  Character.tl.moveTo(Character.x,Character.y-27,8);
                 }
               }
-              else Character.今 = Character.動上2;
+              else Character.frame = 11;
             }
             else{
               Map_Time = 6;
               Map_move = false;
-              Character.今 = Character.上;
+              Character.frame = 10;
               Character_front.x = Character.x;
               Character_front.y = Character.y-27;
-              Character._element.src = Character.今;
               for (var i = 0; i < Flag.length; i++) {
                 if(Flag[i].split("=")[0]=="キャラ向き"){
                   Flag[i] = "キャラ向き=上";
@@ -2728,7 +2652,7 @@ function Game_load(width,height){
         }
         if(game.input.down){
           if(Character&&Map_Time==0){
-            if(Character.今==Character.下){
+            if(Character.frame==1){
               for (var i = 0; i < Map_area.length; i++) {
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
@@ -2739,10 +2663,9 @@ function Game_load(width,height){
                 }
               }
               if(i==Map_area.length){
-                Map_Time = 28;
-                Character.今 = Character.動下1;
-                Character._element.src = Character.今;
-                if(Character.y > 81 && Map_Image[0].height + Map_Image[0].y > 243){
+                Map_Time = 9;
+                Character.frame = 0;
+                if(Character.y > 81 && Map_Image[0].height * 27/Map_scale + Map_Image[0].y > 243){
                   for (var i = 0; i < Flag.length; i++) {
                     if(Flag[i].split("=")[0]=="マップY"){
                       Flag[i] = "マップY=" + (Flag[i].split("=")[1]*1 + 1);
@@ -2751,11 +2674,11 @@ function Game_load(width,height){
                   }
                   console.log(Flag[i]);
                   for (var k = 0; k < Map_area.length; k++) {
-                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x,Map_area[k].y-27,27);
+                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x,Map_area[k].y-27,8);
                     else Map_area[k].y -= 27;
                   }
                   for (var k = 0; k < Map_Image.length; k++) {
-                    Map_Image[k].tl.moveTo(Map_Image[k].x,Map_Image[k].y-27,27);
+                    Map_Image[k].tl.moveTo(Map_Image[k].x,Map_Image[k].y-27,8);
                   }
                 }
                 else{
@@ -2766,19 +2689,18 @@ function Game_load(width,height){
                     }
                   }
                   console.log(Flag[i]);
-                  Character_front.tl.moveTo(Character_front.x,Character_front.y+27,27);
-                  Character.tl.moveTo(Character.x,Character.y+27,27);
+                  Character_front.tl.moveTo(Character_front.x,Character_front.y+27,8);
+                  Character.tl.moveTo(Character.x,Character.y+27,8);
                 }
               }
-              else Character.今 = Character.動下2;
+              else Character.frame = 2;
             }
             else{
               Map_Time = 6;
               Map_move = false;
-              Character.今 = Character.下;
+              Character.frame = 1;
               Character_front.x = Character.x;
               Character_front.y = Character.y+27;
-              Character._element.src = Character.今;
               for (var i = 0; i < Flag.length; i++) {
                 if(Flag[i].split("=")[0]=="キャラ向き"){
                   Flag[i] = "キャラ向き=下";
@@ -2794,7 +2716,7 @@ function Game_load(width,height){
         }
         if(game.input.left){
           if(Character&&Map_Time==0){
-            if(Character.今==Character.左){
+            if(Character.frame==4){
               for (var i = 0; i < Map_area.length; i++) {
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
@@ -2805,9 +2727,8 @@ function Game_load(width,height){
                 }
               }
               if(i==Map_area.length){
-                Map_Time = 28;
-                Character.今 = Character.動左1;
-                Character._element.src = Character.今;
+                Map_Time = 9;
+                Character.frame = 3;
                 if(Character.x < 216 && Map_Image[0].x < 0){
                   for (var i = 0; i < Flag.length; i++) {
                     if(Flag[i].split("=")[0]=="マップX"){
@@ -2817,11 +2738,11 @@ function Game_load(width,height){
                   }
                   console.log(Flag[i]);
                   for (var k = 0; k < Map_area.length; k++) {
-                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x+27,Map_area[k].y,27);
+                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x+27,Map_area[k].y,8);
                     else Map_area[k].x += 27;
                   }
                   for (var k = 0; k < Map_Image.length; k++) {
-                    Map_Image[k].tl.moveTo(Map_Image[k].x+27,Map_Image[k].y,27);
+                    Map_Image[k].tl.moveTo(Map_Image[k].x+27,Map_Image[k].y,8);
                   }
                 }
                 else{
@@ -2832,19 +2753,18 @@ function Game_load(width,height){
                     }
                   }
                   console.log(Flag[i]);
-                  Character_front.tl.moveTo(Character_front.x-27,Character_front.y,27);
-                  Character.tl.moveTo(Character.x-27,Character.y,27);
+                  Character_front.tl.moveTo(Character_front.x-27,Character_front.y,8);
+                  Character.tl.moveTo(Character.x-27,Character.y,8);
                 }
               }
-              else Character.今 = Character.動左2;
+              else Character.frame = 5;
             }
             else{
               Map_Time = 6;
               Map_move = false;
-              Character.今 = Character.左;
+              Character.frame = 4;
               Character_front.x = Character.x-27;
               Character_front.y = Character.y;
-              Character._element.src = Character.今;
               for (var i = 0; i < Flag.length; i++) {
                 if(Flag[i].split("=")[0]=="キャラ向き"){
                   Flag[i] = "キャラ向き=左";
@@ -2860,7 +2780,7 @@ function Game_load(width,height){
         }
         if(game.input.right){
           if(Character&&Map_Time==0){
-            if(Character.今==Character.右){
+            if(Character.frame==7){
               for (var i = 0; i < Map_area.length; i++) {
                 if(Map_area[i].x==Character_front.x&&Map_area[i].y==Character_front.y){
                   if(Map_area[i].データ=="■") break;
@@ -2871,10 +2791,9 @@ function Game_load(width,height){
                 }
               }
               if(i==Map_area.length){
-                Map_Time = 28;
-                Character.今 = Character.動右1;
-                Character._element.src = Character.今;
-                if(Character.x > 162 && Map_Image[0].width + Map_Image[0].x > 405){
+                Map_Time = 9;
+                Character.frame = 6;
+                if(Character.x > 162 && Map_Image[0].width * 27/Map_scale + Map_Image[0].x > 405){
                   for (var i = 0; i < Flag.length; i++) {
                     if(Flag[i].split("=")[0]=="マップX"){
                       Flag[i] = "マップX=" + (Flag[i].split("=")[1]*1 + 1);
@@ -2883,11 +2802,11 @@ function Game_load(width,height){
                   }
                   console.log(Flag[i]);
                   for (var k = 0; k < Map_area.length; k++) {
-                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x-27,Map_area[k].y,27);
+                    if(Map_area[k].描写) Map_area[k].tl.moveTo(Map_area[k].x-27,Map_area[k].y,8);
                     else Map_area[k].x -= 27;
                   }
                   for (var k = 0; k < Map_Image.length; k++) {
-                    Map_Image[k].tl.moveTo(Map_Image[k].x-27,Map_Image[k].y,27);
+                    Map_Image[k].tl.moveTo(Map_Image[k].x-27,Map_Image[k].y,8);
                   }
                 }
                 else{
@@ -2898,19 +2817,18 @@ function Game_load(width,height){
                     }
                   }
                   console.log(Flag[i]);
-                  Character_front.tl.moveTo(Character_front.x+27,Character_front.y,27);
-                  Character.tl.moveTo(Character.x+27,Character.y,27);
+                  Character_front.tl.moveTo(Character_front.x+27,Character_front.y,8);
+                  Character.tl.moveTo(Character.x+27,Character.y,8);
                 }
               }
-              else Character.今 = Character.動右2;
+              else Character.frame = 8;
             }
             else{
               Map_Time = 6;
               Map_move = false;
-              Character.今 = Character.右;
+              Character.frame = 7;
               Character_front.x = Character.x+27;
               Character_front.y = Character.y;
-              Character._element.src = Character.今;
               for (var i = 0; i < Flag.length; i++) {
                 if(Flag[i].split("=")[0]=="キャラ向き"){
                   Flag[i] = "キャラ向き=右";
