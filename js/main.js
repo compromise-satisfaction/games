@@ -2858,7 +2858,7 @@ function Game_load(width,height){
         var EY = e.y/27 + "";
         EX = EX.split(".")[0]*1;
         EY = EY.split(".")[0]*1;
-        console.log("(マップ:壁,赤,"+ (EX + Map_X) +"," + (EY + Map_Y) + ",■:マップ)");
+        console.log("(マップ:壁,赤,無し,"+ (EX + Map_X) +"," + (EY + Map_Y) + ",■:マップ)");
       });
 
       return scene;
