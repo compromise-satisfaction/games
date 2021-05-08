@@ -2357,7 +2357,7 @@ function Game_load(width,height){
                   Map_area[Map_area.length-1].width = 27;
                   Map_area[Map_area.length-1].height = 27;
                   scene.addChild(Map_area[Map_area.length-1]);
-                  Map_text += "(マップ:赤,"+ (EX + Map_X) +"," + (EY + Map_Y) +",■:マップ)";
+                  Map_text += "(マップ:壁,赤,"+ (EX + Map_X) +"," + (EY + Map_Y) +",■:マップ)";
                   console.log(Map_text);
                 });
                 break;
@@ -2858,7 +2858,7 @@ function Game_load(width,height){
         var EY = e.y/27 + "";
         EX = EX.split(".")[0]*1;
         EY = EY.split(".")[0]*1;
-        console.log("(マップ:赤,"+ (EX + Map_X) +"," + (EY + Map_Y) + ",■:マップ)");
+        console.log("(マップ:壁,赤,"+ (EX + Map_X) +"," + (EY + Map_Y) + ",■:マップ)");
       });
 
       return scene;
