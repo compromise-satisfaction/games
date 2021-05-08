@@ -2630,7 +2630,7 @@ function Game_load(width,height){
                   Character.tl.moveTo(Character.x,Character.y-27,8);
                 }
               }
-              else Character.frame = 11;
+              //else Character.frame = 11;
             }
             else{
               Map_Time = 6;
@@ -2694,7 +2694,7 @@ function Game_load(width,height){
                   Character.tl.moveTo(Character.x,Character.y+27,8);
                 }
               }
-              else Character.frame = 2;
+              //else Character.frame = 2;
             }
             else{
               Map_Time = 6;
@@ -2758,7 +2758,7 @@ function Game_load(width,height){
                   Character.tl.moveTo(Character.x-27,Character.y,8);
                 }
               }
-              else Character.frame = 5;
+              //else Character.frame = 5;
             }
             else{
               Map_Time = 6;
@@ -2822,7 +2822,7 @@ function Game_load(width,height){
                   Character.tl.moveTo(Character.x+27,Character.y,8);
                 }
               }
-              else Character.frame = 8;
+              //else Character.frame = 8;
             }
             else{
               Map_Time = 6;
