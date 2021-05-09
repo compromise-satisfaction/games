@@ -1032,7 +1032,7 @@ function Game_load(width,height){
               case 1:
                 Flag1 = [];
                 for (var i = 0; i < Flag.length; i++) {
-                  if(Flag[i].split("==")[0]=="セーブ時間") Flag1[i] = "セーブ時間=" + Now;
+                  if(Flag[i].split("==")[0]=="セーブ時間") Flag1[i] = "セーブ時間==" + Now;
                   else Flag1[i] = Flag[i];
                 }
                 Save_Datas.シーンナンバー1 = Save_Datas.シーンナンバー;
@@ -1040,7 +1040,7 @@ function Game_load(width,height){
               case 2:
                 Flag2 = [];
                 for (var i = 0; i < Flag.length; i++) {
-                  if(Flag[i].split("==")[0]=="セーブ時間") Flag2[i] = "セーブ時間=" + Now;
+                  if(Flag[i].split("==")[0]=="セーブ時間") Flag2[i] = "セーブ時間==" + Now;
                   else Flag2[i] = Flag[i];
                 }
                 Save_Datas.シーンナンバー2 = Save_Datas.シーンナンバー;
@@ -1048,7 +1048,7 @@ function Game_load(width,height){
               case 3:
                 Flag3 = [];
                 for (var i = 0; i < Flag.length; i++) {
-                  if(Flag[i].split("==")[0]=="セーブ時間") Flag3[i] = "セーブ時間=" + Now;
+                  if(Flag[i].split("==")[0]=="セーブ時間") Flag3[i] = "セーブ時間==" + Now;
                   else Flag3[i] = Flag[i];
                 }
                 Save_Datas.シーンナンバー3 = Save_Datas.シーンナンバー;
@@ -1056,7 +1056,7 @@ function Game_load(width,height){
               case 4:
                 Flag4 = [];
                 for (var i = 0; i < Flag.length; i++) {
-                  if(Flag[i].split("==")[0]=="セーブ時間") Flag4[i] = "セーブ時間=" + Now;
+                  if(Flag[i].split("==")[0]=="セーブ時間") Flag4[i] = "セーブ時間==" + Now;
                   else Flag4[i] = Flag[i];
                 }
                 Save_Datas.シーンナンバー4 = Save_Datas.シーンナンバー;
@@ -1064,7 +1064,7 @@ function Game_load(width,height){
               case 5:
                 Flag5 = [];
                 for (var i = 0; i < Flag.length; i++) {
-                  if(Flag[i].split("==")[0]=="セーブ時間") Flag5[i] = "セーブ時間=" + Now;
+                  if(Flag[i].split("==")[0]=="セーブ時間") Flag5[i] = "セーブ時間==" + Now;
                   else Flag5[i] = Flag[i];
                 }
                 Save_Datas.シーンナンバー5 = Save_Datas.シーンナンバー;
@@ -1072,7 +1072,7 @@ function Game_load(width,height){
               case 6:
                 Flag6 = [];
                 for (var i = 0; i < Flag.length; i++) {
-                  if(Flag[i].split("==")[0]=="セーブ時間") Flag6[i] = "セーブ時間=" + Now;
+                  if(Flag[i].split("==")[0]=="セーブ時間") Flag6[i] = "セーブ時間==" + Now;
                   else Flag6[i] = Flag[i];
                 }
                 Save_Datas.シーンナンバー6 = Save_Datas.シーンナンバー;
@@ -1080,7 +1080,7 @@ function Game_load(width,height){
               case 7:
                 Flag7 = [];
                 for (var i = 0; i < Flag.length; i++) {
-                  if(Flag[i].split("==")[0]=="セーブ時間") Flag7[i] = "セーブ時間=" + Now;
+                  if(Flag[i].split("==")[0]=="セーブ時間") Flag7[i] = "セーブ時間==" + Now;
                   else Flag7[i] = Flag[i];
                 }
                 Save_Datas.シーンナンバー7 = Save_Datas.シーンナンバー;
@@ -1088,7 +1088,7 @@ function Game_load(width,height){
               case 8:
                 Flag8 = [];
                 for (var i = 0; i < Flag.length; i++) {
-                  if(Flag[i].split("==")[0]=="セーブ時間") Flag8[i] = "セーブ時間=" + Now;
+                  if(Flag[i].split("==")[0]=="セーブ時間") Flag8[i] = "セーブ時間==" + Now;
                   else Flag8[i] = Flag[i];
                 }
                 Save_Datas.シーンナンバー8 = Save_Datas.シーンナンバー;
@@ -1284,7 +1284,7 @@ function Game_load(width,height){
             }
           }
           Flag = [
-            "セーブ時間=未設定",
+            "セーブ時間==未設定",
             "キャラX==7",
             "キャラY==4",
             "キャラ向き==下",
