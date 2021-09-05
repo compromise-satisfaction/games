@@ -160,11 +160,11 @@ function Game_load(width,height){
               break;
             case 1:
               game.fps = 10;
-              game.replaceScene(R_MainScene());
+              game.replaceScene(R_Main_Scene());
               return;
             case 2:
               game.fps = 10;
-              game.replaceScene(S_MainScene());
+              game.replaceScene(S_Main_Scene());
               return;
             case 3:
               game.fps = 100;
@@ -808,7 +808,7 @@ function Game_load(width,height){
       }
 
     };
-    var Novel_MainScene = function(Data,SceneNumber){
+    var Novel_Main_Scene = function(Data,SceneNumber){
 
       var scene = new Scene();                                // 新しいシーンを作る
 
@@ -957,6 +957,21 @@ function Game_load(width,height){
           Map_Images(Map_Images_Data[i]);
         }
         Data = Data.replace(/\(マップ画像:.+?:マップ画像\)/g,"(変換:マップ画像)(画像:白背景,../image/白.png,-100,227.8125,605,600:画像)");
+      }
+
+      var Videos_Data = Data.match(/\(動画:.+?:動画\)/g);
+
+      if(Videos_Data){
+        var Video_Number = 0;
+        for (var i = 0; i < Videos_Data.length; i++) {
+          Videos_Data[i] = Videos_Data[i].substring(4,Videos_Data[i].length-4);
+          Videos_Data[i] = new Sprite(100,100);
+          Videos_Data[i] = document.createElement("video");
+          Videos_Data[i].src = "../image/透明.png";
+          console.log(Videos_Data[i]);
+          scene.addChild(Videos_Data[i]);
+        }
+        Data = Data.replace(/\(動画:.+?:動画\)/g,"");
       }
 
       var Youtube = [];
@@ -1252,8 +1267,8 @@ function Game_load(width,height){
           if(Game_Datas[i].Number==Scene_Name) break;
         }
         if(i < Game_Datas.length){
-          if(Push) game.pushScene(Novel_MainScene(Game_Datas[i].Data,Game_Datas[i].Number));
-          else game.replaceScene(Novel_MainScene(Game_Datas[i].Data,Game_Datas[i].Number));
+          if(Push) game.pushScene(Novel_Main_Scene(Game_Datas[i].Data,Game_Datas[i].Number));
+          else game.replaceScene(Novel_Main_Scene(Game_Datas[i].Data,Game_Datas[i].Number));
         }
         else{
           switch(Scene_Name){
@@ -1267,7 +1282,7 @@ function Game_load(width,height){
               Scene_Name += "(文字情報:20,black,無し,40:文字情報)";
               Scene_Name += "(ボタン:戻る,40,350,325,100,無し,保存箇所:ボタン)";
               Scene_Name += "(待機時間:5:待機時間)シーンデータがありません。";
-              game.replaceScene(Novel_MainScene(Scene_Name,Save_Datas.シーンナンバー));
+              game.replaceScene(Novel_Main_Scene(Scene_Name,Save_Datas.シーンナンバー));
               break;
           }
         }
@@ -2390,9 +2405,9 @@ function Game_load(width,height){
                 Interval_Number++;
                 break;
               case "文字座標":
-                switch (Coordinates_Data[Coordinate_Number].split(",")[0].substring(0,1)){
-                  case "+":
-                  case "-":
+                switch (Coordinates_Data[Coordinate_Number].split(",")[0].substring(0,2)){
+                  case "+=":
+                  case "-=":
                     Text_X -= Text_Interval;
                     Text_X += Coordinates_Data[Coordinate_Number].split(",")[0]*1;
                     break;
@@ -2400,9 +2415,9 @@ function Game_load(width,height){
                     Text_X = Coordinates_Data[Coordinate_Number].split(",")[0]*1;
                     break;
                 }
-                switch (Coordinates_Data[Coordinate_Number].split(",")[1].substring(0,1)){
-                  case "+":
-                  case "-":
+                switch (Coordinates_Data[Coordinate_Number].split(",")[1].substring(0,2)){
+                  case "+=":
+                  case "-=":
                     Text_Y += Coordinates_Data[Coordinate_Number].split(",")[1]*1;
                     break;
                   default:
@@ -2901,7 +2916,7 @@ function Game_load(width,height){
 
         return scene;
     };
-    var R_MainScene = function(){
+    var R_Main_Scene = function(){
       var scene = new Scene();                                // 新しいシーンを作る
 
       var Saikyo = false;
@@ -2964,7 +2979,7 @@ function Game_load(width,height){
       Set_button4.frame = 12;
       scene.addChild(Set_button4);
       Set_button4.addEventListener("touchend",function(e){
-        game.pushScene(R_ReturnScene());
+        game.pushScene(R_Return_Scene());
       });
 
       var Set_button5 = new Sprite(195,95);
@@ -3704,7 +3719,7 @@ function Game_load(width,height){
       });
       return scene;
     };
-    var R_ReturnScene = function(){
+    var R_Return_Scene = function(){
       var scene = new Scene();                                // 新しいシーンを作る
 
       var Reversi = new Sprite(405,550);
@@ -3718,7 +3733,7 @@ function Game_load(width,height){
       scene.addChild(Set_button);
       Set_button.addEventListener("touchend",function(e){
         game.popScene();
-        game.replaceScene(R_MainScene());
+        game.replaceScene(R_Main_Scene());
       });
 
       var S_Input = new Button("メニューに戻る","light",width/2,95);
@@ -3742,7 +3757,7 @@ function Game_load(width,height){
 
       return scene;
     };
-    var S_MainScene = function(V){
+    var S_Main_Scene = function(V){
       var scene = new Scene();                                // 新しいシーンを作る
 
       var Hand = new Sprite(1,1);
@@ -3834,12 +3849,12 @@ function Game_load(width,height){
           for (var i = 0; i < 81; i++){
             V[i] = Number[i+1].frame;
           }
-          game.replaceScene(AnswerScene(V));
+          game.replaceScene(Answer_Scene(V));
         }
       });
       return scene;
     };
-    var AnswerScene = function(V){
+    var Answer_Scene = function(V){
       var scene = new Scene();
 
       var Hand = new Sprite(1,1);
@@ -4053,7 +4068,7 @@ function Game_load(width,height){
           for (var i = 0; i < 81; i++){
             V[i] = Number[i+1].frame;
           }
-          game.replaceScene(S_MainScene(V));
+          game.replaceScene(S_Main_Scene(V));
         }
       });
 
@@ -4358,7 +4373,7 @@ function Game_load(width,height){
            iii += "(ボタン:初めから,101.25,200,202.5,100,無し,スタート:ボタン)";
            iii += "(ボタン:続きから,101.25,400,202.5,100,無し,続きから:ボタン)";
            game.popScene();
-           game.replaceScene(Novel_MainScene(iii,"スタート"));
+           game.replaceScene(Novel_Main_Scene(iii,"スタート"));
            return;
          },);
       }
