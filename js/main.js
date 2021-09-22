@@ -28,7 +28,6 @@ else{
 }
 console.log(ID);
 
-
 var BGM = document.createElement("audio");
 BGM.addEventListener("ended",function(e){
   BGM.currentTime = BGM.id*1;
