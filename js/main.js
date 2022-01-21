@@ -3964,13 +3964,15 @@ function Game_load(width,height){
 
       var STOP = "青";
       var Temp = null;
+      var Skip = {};
 
       Main.addEventListener("enterframe",function(){
         switch (STOP) {
           case "青":
           case "赤":
             break;
-          case "取り消し":
+            case "取り消し":
+            case "スキップ":
             for (var i = 1; i < 82; i++){
               if(V2[i-1]=="青"){
                 V[i-1] = "123456789";
@@ -3982,6 +3984,7 @@ function Game_load(width,height){
                 if(V[i-1].toString().length!=1) V[i-1] = "123456789";
               };
             };
+            if(STOP=="スキップ") STOP = "青";
             break;
           case "終了済み":
             return;
@@ -4130,18 +4133,20 @@ function Game_load(width,height){
           if(V[i-1]=="000000009") V[i-1] = 9;
           if(V[i-1]=="000000000"){
             STOP = "取り消し";
+            Skip = {};
+            console.log("取り消し");
             return;
           };
           Number[i].a = V[i-1];
           for (var k = 1; k < 10; k++){
-            if(V[i-1]==k&&!Number[i].frame){
+            if(V[i-1]==k&&Number[i].frame==0){
               Now = new Date();
               Number[i].frame = k;
               if(STOP == "赤"){
                 V2[i-1] = "青";
                 Number[i].image = game.assets["../image/Number青.png"];
               };
-            };
+            }
           }
         };
         Complete = true;
@@ -4159,11 +4164,19 @@ function Game_load(width,height){
             case "青":
               for (var i = 1; i < 82; i++){
                 STOP = V[i-1].toString().match(/0/g);
-                if(STOP){
+                if(STOP&&Skip[i-1]!="無理"){
                   if(STOP.length==7){
-                    V[i-1] = V[i-1].match(/[1-9]{1}/)[0];
+                    if(Skip[i-1]){
+                      Skip[i-1] = "無理";
+                      V[i-1] = V[i-1].match(/[1-9]{1}/g)[1];
+                    }
+                    else{
+                      Skip[i-1] = true;
+                      V[i-1] = V[i-1].match(/[1-9]{1}/g)[0];
+                    };
                     Number[i].image = game.assets["../image/Number青.png"];
                     Temp = [i-1,V[i-1]];
+                    console.log(Temp);
                     break;
                   };
                 };
@@ -4172,7 +4185,12 @@ function Game_load(width,height){
               else STOP = "お手上げ";
               break;
             case "赤":
-              STOP = "取り消し";
+              Temp = null;
+              STOP = "スキップ";
+              console.log(STOP);
+              break;
+            default:
+              console.log(STOP);
               break;
           };
         };
