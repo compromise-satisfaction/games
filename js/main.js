@@ -4157,6 +4157,7 @@ function Game_load(width,height){
             };
           };
           if(Complete){
+            for (var i = 1; i < 82; i++) if(V2[i-1]=="青") Number[i].image = game.assets["../image/Number赤.png"];
             STOP = "完成";
             return;
           };
