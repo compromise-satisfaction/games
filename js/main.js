@@ -3960,6 +3960,7 @@ function Game_load(width,height){
         if(!V2[i-1]) V2[i-1] = "黒";
         if(V2[i-1] == "緑") Number[i].image = game.assets["../image/Number緑.png"];
         if(V2[i-1] == "青") Number[i].image = game.assets["../image/Number青.png"];
+        if(V2[i-1] == "赤") Number[i].image = game.assets["../image/Number赤.png"];
       }
 
       var STOP = "青";
@@ -4157,7 +4158,12 @@ function Game_load(width,height){
             };
           };
           if(Complete){
-            for (var i = 1; i < 82; i++) if(V2[i-1]=="青") Number[i].image = game.assets["../image/Number赤.png"];
+            for (var i = 1; i < 82; i++){
+              if(V2[i-1]=="青"){
+                V2[i-1] = "赤";
+                Number[i].image = game.assets["../image/Number赤.png"];
+              };
+            };
             STOP = "完成";
             return;
           };
