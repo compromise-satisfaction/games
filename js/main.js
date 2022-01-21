@@ -3946,11 +3946,23 @@ function Game_load(width,height){
         if(V2[i-1] == "緑") Number[i].image = game.assets["../image/Number緑.png"];
         if(V2[i-1] == "青") Number[i].image = game.assets["../image/Number青.png"];
         if(V2[i-1] == "赤") Number[i].image = game.assets["../image/Number赤.png"];
-        console.log(V[i-1]);
-        console.log(V2[i-1]);
       }
 
+      var STOP = "青";
+      var Temp = null;
+
       Main.addEventListener("enterframe",function(){
+        if(STOP=="お手上げ") return;
+        if(STOP=="取り消し"){
+          for (var i = 1; i < 82; i++){
+            if(V2[i-1]=="赤"){
+              V[i-1] = "123456789";
+              V2[i-1] = "青";
+              Number[i].image = game.assets["../image/Number青.png"];
+            };
+          };
+        };
+        Check = JSON.stringify(V);
         var e = 0;
         var f = 0;
         for (var d = 0; d < 9; d++){
@@ -4069,6 +4081,11 @@ function Game_load(width,height){
           }
         }
         */
+        if(STOP=="取り消し"){
+          V[Temp[0]] = V[Temp[0]].replace(Temp[1],"0");
+          Temp = null;
+          STOP = "青";
+        };
         for (var i = 1; i < 82; i++){
           if(V[i-1]=="100000000") V[i-1] = 1;
           if(V[i-1]=="020000000") V[i-1] = 2;
@@ -4081,9 +4098,37 @@ function Game_load(width,height){
           if(V[i-1]=="000000009") V[i-1] = 9;
           Number[i].a = V[i-1];
           for (var k = 1; k < 10; k++){
-            if(V[i-1]==k) Number[i].frame = k;
+            if(V[i-1]==k&&!Number[i].frame){
+              Number[i].frame = k;
+              if(STOP == "赤"){
+                V2[i-1] = "赤";
+                Number[i].image = game.assets["../image/Number赤.png"];
+              };
+            };
           }
         }
+        if(Check==JSON.stringify(V)){
+          switch(STOP){
+            case "青":
+              for (var i = 1; i < 82; i++){
+                STOP = V[i-1].toString().match(/0/g);
+                if(STOP){
+                  if(STOP.length==7){
+                    V[i-1] = V[i-1].match(/[1-9]/)[0];
+                    Number[i].image = game.assets["../image/Number赤.png"];
+                    Temp = [i-1,V[i-1]];
+                    break;
+                  };
+                };
+              };
+              if(Temp) STOP = "赤";
+              else STOP = "お手上げ";
+              break;
+            case "赤":
+              STOP = "取り消し";
+              break;
+          };
+        };
       })
 
       scene.addEventListener("touchend",function(e){
