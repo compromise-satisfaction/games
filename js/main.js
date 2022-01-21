@@ -130,6 +130,9 @@ function Game_load(width,height){
   game.preload("../image/stone.png");
   game.preload("../image/V_or_D.png");
   game.preload("../image/Number.png");
+  game.preload("../image/Number赤.png");
+  game.preload("../image/Number青.png");
+  game.preload("../image/Number緑.png");
   game.preload("../image/Reversi.png");
   game.preload("../image/Set_button.png");
   game.onload = function(){
@@ -182,7 +185,7 @@ function Game_load(width,height){
       Buttons(width/4,60,width/2,height/10,"脳トレ",0);
       Buttons(width/4,180,width/2,height/10,"リバーシ",1);
       Buttons(width/4,300,width/2,height/10,"数独補佐",2);
-      Buttons(width/4,420,width/2,height/10,"ノベルゲーム",3);
+      Buttons(width/4,420,width/2,height/10,"線つなぎ",5);
       Buttons(width/4,540,width/2,height/20,"データ消去",4);
 
       return scene;
@@ -3560,6 +3563,8 @@ function Game_load(width,height){
         scene.addChild(Pointer);
         scene.removeChild(Pointer);
         okuugoki();
+        Stone_memory[te] = Stones;
+        console.log(Stone_memory);
       }
 
       function W_D(){
@@ -3589,6 +3594,8 @@ function Game_load(width,height){
           console.log(White_Number);
       }
 
+      var Stone_memory = [];
+
       scene.addEventListener("touchend",function(e){
         if((Time_Hand>5&&va!=AI)||AI == 100){
           Pointer.x = e.x;
@@ -3596,6 +3603,8 @@ function Game_load(width,height){
           scene.addChild(Pointer);
           scene.removeChild(Pointer);
           okuugoki();
+          Stone_memory[te] = Stones;
+          console.log(Stone_memory);
         }
         if(Set_button.intersect(Pointer)){
           if(bamen==0){
@@ -3756,7 +3765,7 @@ function Game_load(width,height){
 
       return scene;
     };
-    var S_Main_Scene = function(V){
+    var S_Main_Scene = function(V,V2){
       var scene = new Scene();                                // 新しいシーンを作る
 
       var Hand = new Sprite(1,1);
@@ -3779,7 +3788,8 @@ function Game_load(width,height){
       var Numbers = Class.create(Sprite, {
         initialize: function(x,y,z,o) {
           Sprite.call(this,40,40);
-          this.image = game.assets["../image/Number.png"];
+          if(V) this.image = game.assets["../image/Number緑.png"];
+          else this.image = game.assets["../image/Number.png"];
           this.x = x;
           this.y = y;
           this.frame = z;
@@ -3807,10 +3817,14 @@ function Game_load(width,height){
         Set[i] = new Numbers((i-1)*45,500,i,true);
       }
 
-      if(V!=undefined){
+      if(V){
         for (var i = 1; i < 82; i++){
           Number[i].frame = V[i-1];
-        }
+          if(V2[i-1] == "黒" && V[i-1]) Number[i].image = game.assets["../image/Number.png"];
+          if(V2[i-1] == "緑" && V[i-1]) Number[i].image = game.assets["../image/Number緑.png"];
+          if(V2[i-1] == "青" && V[i-1]) Number[i].image = game.assets["../image/Number青.png"];
+          if(V2[i-1] == "赤" && V[i-1]) Number[i].image = game.assets["../image/Number赤.png"];
+        };
       }
 
       scene.addEventListener("touchend",function(e){
@@ -3818,6 +3832,10 @@ function Game_load(width,height){
         Hand.y = e.y;
         for (var i = 1; i < 82; i++){
           if(Number[i].intersect(Hand)){
+            if(V2){
+              V2[i-1] = "緑";
+              Number[i].image = game.assets["../image/Number緑.png"];
+            };
             if(Choice==0){
               if(Number[i].frame==9) Number[i].frame=-1;
               Number[i].frame++;
@@ -3848,12 +3866,13 @@ function Game_load(width,height){
           for (var i = 0; i < 81; i++){
             V[i] = Number[i+1].frame;
           }
-          game.replaceScene(Answer_Scene(V));
+          game.replaceScene(Answer_Scene(V,V2));
         }
       });
       return scene;
     };
-    var Answer_Scene = function(V){
+    var Answer_Scene = function(V,V2){
+
       var scene = new Scene();
 
       var Hand = new Sprite(1,1);
@@ -3880,6 +3899,7 @@ function Game_load(width,height){
       Main.x = 0;
       Main.y = 0;
       scene.addChild(Main);
+
       var Numbers = Class.create(Sprite, {
         initialize: function(x,y,z) {
           Sprite.call(this,40,40);
@@ -3914,8 +3934,20 @@ function Game_load(width,height){
           }
         }
 
+      if(!V2) V2 = [];
+
       for (var i = 1; i < 82; i++){
-        if(V[i-1]==0||V[i-1]>9) V[i-1] = "123456789";
+        if(V[i-1]==0||V[i-1]>9){
+          V[i-1] = "123456789";
+          Number[i].image = game.assets["../image/Number青.png"];
+          V2[i-1] = "青";
+        }
+        if(!V2[i-1]) V2[i-1] = "黒";
+        if(V2[i-1] == "緑") Number[i].image = game.assets["../image/Number緑.png"];
+        if(V2[i-1] == "青") Number[i].image = game.assets["../image/Number青.png"];
+        if(V2[i-1] == "赤") Number[i].image = game.assets["../image/Number赤.png"];
+        console.log(V[i-1]);
+        console.log(V2[i-1]);
       }
 
       Main.addEventListener("enterframe",function(){
@@ -4067,7 +4099,7 @@ function Game_load(width,height){
           for (var i = 0; i < 81; i++){
             V[i] = Number[i+1].frame;
           }
-          game.replaceScene(S_Main_Scene(V));
+          game.replaceScene(S_Main_Scene(V,V2));
         }
       });
 
