@@ -130,8 +130,8 @@ function Game_load(width,height){
   game.preload("../image/stone.png");
   game.preload("../image/V_or_D.png");
   game.preload("../image/Number.png");
-  game.preload("../image/Number赤.png");
   game.preload("../image/Number青.png");
+  game.preload("../image/Number赤.png");
   game.preload("../image/Number緑.png");
   game.preload("../image/Reversi.png");
   game.preload("../image/Set_button.png");
@@ -3822,8 +3822,8 @@ function Game_load(width,height){
           Number[i].frame = V[i-1];
           if(V2[i-1] == "黒" && V[i-1]) Number[i].image = game.assets["../image/Number.png"];
           if(V2[i-1] == "緑" && V[i-1]) Number[i].image = game.assets["../image/Number緑.png"];
-          if(V2[i-1] == "青" && V[i-1]) Number[i].image = game.assets["../image/Number青.png"];
           if(V2[i-1] == "赤" && V[i-1]) Number[i].image = game.assets["../image/Number赤.png"];
+          if(V2[i-1] == "青" && V[i-1]) Number[i].image = game.assets["../image/Number青.png"];
         };
       }
 
@@ -3872,6 +3872,21 @@ function Game_load(width,height){
       return scene;
     };
     var Answer_Scene = function(V,V2){
+
+      if(!V2){
+        for(var I = 0; I < V.length; I++){
+          if(V[I]){
+            window.localStorage.setItem("数独",JSON.stringify(V));
+            break;
+          };
+        };
+        if(I==V.length){
+          var V_V = window.localStorage.getItem("数独");
+          if(V_V) V = JSON.parse(V_V);
+        };
+      };
+
+      console.log(V);
 
       var scene = new Scene();
 
@@ -3939,29 +3954,42 @@ function Game_load(width,height){
       for (var i = 1; i < 82; i++){
         if(V[i-1]==0||V[i-1]>9){
           V[i-1] = "123456789";
-          Number[i].image = game.assets["../image/Number青.png"];
-          V2[i-1] = "青";
+          Number[i].image = game.assets["../image/Number赤.png"];
+          V2[i-1] = "赤";
         }
         if(!V2[i-1]) V2[i-1] = "黒";
         if(V2[i-1] == "緑") Number[i].image = game.assets["../image/Number緑.png"];
         if(V2[i-1] == "青") Number[i].image = game.assets["../image/Number青.png"];
-        if(V2[i-1] == "赤") Number[i].image = game.assets["../image/Number赤.png"];
       }
 
       var STOP = "青";
       var Temp = null;
 
       Main.addEventListener("enterframe",function(){
-        if(STOP=="お手上げ") return;
-        if(STOP=="取り消し"){
-          for (var i = 1; i < 82; i++){
-            if(V2[i-1]=="赤"){
-              V[i-1] = "123456789";
-              V2[i-1] = "青";
-              Number[i].image = game.assets["../image/Number青.png"];
+        switch (STOP) {
+          case "青":
+          case "赤":
+            break;
+          case "取り消し":
+            for (var i = 1; i < 82; i++){
+              if(V2[i-1]=="青"){
+                V[i-1] = "123456789";
+                V2[i-1] = "赤";
+                Number[i].frame = 0;
+                Number[i].image = game.assets["../image/Number赤.png"];
+              }
+              else{
+                if(V[i-1].toString().length!=1) V[i-1] = "123456789";
+              };
             };
-          };
-        };
+            break;
+          case "終了済み":
+            return;
+          default:
+            console.log(STOP);
+            STOP = "終了済み";
+            return;
+        }
         Check = JSON.stringify(V);
         var e = 0;
         var f = 0;
@@ -4082,6 +4110,10 @@ function Game_load(width,height){
         }
         */
         if(STOP=="取り消し"){
+          if(!Temp){
+            STOP = "お手上げ";
+            return;
+          };
           V[Temp[0]] = V[Temp[0]].replace(Temp[1],"0");
           Temp = null;
           STOP = "青";
@@ -4096,26 +4128,41 @@ function Game_load(width,height){
           if(V[i-1]=="000000700") V[i-1] = 7;
           if(V[i-1]=="000000080") V[i-1] = 8;
           if(V[i-1]=="000000009") V[i-1] = 9;
+          if(V[i-1]=="000000000"){
+            STOP = "取り消し";
+            return;
+          };
           Number[i].a = V[i-1];
           for (var k = 1; k < 10; k++){
             if(V[i-1]==k&&!Number[i].frame){
+              Now = new Date();
               Number[i].frame = k;
               if(STOP == "赤"){
-                V2[i-1] = "赤";
-                Number[i].image = game.assets["../image/Number赤.png"];
+                V2[i-1] = "青";
+                Number[i].image = game.assets["../image/Number青.png"];
               };
             };
           }
-        }
+        };
+        Complete = true;
         if(Check==JSON.stringify(V)){
+          for (var i = 0; i < 81; i++){
+            if((V[i].toString().length)!=1){
+              Complete = false;
+            };
+          };
+          if(Complete){
+            STOP = "完成";
+            return;
+          };
           switch(STOP){
             case "青":
               for (var i = 1; i < 82; i++){
                 STOP = V[i-1].toString().match(/0/g);
                 if(STOP){
                   if(STOP.length==7){
-                    V[i-1] = V[i-1].match(/[1-9]/)[0];
-                    Number[i].image = game.assets["../image/Number赤.png"];
+                    V[i-1] = V[i-1].match(/[1-9]{1}/)[0];
+                    Number[i].image = game.assets["../image/Number青.png"];
                     Temp = [i-1,V[i-1]];
                     break;
                   };
