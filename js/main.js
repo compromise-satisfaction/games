@@ -3931,6 +3931,7 @@ function Game_load(width,height){
         label.y = 470;
         label.color = 'red';
         label.font = '40px "Arial"';
+        label.width = width;
         label.text = ("");
         scene.addChild(label);
 
@@ -3968,6 +3969,7 @@ function Game_load(width,height){
       var Skip = {};
       var Length = 7;
       var Differents_Number = {};
+      var Differents_Number2 = {};
 
       Main.addEventListener("enterframe",function(){
         switch (STOP) {
@@ -4004,7 +4006,239 @@ function Game_load(width,height){
             };
           };
         };
+
+        for (var i = 1; i < 82; i++){
+          if(V[i-1]=="100000000") V[i-1] = 1;
+          if(V[i-1]=="020000000") V[i-1] = 2;
+          if(V[i-1]=="003000000") V[i-1] = 3;
+          if(V[i-1]=="000400000") V[i-1] = 4;
+          if(V[i-1]=="000050000") V[i-1] = 5;
+          if(V[i-1]=="000006000") V[i-1] = 6;
+          if(V[i-1]=="000000700") V[i-1] = 7;
+          if(V[i-1]=="000000080") V[i-1] = 8;
+          if(V[i-1]=="000000009") V[i-1] = 9;
+          if(V[i-1]=="000000000"){
+            STOP = "取り消し";
+            Skip = {};
+            Length = 7;
+            console.log("取り消し");
+            return;
+          };
+          Number[i].a = V[i-1];
+          for (var k = 1; k < 10; k++){
+            if(V[i-1]==k&&Number[i].frame==0){
+              Now = new Date();
+              Number[i].frame = k;
+              if(STOP == "赤"){
+                V2[i-1] = "青";
+                Number[i].image = game.assets["../image/Number青.png"];
+              };
+            }
+          }
+        };
+
         Check = JSON.stringify(V);
+
+        Differents_Number2 = {};
+        for (var i = 0; i < 81; i++) Differents_Number2[i] = [];
+
+        for(var j = 0; j < V.length; j+=9){
+          Temp1 = [];
+          for (var i = j; i < j+9; i++){
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            Temp1[Temp1.length] = V[i]*1;
+          };
+          for (var i = j; i < j+9; i++){
+            for (var k = 0; k < Temp1.length; k++){
+              Differents_Number2[i][Differents_Number2[i].length] = Temp1[k]*1;
+            };
+          };
+        };
+
+        for(var j = 0; j < 9; j++){
+          Temp1 = [];
+          for (var i = j; i < V.length; i+=9){
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            Temp1[Temp1.length] = V[i]*1;
+          };
+          for (var i = j; i < V.length; i+=9){
+            for (var k = 0; k < Temp1.length; k++){
+              Differents_Number2[i][Differents_Number2[i].length] = Temp1[k]*1;
+            };
+          };
+        };
+
+        for(var j = 0; j < V.length-20; j+=3){
+          switch(j){
+            case 9:
+              j = 27;
+              break;
+            case 36:
+              j = 54;
+              break;
+          };
+          Temp1 = [];
+          for (var i = j; i < j+21; i++){
+            switch(i){
+              case j+3:
+                i = j+9;
+                break;
+              case j+12:
+                i = j+18;
+                break;
+            };
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            Temp1[Temp1.length] = V[i]*1;
+          };
+
+          for (var i = j; i < j+21; i++){
+            switch(i){
+              case j+3:
+                i = j+9;
+                break;
+              case j+12:
+                i = j+18;
+                break;
+            };
+            for (var k = 0; k < Temp1.length; k++){
+              Differents_Number2[i][Differents_Number2[i].length] = Temp1[k]*1;
+            };
+          };
+        };
+
+        Temp2 = Object.keys(Differents_Number2);
+        for (var i = 0; i < Temp2.length; i++) {
+          Differents_Number2[Temp2[Temp2[i]]].sort();
+          Temp3 = Differents_Number2[Temp2[Temp2[i]]];
+          for (var j = 0; j < Temp3.length; j++) {
+            if(Temp3[j]==Temp3[j+1]) Temp3[j] = 0;
+            if(Temp3[j]==V[i]) Temp3[j] = 0;
+          };
+          Temp3.sort();
+          Temp4 = [];
+          for (var j = 0; j < Temp3.length; j++) if(Temp3[j]) Temp4[Temp4.length] = Temp3[j];
+          Differents_Number2[Temp2[Temp2[i]]] = Temp4;
+        };
+
+        for (var i = 0; i < V.length; i++) {
+          if(!V[i].length){
+            Differents_Number2[i] = [];
+            for (var j = 1; j < 10; j++) {
+              if(V[i]!=j) Differents_Number2[i][Differents_Number2[i].length] = j;
+            };
+          };
+        };
+
+        for(var j = 0; j < V.length; j+=9){
+          Temp1 = [];
+          for (var i = j; i < j+9; i++){
+            Temp1[Temp1.length] = Differents_Number2[i];
+          };
+          for(var i = 1; i < 10; i++){
+            Temp2 = 0;
+            for(var k = 0; k < 9; k++){
+              if(!JSON.stringify(Temp1[k]).match(i)){
+                Temp2++;
+                Temp3 = k;
+              };
+            };
+            if(Temp2==1) V[Temp3+j] = i;
+          };
+        };
+
+        for(var j = 0; j < 9; j++){
+          Temp1 = [];
+          for (var i = j; i < V.length; i+=9){
+            Temp1[Temp1.length] = Differents_Number2[i];
+          };
+          for(var i = 1; i < 10; i++){
+            Temp2 = 0;
+            for(var k = 0; k < 9; k++){
+              if(!JSON.stringify(Temp1[k]).match(i)){
+                Temp2++;
+                Temp3 = k;
+              };
+            };
+            if(Temp2==1) V[Temp3*9+j] = i;
+          };
+        };
+
+        for(var j = 0; j < V.length-20; j+=3){
+          switch(j){
+            case 9:
+              j = 27;
+              break;
+            case 36:
+              j = 54;
+              break;
+          };
+          Temp1 = [];
+          for (var i = j; i < j+21; i++){
+            switch(i){
+              case j+3:
+                i = j+9;
+                break;
+              case j+12:
+                i = j+18;
+                break;
+            };
+            Temp1[Temp1.length] = Differents_Number2[i];
+          };
+
+          for(var i = 1; i < 10; i++){
+            Temp2 = 0;
+            for(var k = 0; k < 9; k++){
+              if(!JSON.stringify(Temp1[k]).match(i)){
+                Temp2++;
+                Temp3 = k;
+              };
+            };
+            if(Temp2==1){
+              switch(Temp3){
+                case 0:
+                  Temp3 = j;
+                  break;
+                case 1:
+                  Temp3 = j + 1;
+                  break;
+                case 2:
+                  Temp3 = j + 2;
+                  break;
+                case 3:
+                  Temp3 = j + 9;
+                  break;
+                case 4:
+                  Temp3 = j + 10;
+                  break;
+                case 5:
+                  Temp3 = j + 11;
+                  break;
+                case 6:
+                  Temp3 = j + 18;
+                  break;
+                case 7:
+                  Temp3 = j + 19;
+                  break;
+                case 8:
+                  Temp3 = j + 20;
+                  break;
+              };
+            };
+            if(Temp2==1) V[Temp3] = i;
+          };
+        };
+
+
+        /*
+
+        STOP = "完成";
+        return;
+
+        */
+
         var e = 0;
         var f = 0;
         for (var d = 0; d < 9; d++){
@@ -4123,6 +4357,7 @@ function Game_load(width,height){
           }
         }
         */
+
         if(STOP=="取り消し"){
           if(!Temp){
             STOP = "お手上げ";
@@ -4174,7 +4409,15 @@ function Game_load(width,height){
         };
         Complete = true;
 
-        for(var j = 0; j < 9; j+=9){
+        for (var i = 0; i < 81; i++){
+          if((V[i].toString().length)!=1){
+            Complete = false;
+          };
+        };
+
+      //if(Complete){
+
+        for(var j = 0; j < V.length; j+=9){
           Temp1 = [];
           for (var i = j; i < j+9; i++){
             if(!V[i]) continue;
@@ -4188,7 +4431,7 @@ function Game_load(width,height){
                 return;
               };
             }
-            Temp1[Temp1.length] = V[i];
+            Temp1[Temp1.length] = V[i]*1;
           };
         };
 
@@ -4206,11 +4449,11 @@ function Game_load(width,height){
                 return;
               };
             }
-            Temp1[Temp1.length] = V[i];
+            Temp1[Temp1.length] = V[i]*1;
           };
         };
 
-        for(var j = 0; j < V.length; j+=3){
+        for(var j = 0; j < V.length-20; j+=3){
           switch(j){
             case 9:
               j = 27;
@@ -4240,9 +4483,11 @@ function Game_load(width,height){
                 return;
               };
             }
-            Temp1[Temp1.length] = V[i];
+            Temp1[Temp1.length] = V[i]*1;
           };
         };
+
+      //};
 
         if(Check==JSON.stringify(V)){
           for (var i = 0; i < 81; i++){
