@@ -3966,6 +3966,8 @@ function Game_load(width,height){
       var STOP = "青";
       var Temp = null;
       var Skip = {};
+      var Length = 7;
+      var Differents_Number = {};
 
       Main.addEventListener("enterframe",function(){
         switch (STOP) {
@@ -3994,6 +3996,14 @@ function Game_load(width,height){
             STOP = "終了済み";
             return;
         }
+        Temp2 = Object.keys(Differents_Number);
+        for (var i = 0; i < Temp2.length; i++) {
+          for (var j = 0; j < Differents_Number[Temp2[i]].length; j++){
+            if(V[Temp2[i]].toString().length==9){
+              V[Temp2[i]] = V[Temp2[i]].replace(Differents_Number[Temp2[i]][j],"0");
+            };
+          };
+        };
         Check = JSON.stringify(V);
         var e = 0;
         var f = 0;
@@ -4118,7 +4128,18 @@ function Game_load(width,height){
             STOP = "お手上げ";
             return;
           };
-          V[Temp[0]] = V[Temp[0]].replace(Temp[1],"0");
+          if(!Differents_Number[Temp[0]]) Differents_Number[Temp[0]] = [];
+          Temp2 = Differents_Number[Temp[0]];
+          for (var i = 0; i < Temp2.length; i++) if(Temp2[i]==Temp[1]) break;
+          Temp2[i] = Temp[1];
+          Temp2 = Object.keys(Differents_Number);
+          for (var i = 0; i < Temp2.length; i++) {
+            for (var j = 0; j < Differents_Number[Temp2[i]].length; j++){
+              if(V[Temp2[i]].toString().length==9){
+                V[Temp2[i]] = V[Temp2[i]].replace(Differents_Number[Temp2[i]][j],"0");
+              };
+            };
+          };
           Temp = null;
           STOP = "青";
         };
@@ -4135,6 +4156,7 @@ function Game_load(width,height){
           if(V[i-1]=="000000000"){
             STOP = "取り消し";
             Skip = {};
+            Length = 7;
             console.log("取り消し");
             return;
           };
@@ -4161,6 +4183,7 @@ function Game_load(width,height){
               if(Temp1[k]==V[i]){
                 STOP = "取り消し";
                 Skip = {};
+                Length = 7;
                 console.log("矛盾取り消し");
                 return;
               };
@@ -4178,6 +4201,7 @@ function Game_load(width,height){
               if(Temp1[k]==V[i]){
                 STOP = "取り消し";
                 Skip = {};
+                Length = 7;
                 console.log("矛盾取り消し");
                 return;
               };
@@ -4211,6 +4235,7 @@ function Game_load(width,height){
               if(Temp1[k]==V[i]){
                 STOP = "取り消し";
                 Skip = {};
+                Length = 7;
                 console.log("矛盾取り消し");
                 return;
               };
@@ -4237,36 +4262,11 @@ function Game_load(width,height){
           };
           switch(STOP){
             case "青":
-              Length = 7;
-              /*
-              while(Length > 0&& !Temp){
-                for (var i = 1; i < 82; i++){
-                  STOP = V[i-1].toString().match(/0/g);
-                  if(STOP&&Skip[i-1]!="無理"){
-                    if(STOP.length==Length){
-                      if(Skip[i-1]){
-                        Skip[i-1] = "無理";
-                        V[i-1] = V[i-1].match(/[1-9]{1}/g)[1];
-                      }
-                      else{
-                        Skip[i-1] = true;
-                        V[i-1] = V[i-1].match(/[1-9]{1}/g)[7-Length];
-                      };
-                      Number[i].image = game.assets["../image/Number青.png"];
-                      Temp = [i-1,V[i-1]];
-                      console.log(Length);
-                      console.log(Temp);
-                      break;
-                    };
-                  };
-                };
-                Length--;
-              };
-              /*/
+              console.log(Length);
               for (var i = 1; i < 82; i++){
                 STOP = V[i-1].toString().match(/0/g);
                 if(STOP&&Skip[i-1]!="無理"){
-                  if(STOP.length==7){
+                  if(STOP.length==Length){
                     if(Skip[i-1]){
                       Skip[i-1] = "無理";
                       V[i-1] = V[i-1].match(/[1-9]{1}/g)[1];
@@ -4282,9 +4282,13 @@ function Game_load(width,height){
                   };
                 };
               };
-              //*/
               if(Temp) STOP = "赤";
-              else STOP = "お手上げ";
+              else{
+                STOP = "青";
+                if(Length > 1) Length--;
+                else STOP = "お手上げ";
+                console.log(Differents_Number);
+              };
               break;
             case "赤":
               Temp = null;
