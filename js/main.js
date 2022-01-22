@@ -4151,6 +4151,74 @@ function Game_load(width,height){
           }
         };
         Complete = true;
+
+        for(var j = 0; j < 9; j+=9){
+          Temp1 = [];
+          for (var i = j; i < j+9; i++){
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            for (var k = 0; k < Temp1.length; k++) {
+              if(Temp1[k]==V[i]){
+                STOP = "取り消し";
+                Skip = {};
+                console.log("矛盾取り消し");
+                return;
+              };
+            }
+            Temp1[Temp1.length] = V[i];
+          };
+        };
+
+        for(var j = 0; j < 9; j++){
+          Temp1 = [];
+          for (var i = j; i < V.length; i+=9){
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            for (var k = 0; k < Temp1.length; k++) {
+              if(Temp1[k]==V[i]){
+                STOP = "取り消し";
+                Skip = {};
+                console.log("矛盾取り消し");
+                return;
+              };
+            }
+            Temp1[Temp1.length] = V[i];
+          };
+        };
+
+        for(var j = 0; j < V.length; j+=3){
+          switch(j){
+            case 9:
+              j = 27;
+              break;
+            case 36:
+              j = 54;
+              break;
+          };
+          Temp1 = [];
+          for (var i = j; i < j+21; i++){
+            switch(i){
+              case j+3:
+                i = j+9;
+                break;
+              case j+12:
+                i = j+18;
+                break;
+            };
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            for (var k = 0; k < Temp1.length; k++) {
+              if(Temp1[k]==V[i]){
+                STOP = "取り消し";
+                Skip = {};
+                console.log("矛盾取り消し");
+                return;
+              };
+            }
+            Temp1[Temp1.length] = V[i];
+          };
+        };
+
         if(Check==JSON.stringify(V)){
           for (var i = 0; i < 81; i++){
             if((V[i].toString().length)!=1){
@@ -4169,6 +4237,32 @@ function Game_load(width,height){
           };
           switch(STOP){
             case "青":
+              Length = 7;
+              /*
+              while(Length > 0&& !Temp){
+                for (var i = 1; i < 82; i++){
+                  STOP = V[i-1].toString().match(/0/g);
+                  if(STOP&&Skip[i-1]!="無理"){
+                    if(STOP.length==Length){
+                      if(Skip[i-1]){
+                        Skip[i-1] = "無理";
+                        V[i-1] = V[i-1].match(/[1-9]{1}/g)[1];
+                      }
+                      else{
+                        Skip[i-1] = true;
+                        V[i-1] = V[i-1].match(/[1-9]{1}/g)[7-Length];
+                      };
+                      Number[i].image = game.assets["../image/Number青.png"];
+                      Temp = [i-1,V[i-1]];
+                      console.log(Length);
+                      console.log(Temp);
+                      break;
+                    };
+                  };
+                };
+                Length--;
+              };
+              /*/
               for (var i = 1; i < 82; i++){
                 STOP = V[i-1].toString().match(/0/g);
                 if(STOP&&Skip[i-1]!="無理"){
@@ -4188,6 +4282,7 @@ function Game_load(width,height){
                   };
                 };
               };
+              //*/
               if(Temp) STOP = "赤";
               else STOP = "お手上げ";
               break;
