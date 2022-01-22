@@ -184,7 +184,7 @@ function Game_load(width,height){
 
       Buttons(width/4,60,width/2,height/10,"脳トレ",0);
       Buttons(width/4,180,width/2,height/10,"リバーシ",1);
-      Buttons(width/4,300,width/2,height/10,"数独補佐",2);
+      Buttons(width/4,300,width/2,height/10,"数独回答",2);
       Buttons(width/4,420,width/2,height/10,"線つなぎ",5);
       Buttons(width/4,540,width/2,height/20,"データ消去",4);
 
@@ -4262,7 +4262,6 @@ function Game_load(width,height){
           };
           switch(STOP){
             case "青":
-              console.log(Length);
               for (var i = 1; i < 82; i++){
                 STOP = V[i-1].toString().match(/0/g);
                 if(STOP&&Skip[i-1]!="無理"){
@@ -4277,7 +4276,6 @@ function Game_load(width,height){
                     };
                     Number[i].image = game.assets["../image/Number青.png"];
                     Temp = [i-1,V[i-1]];
-                    console.log(Temp);
                     break;
                   };
                 };
@@ -4287,13 +4285,11 @@ function Game_load(width,height){
                 STOP = "青";
                 if(Length > 1) Length--;
                 else STOP = "お手上げ";
-                console.log(Differents_Number);
               };
               break;
             case "赤":
               Temp = null;
               STOP = "スキップ";
-              console.log(STOP);
               break;
             default:
               console.log(STOP);
