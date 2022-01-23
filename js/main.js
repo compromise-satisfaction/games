@@ -132,6 +132,7 @@ function Game_load(width,height){
   game.preload("../image/Number.png");
   game.preload("../image/Number青.png");
   game.preload("../image/Number赤.png");
+  game.preload("../image/Number紫.png");
   game.preload("../image/Number緑.png");
   game.preload("../image/Reversi.png");
   game.preload("../image/Set_button.png");
@@ -3817,13 +3818,19 @@ function Game_load(width,height){
         Set[i] = new Numbers((i-1)*45,500,i,true);
       }
 
+      var V_V = window.localStorage.getItem("数独");
+      if(V_V&&!V) V = JSON.parse(V_V);
+
       if(V){
         for (var i = 1; i < 82; i++){
           Number[i].frame = V[i-1];
-          if(V2[i-1] == "黒" && V[i-1]) Number[i].image = game.assets["../image/Number.png"];
-          if(V2[i-1] == "緑" && V[i-1]) Number[i].image = game.assets["../image/Number緑.png"];
-          if(V2[i-1] == "赤" && V[i-1]) Number[i].image = game.assets["../image/Number赤.png"];
-          if(V2[i-1] == "青" && V[i-1]) Number[i].image = game.assets["../image/Number青.png"];
+          if(V2){
+            if(V2[i-1] == "黒" && V[i-1]) Number[i].image = game.assets["../image/Number.png"];
+            if(V2[i-1] == "緑" && V[i-1]) Number[i].image = game.assets["../image/Number緑.png"];
+            if(V2[i-1] == "紫" && V[i-1]) Number[i].image = game.assets["../image/Number紫.png"];
+            if(V2[i-1] == "赤" && V[i-1]) Number[i].image = game.assets["../image/Number赤.png"];
+            if(V2[i-1] == "青" && V[i-1]) Number[i].image = game.assets["../image/Number青.png"];
+          };
         };
       }
 
@@ -3876,17 +3883,35 @@ function Game_load(width,height){
       if(!V2){
         for(var I = 0; I < V.length; I++){
           if(V[I]){
-            window.localStorage.setItem("数独",JSON.stringify(V));
+            var Send_Data = JSON.stringify(V);
+            if(Send_Data==window.localStorage.getItem("数独")) break;
+            window.localStorage.setItem("数独",Send_Data);
+            Send_Data = {タイプ:"データ保存",データ名:"数独",データ:Send_Data};
+            Send_Data.Notion = {DBID:"5d77aede6ec5414fab1b79f2af422cfb",Token:"FAM7D7Ct0HEhrGagrjCJ0qAoy8puEBsuuzQBjgmNMmZ"};
+            fetch
+            (
+              "https://script.google.com/macros/s/AKfycbwi6ekqJT9R4EB4hcX5bJ-UwZ_1SMYVVwRCsA6VAZxhVGmx--cV/exec",
+              {
+                method: "POST",
+                body: JSON.stringify(Send_Data)
+              }
+            ).then(res => res.json()).then(result => {
+            },);
             break;
           };
         };
-        if(I==V.length){
-          var V_V = window.localStorage.getItem("数独");
-          if(V_V) V = JSON.parse(V_V);
+      }
+      else{
+        for (var i = 0; i < V2.length; i++) {
+          switch (V2[i]) {
+            case "紫":
+            case "赤":
+            case "青":
+              V[i] = 0;
+              break;
+          };
         };
       };
-
-      console.log(V);
 
       var scene = new Scene();
 
@@ -3962,13 +3987,14 @@ function Game_load(width,height){
         if(V2[i-1] == "緑") Number[i].image = game.assets["../image/Number緑.png"];
         if(V2[i-1] == "青") Number[i].image = game.assets["../image/Number青.png"];
         if(V2[i-1] == "赤") Number[i].image = game.assets["../image/Number赤.png"];
+        if(V2[i-1] == "紫") Number[i].image = game.assets["../image/Number紫.png"];
       }
 
       var STOP = "青";
-      var Temp = null;
       var Skip = {};
       var Length = 7;
-      var Differents_Number = {};
+      var Temp_Number = null;
+      var Differents_Number1 = {};
       var Differents_Number2 = {};
 
       Main.addEventListener("enterframe",function(){
@@ -3979,17 +4005,36 @@ function Game_load(width,height){
             case "取り消し":
             case "スキップ":
             for (var i = 1; i < 82; i++){
-              if(V2[i-1]=="青"){
-                V[i-1] = "123456789";
-                V2[i-1] = "赤";
-                Number[i].frame = 0;
-                Number[i].image = game.assets["../image/Number赤.png"];
-              }
-              else{
-                if(V[i-1].toString().length!=1) V[i-1] = "123456789";
+              switch(V2[i-1]){
+                case "青":
+                  V[i-1] = "123456789";
+                  V2[i-1] = "赤";
+                  Number[i].frame = 0;
+                  Number[i].image = game.assets["../image/Number赤.png"];
+                  break;
+                case "紫":
+                  V[i-1] = "123456789";
+                  V2[i-1] = "赤";
+                  if(STOP=="スキップ") console.log(i-1 + "の仮入力「" + Number[i].frame + "」を取り消し。");
+                  else{
+                    if(!Differents_Number1[i-1]) Differents_Number1[i-1] = [];
+                    Differents_Number1[i-1][Differents_Number1[i-1].length] = Number[i].frame*1;
+                    console.log(i-1 + "の仮入力「" + Number[i].frame + "」は矛盾。");
+                  };
+                  Number[i].frame = 0;
+                  Number[i].image = game.assets["../image/Number赤.png"];
+                  break;
+                case "赤":
+                  if(V[i-1] > 9||V[i-1] == 0) V[i-1] = "123456789";
+                  if(i-1==26) console.log(V[i-1]);
+                  //console.log((i-1) + ":" + V[i-1]);
+                  break;
+                default:
+                  //console.log(V2[i-1]);
+                  break;
               };
             };
-            if(STOP=="スキップ") STOP = "青";
+            if(STOP=="スキップ"||Temp_Number) STOP = "青";
             break;
           case "終了済み":
             return;
@@ -3997,45 +4042,18 @@ function Game_load(width,height){
             console.log(STOP);
             STOP = "終了済み";
             return;
-        }
-        Temp2 = Object.keys(Differents_Number);
-        for (var i = 0; i < Temp2.length; i++) {
-          for (var j = 0; j < Differents_Number[Temp2[i]].length; j++){
-            if(V[Temp2[i]].toString().length==9){
-              V[Temp2[i]] = V[Temp2[i]].replace(Differents_Number[Temp2[i]][j],"0");
+        };
+
+        for (var i = 0; i < V.length; i++){
+          if(V[i]>9){
+            if(!Differents_Number1[i]) Differents_Number1[i] = [];
+            for(var j = 0; j < Differents_Number1[i].length; j++){
+              V[i] = V[i].replace(Differents_Number1[i][j],"0");
             };
           };
         };
 
-        for (var i = 1; i < 82; i++){
-          if(V[i-1]=="100000000") V[i-1] = 1;
-          if(V[i-1]=="020000000") V[i-1] = 2;
-          if(V[i-1]=="003000000") V[i-1] = 3;
-          if(V[i-1]=="000400000") V[i-1] = 4;
-          if(V[i-1]=="000050000") V[i-1] = 5;
-          if(V[i-1]=="000006000") V[i-1] = 6;
-          if(V[i-1]=="000000700") V[i-1] = 7;
-          if(V[i-1]=="000000080") V[i-1] = 8;
-          if(V[i-1]=="000000009") V[i-1] = 9;
-          if(V[i-1]=="000000000"){
-            STOP = "取り消し";
-            Skip = {};
-            Length = 7;
-            console.log("取り消し");
-            return;
-          };
-          Number[i].a = V[i-1];
-          for (var k = 1; k < 10; k++){
-            if(V[i-1]==k&&Number[i].frame==0){
-              Now = new Date();
-              Number[i].frame = k;
-              if(STOP == "赤"){
-                V2[i-1] = "青";
-                Number[i].image = game.assets["../image/Number青.png"];
-              };
-            }
-          }
-        };
+        //for (var i = 0; i < V.length; i++) console.log(i + ":" + V[i]);
 
         Check = JSON.stringify(V);
 
@@ -4231,13 +4249,10 @@ function Game_load(width,height){
           };
         };
 
-
         /*
 
         STOP = "完成";
         return;
-
-        */
 
         var e = 0;
         var f = 0;
@@ -4317,6 +4332,8 @@ function Game_load(width,height){
           }
           f++;
         }
+
+        //すでに消されてる
         /*
         for (var d = 0; d < 9; d++){
           for (var i = 1+d*9; i < 10+d*9; i++){
@@ -4357,27 +4374,42 @@ function Game_load(width,height){
           }
         }
         */
+        //すでに消されてる
 
+        for (var i = 0; i < V.length; i++){
+          if(V[i]>9){
+            for(var j = 0; j < Differents_Number2[i].length; j++){
+              V[i] = V[i].replace(Differents_Number2[i][j],"0");
+            };
+          };
+        };
+
+
+        /*
         if(STOP=="取り消し"){
-          if(!Temp){
+          if(!Temp_Number){
             STOP = "お手上げ";
             return;
           };
-          if(!Differents_Number[Temp[0]]) Differents_Number[Temp[0]] = [];
-          Temp2 = Differents_Number[Temp[0]];
-          for (var i = 0; i < Temp2.length; i++) if(Temp2[i]==Temp[1]) break;
-          Temp2[i] = Temp[1];
-          Temp2 = Object.keys(Differents_Number);
+          if(!Differents_Number1[Temp_Number[0]]) Differents_Number1[Temp_Number[0]] = [];
+          Temp2 = Differents_Number1[Temp_Number[0]];
+          for (var i = 0; i < Temp2.length; i++) if(Temp2[i]==Temp_Number[1]) break;
+          Temp2[i] = Temp_Number[1]*1;
+          Temp2 = Object.keys(Differents_Number1);
           for (var i = 0; i < Temp2.length; i++) {
-            for (var j = 0; j < Differents_Number[Temp2[i]].length; j++){
+            for (var j = 0; j < Differents_Number1[Temp2[i]].length; j++){
               if(V[Temp2[i]].toString().length==9){
-                V[Temp2[i]] = V[Temp2[i]].replace(Differents_Number[Temp2[i]][j],"0");
+                V[Temp2[i]] = V[Temp2[i]].replace(Differents_Number1[Temp2[i]][j],"0");
               };
             };
           };
-          Temp = null;
+          Temp_Number = null;
           STOP = "青";
         };
+        */
+
+        Complete = true;
+
         for (var i = 1; i < 82; i++){
           if(V[i-1]=="100000000") V[i-1] = 1;
           if(V[i-1]=="020000000") V[i-1] = 2;
@@ -4388,26 +4420,27 @@ function Game_load(width,height){
           if(V[i-1]=="000000700") V[i-1] = 7;
           if(V[i-1]=="000000080") V[i-1] = 8;
           if(V[i-1]=="000000009") V[i-1] = 9;
-          if(V[i-1]=="000000000"){
-            STOP = "取り消し";
-            Skip = {};
-            Length = 7;
-            console.log("取り消し");
-            return;
-          };
-          Number[i].a = V[i-1];
+          Number[i].a = (i-1) + ":" + V[i-1];
           for (var k = 1; k < 10; k++){
             if(V[i-1]==k&&Number[i].frame==0){
-              Now = new Date();
               Number[i].frame = k;
               if(STOP == "赤"){
                 V2[i-1] = "青";
                 Number[i].image = game.assets["../image/Number青.png"];
               };
             }
-          }
+          };
+          if(V[i-1]=="000000000") Complete = false;
         };
-        Complete = true;
+
+        if(!Complete){
+          if(STOP=="青") STOP = "お手上げ";
+          else STOP = "取り消し";
+          Skip = {};
+          Length = 7;
+          console.log(i-1 + "が入らない。");
+          return;
+        };
 
         for (var i = 0; i < 81; i++){
           if((V[i].toString().length)!=1){
@@ -4424,10 +4457,11 @@ function Game_load(width,height){
             if(V[i].toString().length==9) continue;
             for (var k = 0; k < Temp1.length; k++) {
               if(Temp1[k]==V[i]){
-                STOP = "取り消し";
+                if(STOP=="青") STOP = "お手上げ";
+                else STOP = "取り消し";
                 Skip = {};
                 Length = 7;
-                console.log("矛盾取り消し");
+                console.log("横" + (j/9+1) + "が矛盾。");
                 return;
               };
             }
@@ -4442,10 +4476,11 @@ function Game_load(width,height){
             if(V[i].toString().length==9) continue;
             for (var k = 0; k < Temp1.length; k++) {
               if(Temp1[k]==V[i]){
-                STOP = "取り消し";
+                if(STOP=="青") STOP = "お手上げ";
+                else STOP = "取り消し";
                 Skip = {};
                 Length = 7;
-                console.log("矛盾取り消し");
+                console.log("縦" + (j+1) + "が矛盾。");
                 return;
               };
             }
@@ -4476,10 +4511,111 @@ function Game_load(width,height){
             if(V[i].toString().length==9) continue;
             for (var k = 0; k < Temp1.length; k++) {
               if(Temp1[k]==V[i]){
-                STOP = "取り消し";
+                if(STOP=="青") STOP = "お手上げ";
+                else STOP = "取り消し";
                 Skip = {};
                 Length = 7;
-                console.log("矛盾取り消し");
+                switch(i){
+                  case 0:
+                  case 1:
+                  case 2:
+                  case 9:
+                  case 10:
+                  case 11:
+                  case 18:
+                  case 19:
+                  case 20:
+                    console.log("左上枠が矛盾。");
+                    break;
+                  case 3:
+                  case 4:
+                  case 5:
+                  case 12:
+                  case 13:
+                  case 14:
+                  case 21:
+                  case 22:
+                  case 23:
+                    console.log("上枠が矛盾。");
+                    break;
+                  case 6:
+                  case 7:
+                  case 8:
+                  case 15:
+                  case 16:
+                  case 17:
+                  case 24:
+                  case 25:
+                  case 26:
+                    console.log("右上枠が矛盾。");
+                    break;
+                  case 27:
+                  case 28:
+                  case 29:
+                  case 36:
+                  case 37:
+                  case 38:
+                  case 45:
+                  case 46:
+                  case 47:
+                    console.log("左枠が矛盾。");
+                    break;
+                  case 30:
+                  case 31:
+                  case 32:
+                  case 39:
+                  case 40:
+                  case 41:
+                  case 48:
+                  case 49:
+                  case 50:
+                    console.log("真ん中枠が矛盾。");
+                    break;
+                  case 33:
+                  case 34:
+                  case 35:
+                  case 42:
+                  case 43:
+                  case 44:
+                  case 51:
+                  case 52:
+                  case 53:
+                    console.log("右枠が矛盾。");
+                    break;
+                  case 54:
+                  case 55:
+                  case 56:
+                  case 63:
+                  case 64:
+                  case 65:
+                  case 72:
+                  case 73:
+                  case 74:
+                    console.log("左下枠が矛盾。");
+                    break;
+                  case 57:
+                  case 58:
+                  case 59:
+                  case 66:
+                  case 67:
+                  case 68:
+                  case 75:
+                  case 76:
+                  case 77:
+                    console.log("下枠が矛盾。");
+                    break;
+                  case 60:
+                  case 61:
+                  case 62:
+                  case 69:
+                  case 70:
+                  case 71:
+                  case 78:
+                  case 79:
+                  case 80:
+                    console.log("右下枠が矛盾。");
+                    break;
+                };
                 return;
               };
             }
@@ -4497,7 +4633,7 @@ function Game_load(width,height){
           };
           if(Complete){
             for (var i = 1; i < 82; i++){
-              if(V2[i-1]=="青"){
+              if(V2[i-1].match(/[青紫]/)){
                 V2[i-1] = "赤";
                 Number[i].image = game.assets["../image/Number赤.png"];
               };
@@ -4513,19 +4649,22 @@ function Game_load(width,height){
                   if(STOP.length==Length){
                     if(Skip[i-1]){
                       Skip[i-1] = "無理";
-                      V[i-1] = V[i-1].match(/[1-9]{1}/g)[1];
+                      V[i-1] = V[i-1].match(/[1-9]{1}/g)[1]*1;
                     }
                     else{
                       Skip[i-1] = true;
-                      V[i-1] = V[i-1].match(/[1-9]{1}/g)[0];
+                      V[i-1] = V[i-1].match(/[1-9]{1}/g)[0]*1;
                     };
-                    Number[i].image = game.assets["../image/Number青.png"];
-                    Temp = [i-1,V[i-1]];
+                    console.log(i-1 + "に「" + V[i-1] + "」を仮入力。");
+                    V2[i-1] = "紫";
+                    Number[i].frame = V[i-1];
+                    Number[i].image = game.assets["../image/Number紫.png"];
+                    Temp_Number = true;
                     break;
                   };
                 };
               };
-              if(Temp) STOP = "赤";
+              if(Temp_Number) STOP = "赤";
               else{
                 STOP = "青";
                 if(Length > 1) Length--;
@@ -4533,7 +4672,7 @@ function Game_load(width,height){
               };
               break;
             case "赤":
-              Temp = null;
+              Temp_Number = null;
               STOP = "スキップ";
               break;
             default:
