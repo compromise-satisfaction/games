@@ -3786,6 +3786,12 @@ function Game_load(width,height){
       Start.frame = 10;
       scene.addChild(Start);
 
+      var Hint = new Sprite(40,40);
+      Hint.image = game.assets["../image/Number紫.png"];
+      Hint.y = height-40;
+      Hint.frame = 10;
+      scene.addChild(Hint);
+
       var Numbers = Class.create(Sprite, {
         initialize: function(x,y,z,o) {
           Sprite.call(this,40,40);
@@ -3823,7 +3829,12 @@ function Game_load(width,height){
 
       if(V){
         for (var i = 1; i < 82; i++){
-          Number[i].frame = V[i-1];
+          if(V[i-1] != "ヒント") Number[i].frame = V[i-1];
+          else{
+            V[i-1] = 0;
+            Number[i].frame = 0;
+            Number[i].image = game.assets["../image/Number紫.png"];
+          };
           if(V2){
             if(V2[i-1] == "黒" && V[i-1]) Number[i].image = game.assets["../image/Number.png"];
             if(V2[i-1] == "緑" && V[i-1]) Number[i].image = game.assets["../image/Number緑.png"];
@@ -3869,16 +3880,19 @@ function Game_load(width,height){
           }
         }
         if(Start.intersect(Hand)){
-          var V = [];
-          for (var i = 0; i < 81; i++){
-            V[i] = Number[i+1].frame;
-          }
-          game.replaceScene(Answer_Scene(V,V2));
-        }
+          V = [];
+          for (var i = 0; i < 81; i++) V[i] = Number[i+1].frame;
+          game.replaceScene(Answer_Scene(V,V2,true));
+        };
+        if(Hint.intersect(Hand)){
+          V = [];
+          for (var i = 0; i < 81; i++) V[i] = Number[i+1].frame;
+          game.replaceScene(Answer_Scene(V,V2,false));
+        };
       });
       return scene;
     };
-    var Answer_Scene = function(V,V2){
+    var Answer_Scene = function(V,V2,Answer){
 
       if(!V2){
         for(var I = 0; I < V.length; I++){
@@ -3922,7 +3936,7 @@ function Game_load(width,height){
       var S_Input = new Button("メニューに戻る","light",width/2,95);
       S_Input.moveTo(0,height-95);
       S_Input._style["font-size"] = 25;
-      scene.addChild(S_Input);
+      if(Answer) scene.addChild(S_Input);
       S_Input.addEventListener("touchend",function(e){
         game.replaceScene(Start_Menu_Scene());
       });
@@ -3982,13 +3996,13 @@ function Game_load(width,height){
           V[i-1] = "123456789";
           Number[i].image = game.assets["../image/Number赤.png"];
           V2[i-1] = "赤";
-        }
+        };
         if(!V2[i-1]) V2[i-1] = "黒";
         if(V2[i-1] == "緑") Number[i].image = game.assets["../image/Number緑.png"];
         if(V2[i-1] == "青") Number[i].image = game.assets["../image/Number青.png"];
         if(V2[i-1] == "赤") Number[i].image = game.assets["../image/Number赤.png"];
         if(V2[i-1] == "紫") Number[i].image = game.assets["../image/Number紫.png"];
-      }
+      };
 
       var STOP = "青";
       var Skip = {};
@@ -4037,6 +4051,7 @@ function Game_load(width,height){
             if(STOP=="スキップ"||Temp_Number) STOP = "青";
             break;
           case "終了済み":
+            //game.replaceScene(S_Main_Scene(V,V2));
             return;
           default:
             console.log(STOP);
@@ -4249,6 +4264,13 @@ function Game_load(width,height){
           };
         };
 
+        for (var i = 0; i < V.length; i++) {
+          if(Differents_Number2[i].length == 8){
+            //console.log(V[i]);
+            //console.log(Differents_Number2[i]);
+          };
+        };
+
         /*
 
         STOP = "完成";
@@ -4384,7 +4406,6 @@ function Game_load(width,height){
           };
         };
 
-
         /*
         if(STOP=="取り消し"){
           if(!Temp_Number){
@@ -4442,13 +4463,35 @@ function Game_load(width,height){
           return;
         };
 
+        if(!Answer){
+          for (var i = 0; i < V.length; i++) {
+            if(V2[i]=="赤"&&V[i]<10&&V[i]){
+              console.log(i + ":" + V[i]);
+              V[i] = "ヒント";
+            };
+          };
+          while(!JSON.stringify(V).match(/ヒント/)){
+            for (var i = 0; i < V.length; i++) {
+              if(V[i]>9){
+                if(V[i].match(/0/g).length==Length){
+                  console.log(i + ":" + V[i].match(/[^0]/g));
+                  V[i] = "ヒント";
+                };
+              };
+            };
+            Length--;
+            if(Length==1) break;
+          };
+          for (var i = 0; i < V.length; i++) if(V[i]>9||!V[i]) V[i] = 0;
+          game.replaceScene(S_Main_Scene(V,V2));
+          return;
+        };
+
         for (var i = 0; i < 81; i++){
           if((V[i].toString().length)!=1){
             Complete = false;
           };
         };
-
-      //if(Complete){
 
         for(var j = 0; j < V.length; j+=9){
           Temp1 = [];
@@ -4622,8 +4665,6 @@ function Game_load(width,height){
             Temp1[Temp1.length] = V[i]*1;
           };
         };
-
-      //};
 
         if(Check==JSON.stringify(V)){
           for (var i = 0; i < 81; i++){
