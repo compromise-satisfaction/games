@@ -166,7 +166,7 @@ function Game_load(width,height){
               game.replaceScene(R_Main_Scene());
               return;
             case 2:
-              game.fps = 10;
+              game.fps = 100;
               game.replaceScene(S_Main_Scene());
               return;
             case 3:
