@@ -3767,6 +3767,9 @@ function Game_load(width,height){
       return scene;
     };
     var S_Main_Scene = function(V,V2){
+
+      game.fps = 100;
+
       var scene = new Scene();                                // 新しいシーンを作る
 
       var Hand = new Sprite(1,1);
@@ -3882,6 +3885,7 @@ function Game_load(width,height){
         if(Start.intersect(Hand)){
           V = [];
           for (var i = 0; i < 81; i++) V[i] = Number[i+1].frame;
+          if(Choice==1) game.fps = 1;
           game.replaceScene(Answer_Scene(V,V2,true));
         };
         if(Hint.intersect(Hand)){
