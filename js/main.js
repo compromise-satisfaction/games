@@ -3967,11 +3967,11 @@ function Game_load(width,height){
 
       var label = new Label();
         label.x = 0;
-        label.y = 470;
-        label.color = 'red';
-        label.font = '40px "Arial"';
+        label.y = 420;
+        label.color = "red";
+        label.font = "30px ゴシック";
         label.width = width;
-        label.text = ("");
+        label.text = "";
         scene.addChild(label);
 
         var I = 5;
@@ -4029,18 +4029,17 @@ function Game_load(width,height){
                 case "紫":
                   V[i-1] = "123456789";
                   V2[i-1] = "赤";
-                  if(STOP=="スキップ") console.log(i-1 + "の仮入力「" + Number[i].frame + "」を取り消し。");
+                  if(STOP=="スキップ") label.text = i + "の仮入力「" + Number[i].frame + "」を取消。";
                   else{
                     if(!Differents_Number1[i-1]) Differents_Number1[i-1] = [];
                     Differents_Number1[i-1][Differents_Number1[i-1].length] = Number[i].frame*1;
-                    console.log(i-1 + "の仮入力「" + Number[i].frame + "」は矛盾。");
+                    label.text = i + "の仮入力「" + Number[i].frame + "」は矛盾。";
                   };
                   Number[i].frame = 0;
                   Number[i].image = game.assets["../image/Number赤.png"];
                   break;
                 case "赤":
                   if(V[i-1] > 9||V[i-1] == 0) V[i-1] = "123456789";
-                  if(i-1==26) console.log(V[i-1]);
                   //console.log((i-1) + ":" + V[i-1]);
                   break;
                 default:
@@ -4054,7 +4053,7 @@ function Game_load(width,height){
             //game.replaceScene(S_Main_Scene(V,V2));
             return;
           default:
-            console.log(STOP);
+            label.text = STOP;
             STOP = "終了済み";
             return;
         };
@@ -4459,7 +4458,7 @@ function Game_load(width,height){
           else STOP = "取り消し";
           Skip = {};
           Length = 7;
-          console.log(i-1 + "が入らない。");
+          label.text = i + "が入らない。";
           return;
         };
 
@@ -4504,7 +4503,7 @@ function Game_load(width,height){
                 else STOP = "取り消し";
                 Skip = {};
                 Length = 7;
-                console.log("横" + (j/9+1) + "が矛盾。");
+                label.text = "横" + (j/9+1) + "が矛盾。";
                 return;
               };
             }
@@ -4523,7 +4522,7 @@ function Game_load(width,height){
                 else STOP = "取り消し";
                 Skip = {};
                 Length = 7;
-                console.log("縦" + (j+1) + "が矛盾。");
+                label.text = "縦" + (j+1) + "が矛盾。";
                 return;
               };
             }
@@ -4568,7 +4567,7 @@ function Game_load(width,height){
                   case 18:
                   case 19:
                   case 20:
-                    console.log("左上枠が矛盾。");
+                    label.text = "左上枠が矛盾。";
                     break;
                   case 3:
                   case 4:
@@ -4579,7 +4578,7 @@ function Game_load(width,height){
                   case 21:
                   case 22:
                   case 23:
-                    console.log("上枠が矛盾。");
+                    label.text = "上枠が矛盾。";
                     break;
                   case 6:
                   case 7:
@@ -4590,7 +4589,7 @@ function Game_load(width,height){
                   case 24:
                   case 25:
                   case 26:
-                    console.log("右上枠が矛盾。");
+                    label.text = "右上枠が矛盾。";
                     break;
                   case 27:
                   case 28:
@@ -4601,7 +4600,7 @@ function Game_load(width,height){
                   case 45:
                   case 46:
                   case 47:
-                    console.log("左枠が矛盾。");
+                    label.text = "左枠が矛盾。";
                     break;
                   case 30:
                   case 31:
@@ -4612,7 +4611,7 @@ function Game_load(width,height){
                   case 48:
                   case 49:
                   case 50:
-                    console.log("真ん中枠が矛盾。");
+                    label.text = "真ん中枠が矛盾。";
                     break;
                   case 33:
                   case 34:
@@ -4623,7 +4622,7 @@ function Game_load(width,height){
                   case 51:
                   case 52:
                   case 53:
-                    console.log("右枠が矛盾。");
+                    label.text = "右枠が矛盾。";
                     break;
                   case 54:
                   case 55:
@@ -4634,7 +4633,7 @@ function Game_load(width,height){
                   case 72:
                   case 73:
                   case 74:
-                    console.log("左下枠が矛盾。");
+                    label.text = "左下枠が矛盾。";
                     break;
                   case 57:
                   case 58:
@@ -4645,7 +4644,7 @@ function Game_load(width,height){
                   case 75:
                   case 76:
                   case 77:
-                    console.log("下枠が矛盾。");
+                    label.text = "下枠が矛盾。";
                     break;
                   case 60:
                   case 61:
@@ -4656,7 +4655,7 @@ function Game_load(width,height){
                   case 78:
                   case 79:
                   case 80:
-                    console.log("右下枠が矛盾。");
+                    label.text = "右下枠が矛盾。";
                     break;
                 };
                 return;
@@ -4696,7 +4695,7 @@ function Game_load(width,height){
                       Skip[i-1] = true;
                       V[i-1] = V[i-1].match(/[1-9]{1}/g)[0]*1;
                     };
-                    console.log(i-1 + "に「" + V[i-1] + "」を仮入力。");
+                    label.text = i + "に「" + V[i-1] + "」を仮入力。";
                     V2[i-1] = "紫";
                     Number[i].frame = V[i-1];
                     Number[i].image = game.assets["../image/Number紫.png"];
