@@ -4444,7 +4444,7 @@ function Game_load(width,height){
           if(V[i-1]=="000000700") V[i-1] = 7;
           if(V[i-1]=="000000080") V[i-1] = 8;
           if(V[i-1]=="000000009") V[i-1] = 9;
-          Number[i].a = (i-1) + ":" + V[i-1];
+          Number[i].a = i + ":" + V[i-1];
           for (var k = 1; k < 10; k++){
             if(V[i-1]==k&&Number[i].frame==0){
               Number[i].frame = k;
