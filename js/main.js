@@ -1341,15 +1341,15 @@ function Game_load(width,height){
               for(var k = 0; k < Flag.length; k++){
                 if(Flag[k].split("==")[0] == Get_Data.split("+=")[0]) break;
               }
-              if(k!=Flag.length) Flag[k] = Flag[k].split("==")[0] + "==" + (Flag[k].split("==")[1]*1 + Get_Data.split("+=")[1]*1);
-              else Flag[Flag.length] = Get_Data.split("+=")[0] + "==" + Get_Data.split("+=")[1];
+              if(k==Flag.length) Flag[Flag.length] = Get_Data.split("+=")[0] + "==" + Get_Data.split("+=")[1];
+              else Flag[k] = Flag[k].split("==")[0] + "==" + (Flag[k].split("==")[1]*1 + Get_Data.split("+=")[1]*1);
             }
             if(Get_Data.indexOf("-=")>0){
               for(var k = 0; k < Flag.length; k++){
                 if(Flag[k].split("==")[0] == Get_Data.split("-=")[0]) break;
               }
-              if(k!=Flag.length) Flag[k] = Flag[k].split("==")[0] + "==" + (Flag[k].split("==")[1]*1 - Get_Data.split("-=")[1]*1);
-              else Flag[Flag.length] = Get_Data.split("-=")[0] + "==-" + Get_Data.split("-=")[1];
+              if(k==Flag.length) Flag[Flag.length] = Get_Data.split("-=")[0] + "==-" + Get_Data.split("-=")[1];
+              else Flag[k] = Flag[k].split("==")[0] + "==" + (Flag[k].split("==")[1]*1 - Get_Data.split("-=")[1]*1);
             }
           }
         }
@@ -3885,7 +3885,21 @@ function Game_load(width,height){
         if(Start.intersect(Hand)){
           V = [];
           for (var i = 0; i < 81; i++) V[i] = Number[i+1].frame;
-          if(Choice==1) game.fps = 1;
+          switch(Choice){
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+              game.fps = Choice;
+              break;
+            default:
+              break;
+          };
           game.replaceScene(Answer_Scene(V,V2,true));
         };
         if(Hint.intersect(Hand)){
@@ -3894,6 +3908,1152 @@ function Game_load(width,height){
           game.replaceScene(Answer_Scene(V,V2,false));
         };
       });
+      return scene;
+    };
+    var Answer_Scene_new = function(Number_place1,V2,Answer){
+
+      var scene = new Scene();
+
+      var S_Input = new Button("メニューに戻る","light",width/2,95);
+      S_Input.moveTo(0,height-95);
+      S_Input._style["font-size"] = 25;
+      if(Answer) scene.addChild(S_Input);
+      S_Input.addEventListener("touchend",function(e){
+        game.replaceScene(Start_Menu_Scene());
+      });
+
+      var Start = new Sprite(40,40);
+      Start.image = game.assets["../image/Number.png"];
+      Start.x = width-40;
+      Start.y = height-40;
+      Start.frame = 11;
+      scene.addChild(Start);
+      Start.addEventListener("touchend",function(e){
+        var V = [];
+        for (var i = 0; i < 81; i++){
+          V[i] = Number[i+1].frame;
+        }
+        game.replaceScene(S_Main_Scene(V,V2));
+      });
+
+      var Main = new Sprite(405,405);
+      Main.image = game.assets["../image/Main.png"];
+      Main.x = 0;
+      Main.y = 0;
+      scene.addChild(Main);
+
+      var Move = new Sprite(40,40);
+      Move.image = game.assets["../image/Number紫.png"];
+      Move.x = width-120;
+      Move.y = height-40;
+      Move.frame = 11;
+      scene.addChild(Move);
+
+      var Numbers_image_set = Class.create(Sprite,{
+        initialize: function(x,y,z,color){
+          Sprite.call(this,40,40);
+          this.x = x;
+          this.y = y;
+          switch(color){
+            default:
+              z = 0;
+              this.image = game.assets["../image/Number赤.png"];
+              break;
+            case "黒":
+            case undefined:
+              this.image = game.assets["../image/Number.png"];
+              break;
+            case "緑":
+              this.image = game.assets["../image/Number緑.png"];
+              break;
+            case "影":
+              this.image = game.assets["../image/Number青.png"];
+              this.opacity = 0;
+              this.番号 = Numbers_Image_shadow.length;
+              break;
+          };
+          this.frame = z;
+          scene.addChild(this);
+          if(color=="影"){
+            this.addEventListener("touchend",function(e){
+              label.text = Numbers_Image[this.番号].テキスト;
+            });
+          };
+        }
+      });
+
+      var label = new Label();
+      label.x = 0;
+      label.y = 420;
+      label.color = "red";
+      label.font = "30px ゴシック";
+      label.width = width;
+      label.text = "";
+      scene.addChild(label);
+
+      var I = 5;
+      var K = 5;
+      var Choice = 0;
+      var Numbers_Image = [];
+      var Numbers_Image_shadow = [];
+
+      if(!V2) V2 = [];
+
+      for (var i = 1; i < 82; i++){
+        Numbers_Image[i-1] = new Numbers_image_set(K,I,Number_place1[i-1],V2[i-1]);
+        Numbers_Image_shadow[i-1] = new Numbers_image_set(K,I,0,"影");
+        K = K+44;
+        if(i%3==0) K = K+2;
+        if(i%9==0){
+          I = I+44;
+          if(i%27==0) I = I+2;
+          K = 5;
+        };
+      };
+
+      var V3 = null;
+      var Moved = false;
+      var STOP = "通常";
+      var Skip = {};
+      var Look_Number1 = 0;
+      var Look_Number2 = 0;
+      var Length = 1;
+      var Temp_Numbers = {};
+      var Differents_Number1 = {};
+      var Differents_Number2 = {};
+      var Number_Change = false;
+      var Number_check_case = "横";
+
+      for(var I = 0; I < Number_place1.length; I++){
+        if(Number_place1[I]) Number_place1[I] = {確定:Number_place1[I]};
+        else Number_place1[I] = {
+          1:"未確定",
+          2:"未確定",
+          3:"未確定",
+          4:"未確定",
+          5:"未確定",
+          6:"未確定",
+          7:"未確定",
+          8:"未確定",
+          9:"未確定"
+        };
+      };
+
+      function Number_check(Type,Case,Look_Number_s){
+
+        if(Type!="削除") for(var I = 0; I < Number_place1.length; I++) Numbers_Image_shadow[I].opacity = 0.5;
+        switch(Case){
+          case "横":
+            Check_Number_places = [0,1,2,3,4,5,6,7,8];
+            for(var I = 0; I < Check_Number_places.length; I++) Check_Number_places[I] += Look_Number_s*9;
+            break;
+          case "縦":
+            Check_Number_places = [0,9,18,27,36,45,54,63,72];
+            for(var I = 0; I < Check_Number_places.length; I++) Check_Number_places[I] += Look_Number_s;
+            break;
+          case "枠":
+            Check_Number_places = [0,1,2,9,10,11,18,19,20];
+            for(var I = 0; I < Check_Number_places.length; I++) Check_Number_places[I] += Look_Number_s*3;
+            switch(Look_Number_s){
+              case 3:
+              case 4:
+              case 5:
+                for(var I = 0; I < Check_Number_places.length; I++) Check_Number_places[I] += 18;
+                break;
+              case 6:
+              case 7:
+              case 8:
+                for(var I = 0; I < Check_Number_places.length; I++) Check_Number_places[I] += 36;
+                break;
+            };
+            break;
+        };
+
+        if(Type!="削除"){
+          for(var I = 0; I < Check_Number_places.length; I++) Numbers_Image_shadow[Check_Number_places[I]].opacity = 0;
+        };
+
+        switch(Type){
+          case "削除":
+          case "チェック":
+            Fixeds = [];
+            for(var I = 0; I < Check_Number_places.length; I++){
+              if(Number_place1[Check_Number_places[I]].確定) Fixeds[Fixeds.length] = Number_place1[Check_Number_places[I]].確定;
+            };
+            for(var I = 0; I < Check_Number_places.length; I++){
+              for(var K = 0; K < Fixeds.length; K++){
+                delete Number_place1[Check_Number_places[I]][Fixeds[K]];
+              };
+              switch(Object.keys(Number_place1[Check_Number_places[I]]).length){
+                case 0:
+                  Number_Reset();
+                  Length = 1;
+                  Look_Number1 = 0;
+                  Number_check_case = "横";
+                  delete Number_place1[Temp_Number[0]][Temp_Number[1]];
+                  return;
+                case 1:
+                  if(Type=="チェック"){
+                    Temp1 = Check_Number_places[I];
+                    if(!Number_place1[Temp1].確定){
+                    Number_place1[Temp1] = {確定:Object.keys(Number_place1[Temp1])[0]};
+                    Numbers_Image[Temp1].frame = Number_place1[Temp1].確定;
+                    switch(STOP){
+                      case "通常":
+                        if(Temp1+1<10) label.text = "0" + (Temp1 + 1) + "に「" + Number_place1[Temp1].確定 + "」を入力。";
+                        else label.text = (Temp1 + 1) + "に「" + Number_place1[Temp1].確定 + "」を入力。";
+                        Numbers_Image[Temp1].image = game.assets["../image/Number赤.png"];
+                        break;
+                      case "仮入力":
+                        if(Temp1+1<10) label.text = "0" + (Temp1 + 1) + "に「" + Number_place1[Temp1].確定 + "」を仮入力。";
+                        else label.text = (Temp1 + 1) + "に「" + Number_place1[Temp1].確定 + "」を仮入力。";
+                        Numbers_Image[Temp1].image = game.assets["../image/Number青.png"];
+                        break;
+                    };
+                  };
+                  };
+                  break;
+              };
+            };
+            break;
+          case "入力":
+            for(var K = 1; K < 10; K++){
+              Temp1 = [];
+              Temp2 = false;
+              for(var I = 0; I < Check_Number_places.length; I++){
+                if(Number_place1[Check_Number_places[I]][K]) Temp1[Temp1.length] = Check_Number_places[I];
+              };
+              if(Temp1.length==Length){
+                for(var I = 0; I < Temp1.length; I++){
+                  if(Temp_Numbers[Temp1[I]]){
+                    if(!Temp_Numbers[Temp1[I]][K]){
+                      Temp1 = Temp1[I];
+                      Temp2 = true;
+                    };
+                  }
+                  else{
+                    Temp1 = Temp1[I];
+                    Temp2 = true;
+                  };
+                };
+              };
+              if(Temp2){
+                Number_place1[Temp1] = {確定:K};
+                switch(STOP){
+                  case "仮決定":
+                    if(Temp1+1<10) label.text = "0" + (Temp1 + 1) + "に「" + K + "」を仮入力。";
+                    else label.text = (Temp1 + 1) + "に「" + K + "」を仮入力。";
+                    Numbers_Image[Temp1].image = game.assets["../image/Number紫.png"];
+                    if(!Temp_Numbers[Temp1]) Temp_Numbers[Temp1] = {};
+                    Temp_Numbers[Temp1][K] = true;
+                    Temp_Number = [Temp1,K];
+                    STOP = "仮入力";
+                    break;
+                  case "通常":
+                    if(Temp1+1<10) label.text = "0" + (Temp1 + 1) + "に「" + K + "」を入力。";
+                    else label.text = (Temp1 + 1) + "に「" + K + "」を入力。";
+                    Numbers_Image[Temp1].image = game.assets["../image/Number赤.png"];
+                    break;
+                  case "仮入力":
+                    if(Temp1+1<10) label.text = "0" + (Temp1 + 1) + "に「" + K + "」を仮入力。";
+                    else label.text = (Temp1 + 1) + "に「" + K + "」を仮入力。";
+                    Numbers_Image[Temp1].image = game.assets["../image/Number青.png"];
+                    break;
+                };
+                Numbers_Image[Temp1].frame = K;
+                Length = 1;
+                Number_Change = true;
+                Number_Different_Delete();
+              };
+            };
+            break;
+        };
+
+        for(var I = 0; I < Check_Number_places.length; I++){
+          Temp1 = Check_Number_places[I];
+          if(Temp1<9) Numbers_Image[Temp1].テキスト = "0";
+          else Numbers_Image[Temp1].テキスト = "";
+          Numbers_Image[Temp1].テキスト += Temp1 + 1 + ":";
+          if(Number_place1[Temp1].確定) Numbers_Image[Temp1].テキスト += Number_place1[Temp1].確定;
+          else{
+            for(J = 0; J < Object.keys(Number_place1[Temp1]).length; J++){
+              Numbers_Image[Temp1].テキスト += Object.keys(Number_place1[Temp1])[J] + ",";
+            };
+            Numbers_Image[Temp1].テキスト = Numbers_Image[Temp1].テキスト.slice(0,-1);
+          };
+        };
+      };
+
+      function Number_Different_Delete(){
+        for(var I = 0; I < 3; I++){
+          K = 0;
+          while(K!=9){
+            switch(I){
+              case 0:
+                J = "横";
+                break;
+              case 1:
+                J = "縦";
+                break;
+              case 2:
+                J = "枠";
+                break;
+            };
+            Number_check("削除",J,K);
+            K++
+          };
+        };
+        return;
+      };
+
+      function Number_Reset(){
+        Number_place1 = JSON.parse(Number_place2);
+        for(var I = 0; I < Number_place1.length; I++){
+          if(Number_place1[I].確定) Numbers_Image[I].frame = Number_place1[I].確定;
+          else{
+            Numbers_Image[I].image = game.assets["../image/Number.png"];
+            Numbers_Image[I].frame = 0;
+          };
+        };
+        STOP = "通常";
+        return;
+      };
+
+      function Number_input(){
+        Number_check("入力",Number_check_case,Look_Number1);
+        Number_Different_Delete();
+        Number_check("チェック",Number_check_case,Look_Number1);
+        Look_Number1++;
+        if(Look_Number1==9){
+          Look_Number1 = 0;
+          switch(Number_check_case){
+            case "横":
+              Number_check_case = "縦";
+              break;
+            case "縦":
+              Number_check_case = "枠";
+              break;
+            case "枠":
+              Number_check_case = "横";
+              if(!Number_Change){
+                switch(STOP){
+                  case "通常":
+                    Number_place2 = JSON.stringify(Number_place1);
+                    STOP = "仮決定";
+                    Length++;
+                    break;
+                  case "仮決定":
+                    Number_place1 = JSON.parse(Number_place2);
+                    Length++;
+                    break;
+                  case "仮入力":
+                    Number_Reset();
+                    break;
+                };
+              };
+              Number_Change = false;
+              break;
+          };
+        };
+        return;
+      };
+
+      Move.addEventListener("touchend",function(e){
+        Number_input();
+        return;
+      });
+
+      Number_Different_Delete();
+
+      Complete = false;
+
+      scene.addEventListener("enterframe",function(){
+
+        if(Complete) return;
+
+        if(Moved) Number_input();
+
+        Complete = true;
+
+        for(var I = 0; I < Number_place1.length; I++){
+          if(!Number_place1[I].確定) Complete = false;
+        };
+
+        if(Complete) for(var I = 0; I < Number_place1.length; I++) Numbers_Image_shadow[I].opacity = 0;
+
+        return;
+
+        if(!Look_Number2) Number_Change = false;
+
+        switch(STOP){
+          case "通常":
+          case "仮入力":
+          case "青":
+          case "赤":
+            break;
+            case "取り消し":
+            case "スキップ":
+            for (var i = 1; i < 82; i++){
+              switch(V2[i-1]){
+                case "青":
+                  V[i-1] = "123456789";
+                  V2[i-1] = "赤";
+                  Number[i].frame = 0;
+                  Number[i].image = game.assets["../image/Number赤.png"];
+                  break;
+                case "紫":
+                  V[i-1] = "123456789";
+                  V2[i-1] = "赤";
+                  if(STOP=="スキップ") label.text = i + "の仮入力「" + Number[i].frame + "」を取消。";
+                  else{
+                    if(!Differents_Number1[i-1]) Differents_Number1[i-1] = [];
+                    Differents_Number1[i-1][Differents_Number1[i-1].length] = Number[i].frame*1;
+                    label.text = i + "の仮入力「" + Number[i].frame + "」は矛盾。";
+                  };
+                  Number[i].frame = 0;
+                  Number[i].image = game.assets["../image/Number赤.png"];
+                  break;
+                case "赤":
+                  if(V[i-1] > 9||V[i-1] == 0) V[i-1] = "123456789";
+                  //console.log((i-1) + ":" + V[i-1]);
+                  break;
+                default:
+                  //console.log(V2[i-1]);
+                  break;
+              };
+            };
+            if(STOP=="スキップ"||Temp_Number) STOP = "青";
+            break;
+          case "終了済み":
+            return;
+          default:
+            label.text = STOP;
+            STOP = "終了済み";
+            return;
+        };
+
+        while(Look_Number1 < 27){
+          Temp1 = [];
+          for(var I = 0; I < Number_place1.length; I++) Numbers_Image_shadow[I].opacity = 0.5;
+          switch(Look_Number1){
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+              for(var I = Look_Number1 * 9; I < Look_Number1 * 9 + 9; I++){
+                Numbers_Image_shadow[I].opacity = 0;
+                if(!Number_place1[I].確定) continue;
+                Temp1[Temp1.length] = Number_place1[I].確定;
+              };
+              for(var I = Look_Number1 * 9; I < Look_Number1 * 9 + 9; I++){
+                if(Number_place1[I].確定) continue;
+                for (var K = 0; K < Temp1.length; K++) delete Number_place1[I][Temp1[K]];
+              };
+              break;
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+              for (var I = Look_Number1 - 9; I < Number_place1.length; I+=9){
+                Numbers_Image_shadow[I].opacity = 0;
+                if(!Number_place1[I].確定) continue;
+                Temp1[Temp1.length] = Number_place1[I].確定;
+              };
+              for (var I = Look_Number1 - 9; I < Number_place1.length; I+=9){
+                if(Number_place1[I].確定) continue;
+                for (var K = 0; K < Temp1.length; K++) delete Number_place1[I][Temp1[K]];
+              };
+              break;
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+            case 24:
+            case 25:
+            case 26:
+              switch(Look_Number1){
+                case 18:
+                  J = 0;
+                  break;
+                case 19:
+                  J = 3;
+                  break;
+                case 20:
+                  J = 6;
+                  break;
+                case 21:
+                  J = 27;
+                  break;
+                case 22:
+                  J = 30;
+                  break;
+                case 23:
+                  J = 33;
+                  break;
+                case 24:
+                  J = 54;
+                  break;
+                case 25:
+                  J = 57;
+                  break;
+                case 26:
+                  J = 60;
+                  break;
+              };
+              for (var I = J; I < J + 21; I++){
+                switch(I){
+                  case J+3:
+                    I = J + 9;
+                    break;
+                  case J+12:
+                    I = J + 18;
+                    break;
+                };
+                Numbers_Image_shadow[I].opacity = 0;
+                if(!Number_place1[I].確定) continue;
+                Temp1[Temp1.length] = Number_place1[I].確定;
+              };
+              for (var I = J; I < J + 21; I++){
+                switch(I){
+                  case J+3:
+                    I = J + 9;
+                    break;
+                  case J+12:
+                    I = J + 18;
+                    break;
+                };
+                for (var K = 0; K < Temp1.length; K++){
+                  if(Number_place1[I].確定) continue;
+                  for (var K = 0; K < Temp1.length; K++) delete Number_place1[I][Temp1[K]];
+                };
+              };
+              break;
+            default:
+              console.log(Look_Number1);
+              break;
+          };
+          Look_Number1++;
+        };
+        Look_Number1 = 0;
+
+        Temp1 = [];
+        for(var I = 0; I < Number_place1.length; I++) Numbers_Image_shadow[I].opacity = 0.5;
+        switch(Look_Number2){
+          case 0:
+          case 1:
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+          case 6:
+          case 7:
+          case 8:
+            for(var K = 1; K < 10; K++){
+              Temp2 = 0;
+              for(var I = Look_Number2 * 9; I < Look_Number2 * 9 + 9; I++){
+                if(K==1) Numbers_Image_shadow[I].opacity = 0;
+                if(Number_place1[I][K]){
+                  Temp2++;
+                  Temp3 = I;
+                };
+              };
+              if(Temp2==1){
+                Number_place1[Temp3] = {確定:K};
+                switch(STOP){
+                  case "通常":
+                    if(Temp3+1<10) label.text = "0" + (Temp3 + 1) + "に「" + K + "」を入力。";
+                    else label.text = (Temp3 + 1) + "に「" + K + "」を入力。";
+                    Numbers_Image[Temp3].image = game.assets["../image/Number赤.png"];
+                    break;
+                  case "仮入力":
+                    if(Temp3+1<10) label.text = "0" + (Temp3 + 1) + "に「" + K + "」を仮入力。";
+                    else label.text = (Temp3 + 1) + "に「" + K + "」を仮入力。";
+                    Numbers_Image[Temp3].image = game.assets["../image/Number青.png"];
+                    break;
+                };
+                Numbers_Image[Temp3].frame = K;
+                Number_Change = true;
+              };
+            };
+            for(var I = Look_Number2 * 9; I < Look_Number2 * 9 + 9; I++){
+              if(!Object.keys(Number_place1[I]).length){
+                if(I+1<10) label.text = "0" + (I + 1) + "に入る数字がない。";
+                else label.text = (I + 1) + "に入る数字がない。";
+                Number_place1 = JSON.parse(Number_place2);
+                for(var I = 0; I < Numbers_Image.length; I++){
+                  if(Number_place1[I].確定) Numbers_Image[I].frame = Number_place1[I].確定;
+                  else{
+                    Numbers_Image[I].frame = 0;
+                    Numbers_Image[I].image = game.assets["../image/Number.png"];
+                  };
+                };
+                delete Number_place1[Temp_Number.場所][Temp_Number.数字];
+                STOP = "通常";
+                Look_Number2 = 0;
+                I = Temp_Number.場所;
+                if(Object.keys(Number_place1[I]).length == 1){
+                  Number_place1[I] = {確定:Object.keys(Number_place1[I])[0]}
+                  if(I+1<10) label.text = "0" + (I + 1) + "に「" + Number_place1[I].確定 + "」を入力。";
+                  else label.text = (I + 1) + "に「" + Number_place1[I].確定 + "」を入力。";
+                  Numbers_Image[I].image = game.assets["../image/Number赤.png"];
+                  Numbers_Image[I].frame = Number_place1[I].確定;
+                };
+                Temp_Number = null;
+                return;
+              };
+            };
+            break;
+          case 9:
+          case 10:
+          case 11:
+          case 12:
+          case 13:
+          case 14:
+          case 15:
+          case 16:
+          case 17:
+            for(var K = 1; K < 10; K++){
+              Temp2 = 0;
+              for(var I = Look_Number2 - 9; I < Number_place1.length; I+=9){
+                if(K==1) Numbers_Image_shadow[I].opacity = 0;
+                if(Number_place1[I][K]){
+                  Temp2++;
+                  Temp3 = I;
+                };
+              };
+              if(Temp2==1){
+                Number_place1[Temp3] = {確定:K};
+                switch(STOP){
+                  case "通常":
+                    if(Temp3+1<10) label.text = "0" + (Temp3 + 1) + "に「" + K + "」を入力。";
+                    else label.text = (Temp3 + 1) + "に「" + K + "」を入力。";
+                    Numbers_Image[Temp3].image = game.assets["../image/Number赤.png"];
+                    break;
+                  case "仮入力":
+                    if(Temp3+1<10) label.text = "0" + (Temp3 + 1) + "に「" + K + "」を仮入力。";
+                    else label.text = (Temp3 + 1) + "に「" + K + "」を仮入力。";
+                    Numbers_Image[Temp3].image = game.assets["../image/Number青.png"];
+                    break;
+                };
+                Numbers_Image[Temp3].frame = K;
+                Number_Change = true;
+              };
+            };
+            for(var I = Look_Number2 - 9; I < Number_place1.length; I+=9){
+              if(!Object.keys(Number_place1[I]).length){
+                if(I+1<10) label.text = "0" + (I + 1) + "に入る数字がない。";
+                else label.text = (I + 1) + "に入る数字がない。";
+                Number_place1 = JSON.parse(Number_place2);
+                for(var I = 0; I < Numbers_Image.length; I++){
+                  if(Number_place1[I].確定) Numbers_Image[I].frame = Number_place1[I].確定;
+                  else{
+                    Numbers_Image[I].frame = 0;
+                    Numbers_Image[I].image = game.assets["../image/Number.png"];
+                  };
+                };
+                delete Number_place1[Temp_Number.場所][Temp_Number.数字];
+                STOP = "通常";
+                Look_Number2 = 0;
+                I = Temp_Number.場所;
+                if(Object.keys(Number_place1[I]).length == 1){
+                  Number_place1[I] = {確定:Object.keys(Number_place1[I])[0]}
+                  if(I+1<10) label.text = "0" + (I + 1) + "に「" + Number_place1[I].確定 + "」を入力。";
+                  else label.text = (I + 1) + "に「" + Number_place1[I].確定 + "」を入力。";
+                  Numbers_Image[I].image = game.assets["../image/Number赤.png"];
+                  Numbers_Image[I].frame = Number_place1[I].確定;
+                };
+                Temp_Number = null;
+                return;
+              };
+            };
+            break;
+          case 18:
+          case 19:
+          case 20:
+          case 21:
+          case 22:
+          case 23:
+          case 24:
+          case 25:
+          case 26:
+            switch(Look_Number2){
+              case 18:
+                J = 0;
+                break;
+              case 19:
+                J = 3;
+                break;
+              case 20:
+                J = 6;
+                break;
+              case 21:
+                J = 27;
+                break;
+              case 22:
+                J = 30;
+                break;
+              case 23:
+                J = 33;
+                break;
+              case 24:
+                J = 54;
+                break;
+              case 25:
+                J = 57;
+                break;
+              case 26:
+                J = 60;
+                break;
+            };
+            for(var K = 1; K < 10; K++){
+              Temp2 = 0;
+              for(var I = J; I < J + 21; I++){
+                switch(I){
+                  case J+3:
+                    I = J + 9;
+                    break;
+                  case J+12:
+                    I = J + 18;
+                    break;
+                };
+                if(K==1) Numbers_Image_shadow[I].opacity = 0;
+                if(Number_place1[I][K]){
+                  Temp2++;
+                  Temp3 = I;
+                };
+              };
+              if(Temp2==1){
+                Number_place1[Temp3] = {確定:K};
+                switch(STOP){
+                  case "通常":
+                    if(Temp3+1<10) label.text = "0" + (Temp3 + 1) + "に「" + K + "」を入力。";
+                    else label.text = (Temp3 + 1) + "に「" + K + "」を入力。";
+                    Numbers_Image[Temp3].image = game.assets["../image/Number赤.png"];
+                    break;
+                  case "仮入力":
+                    if(Temp3+1<10) label.text = "0" + (Temp3 + 1) + "に「" + K + "」を仮入力。";
+                    else label.text = (Temp3 + 1) + "に「" + K + "」を仮入力。";
+                    Numbers_Image[Temp3].image = game.assets["../image/Number青.png"];
+                    break;
+                };
+                Numbers_Image[Temp3].frame = K;
+                Number_Change = true;
+              };
+              };
+            for(var I = J; I < J + 21; I++){
+              switch(I){
+                case J+3:
+                  I = J + 9;
+                  break;
+                case J+12:
+                  I = J + 18;
+                  break;
+              };
+              if(!Object.keys(Number_place1[I]).length){
+                if(I+1<10) label.text = "0" + (I + 1) + "に入る数字がない。";
+                else label.text = (I + 1) + "に入る数字がない。";
+                Number_place1 = JSON.parse(Number_place2);
+                for(var I = 0; I < Numbers_Image.length; I++){
+                  if(Number_place1[I].確定) Numbers_Image[I].frame = Number_place1[I].確定;
+                  else{
+                    Numbers_Image[I].frame = 0;
+                    Numbers_Image[I].image = game.assets["../image/Number.png"];
+                  };
+                };
+                delete Number_place1[Temp_Number.場所][Temp_Number.数字];
+                STOP = "通常";
+                Look_Number2 = 0;
+                I = Temp_Number.場所;
+                if(Object.keys(Number_place1[I]).length == 1){
+                  Number_place1[I] = {確定:Object.keys(Number_place1[I])[0]}
+                  if(I+1<10) label.text = "0" + (I + 1) + "に「" + Number_place1[I].確定 + "」を入力。";
+                  else label.text = (I + 1) + "に「" + Number_place1[I].確定 + "」を入力。";
+                  Numbers_Image[I].image = game.assets["../image/Number赤.png"];
+                  Numbers_Image[I].frame = Number_place1[I].確定;
+                };
+                Temp_Number = null;
+                return;
+              };
+            };
+            break;
+          default:
+            console.log(Look_Number2);
+            break;
+        };
+        Look_Number2++;
+
+        for(var I = 0; I < Number_place1.length; I++){
+          if(Number_place1[I].確定) Numbers_Image[I].テキスト = I + 1 + ":" + + Number_place1[I].確定;
+          else{
+            Numbers_Image[I].テキスト = I + 1 + ":";
+            for(var K = 0; K < Object.keys(Number_place1[I]).length; K++){
+              Numbers_Image[I].テキスト += Object.keys(Number_place1[I])[K] + ",";
+            };
+            Numbers_Image[I].テキスト = Numbers_Image[I].テキスト.slice(0,-1);
+          };
+          if(I < 9) Numbers_Image[I].テキスト = "0" + Numbers_Image[I].テキスト;
+        };
+
+        Complete = true;
+
+        for(var I = 0; I < Number_place1.length; I++){
+          if(!Number_place1[I].確定){
+            Complete = false;
+            break;
+          };
+        };
+
+        if(Complete){
+          STOP = "完成?";
+          for(var I = 0; I < Number_place1.length; I++) Numbers_Image_shadow[I].opacity = 0;
+          return;
+        };
+
+
+        if(Look_Number2==27){
+          Look_Number2 = 0;
+          if(!Number_Change){
+            switch(STOP){
+              case "通常":
+                Temp_Numbers = {};
+                Number_place2 = JSON.stringify(Number_place1);
+                for(var I = 0; I < Number_place1.length; I++){
+                  if(Object.keys(Number_place1[I]).length==Length){
+                    if(!Temp_Number){
+                      Temp_Number = {場所:I,数字:Object.keys(Number_place1[I])[0],元:Number_place1[I]};
+                      Number_place1[I] = {確定:Object.keys(Number_place1[I])[0]};
+                      if(I+1<10) label.text = "0" + (I + 1) + "に「" + Number_place1[I].確定 + "」を仮入力。";
+                      else label.text = (I + 1) + "に「" + Number_place1[I].確定 + "」を仮入力。";
+                      Numbers_Image[I].frame = Number_place1[I].確定;
+                      Numbers_Image[I].image = game.assets["../image/Number紫.png"];
+                      STOP = "仮入力";
+                    };
+                    Temp_Numbers[I] = Number_place1[I];
+                  };
+                };
+                break;
+              case "仮入力":
+                Number_place1 = JSON.parse(Number_place2);
+                for(var I = 0; I < Numbers_Image.length; I++){
+                  if(Number_place1[I].確定) Numbers_Image[I].frame = Number_place1[I].確定;
+                  else{
+                    Numbers_Image[I].frame = 0;
+                    Numbers_Image[I].image = game.assets["../image/Number.png"];
+                  };
+                };
+                delete Temp_Number.元[Temp_Number.数字];
+                I = Temp_Number.場所;
+                if(Object.keys(Temp_Number.元)[0]){
+                  Number_place1[I] = {確定:Object.keys(Temp_Number.元)[0]};
+                  Temp_Number.数字 = Number_place1[I].確定;
+                  if(I+1<10) label.text = "0" + (I + 1) + "に「" + Number_place1[I].確定 + "」を仮入力。";
+                  else label.text = (I + 1) + "に「" + Number_place1[I].確定 + "」を仮入力。";
+                  Numbers_Image[I].frame = Number_place1[I].確定;
+                  Numbers_Image[I].image = game.assets["../image/Number紫.png"];
+                }
+                else{
+                  delete Temp_Numbers[I];
+                  I = Number(Object.keys(Temp_Numbers)[0]);
+                  Number_place1[I] = {確定:Object.keys(Number_place1[I])[0]};
+                  Temp_Number = {場所:I,数字:Object.keys(Number_place1[I])[0],元:Number_place1[I]};
+                  if(I+1<10) label.text = "0" + (I + 1) + "に「" + Number_place1[I].確定 + "」を仮入力。";
+                  else label.text = (I + 1) + "に「" + Number_place1[I].確定 + "」を仮入力。";
+                  Numbers_Image[I].frame = Number_place1[I].確定;
+                  Numbers_Image[I].image = game.assets["../image/Number紫.png"];
+                };
+                break;
+              default:
+                console.log(STOP);
+                break;
+            };
+            //STOP = "仮停止";
+            //for(var I = 0; I < Number_place1.length; I++) Numbers_Image_shadow[I].opacity = 0;
+          };
+        };
+
+        return;
+
+        if(!Complete){
+          if(STOP=="青") STOP = "お手上げ";
+          else STOP = "取り消し";
+          Skip = {};
+          Length = 7;
+          label.text = i + "が入らない。";
+          return;
+        };
+
+        if(!Answer){
+          for (var i = 0; i < V.length; i++) {
+            if(V2[i]=="赤"&&V[i]<10&&V[i]){
+              console.log(i + ":" + V[i]);
+              V[i] = "ヒント";
+            };
+          };
+          while(!JSON.stringify(V).match(/ヒント/)){
+            for (var i = 0; i < V.length; i++) {
+              if(V[i]>9){
+                if(V[i].match(/0/g).length==Length){
+                  console.log(i + ":" + V[i].match(/[^0]/g));
+                  V[i] = "ヒント";
+                };
+              };
+            };
+            Length--;
+            if(Length==1) break;
+          };
+          for (var i = 0; i < V.length; i++) if(V[i]>9||!V[i]) V[i] = 0;
+          game.replaceScene(S_Main_Scene(V,V2));
+          return;
+        };
+
+        for (var i = 0; i < 81; i++){
+          if((V[i].toString().length)!=1){
+            Complete = false;
+          };
+        };
+
+        for(var j = 0; j < V.length; j+=9){
+          Temp1 = [];
+          for (var i = j; i < j+9; i++){
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            for (var k = 0; k < Temp1.length; k++) {
+              if(Temp1[k]==V[i]){
+                if(STOP=="青") STOP = "お手上げ";
+                else STOP = "取り消し";
+                Skip = {};
+                Length = 7;
+                label.text = "横" + (j/9+1) + "が矛盾。";
+                return;
+              };
+            }
+            Temp1[Temp1.length] = V[i]*1;
+          };
+        };
+
+        for(var j = 0; j < 9; j++){
+          Temp1 = [];
+          for (var i = j; i < V.length; i+=9){
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            for (var k = 0; k < Temp1.length; k++) {
+              if(Temp1[k]==V[i]){
+                if(STOP=="青") STOP = "お手上げ";
+                else STOP = "取り消し";
+                Skip = {};
+                Length = 7;
+                label.text = "縦" + (j+1) + "が矛盾。";
+                return;
+              };
+            }
+            Temp1[Temp1.length] = V[i]*1;
+          };
+        };
+
+        for(var j = 0; j < V.length-20; j+=3){
+          switch(j){
+            case 9:
+              j = 27;
+              break;
+            case 36:
+              j = 54;
+              break;
+          };
+          Temp1 = [];
+          for (var i = j; i < j+21; i++){
+            switch(i){
+              case j+3:
+                i = j+9;
+                break;
+              case j+12:
+                i = j+18;
+                break;
+            };
+            if(!V[i]) continue;
+            if(V[i].toString().length==9) continue;
+            for (var k = 0; k < Temp1.length; k++) {
+              if(Temp1[k]==V[i]){
+                if(STOP=="青") STOP = "お手上げ";
+                else STOP = "取り消し";
+                Skip = {};
+                Length = 7;
+                switch(i){
+                  case 0:
+                  case 1:
+                  case 2:
+                  case 9:
+                  case 10:
+                  case 11:
+                  case 18:
+                  case 19:
+                  case 20:
+                    label.text = "左上枠が矛盾。";
+                    break;
+                  case 3:
+                  case 4:
+                  case 5:
+                  case 12:
+                  case 13:
+                  case 14:
+                  case 21:
+                  case 22:
+                  case 23:
+                    label.text = "上枠が矛盾。";
+                    break;
+                  case 6:
+                  case 7:
+                  case 8:
+                  case 15:
+                  case 16:
+                  case 17:
+                  case 24:
+                  case 25:
+                  case 26:
+                    label.text = "右上枠が矛盾。";
+                    break;
+                  case 27:
+                  case 28:
+                  case 29:
+                  case 36:
+                  case 37:
+                  case 38:
+                  case 45:
+                  case 46:
+                  case 47:
+                    label.text = "左枠が矛盾。";
+                    break;
+                  case 30:
+                  case 31:
+                  case 32:
+                  case 39:
+                  case 40:
+                  case 41:
+                  case 48:
+                  case 49:
+                  case 50:
+                    label.text = "真ん中枠が矛盾。";
+                    break;
+                  case 33:
+                  case 34:
+                  case 35:
+                  case 42:
+                  case 43:
+                  case 44:
+                  case 51:
+                  case 52:
+                  case 53:
+                    label.text = "右枠が矛盾。";
+                    break;
+                  case 54:
+                  case 55:
+                  case 56:
+                  case 63:
+                  case 64:
+                  case 65:
+                  case 72:
+                  case 73:
+                  case 74:
+                    label.text = "左下枠が矛盾。";
+                    break;
+                  case 57:
+                  case 58:
+                  case 59:
+                  case 66:
+                  case 67:
+                  case 68:
+                  case 75:
+                  case 76:
+                  case 77:
+                    label.text = "下枠が矛盾。";
+                    break;
+                  case 60:
+                  case 61:
+                  case 62:
+                  case 69:
+                  case 70:
+                  case 71:
+                  case 78:
+                  case 79:
+                  case 80:
+                    label.text = "右下枠が矛盾。";
+                    break;
+                };
+                return;
+              };
+            }
+            Temp1[Temp1.length] = V[i]*1;
+          };
+        };
+
+        if(Check==JSON.stringify(V)){
+          for (var i = 0; i < 81; i++){
+            if((V[i].toString().length)!=1){
+              Complete = false;
+            };
+          };
+          if(Complete){
+            for (var i = 1; i < 82; i++){
+              if(V2[i-1].match(/[青紫]/)){
+                V2[i-1] = "赤";
+                Number[i].image = game.assets["../image/Number赤.png"];
+              };
+            };
+            STOP = "完成";
+            return;
+          };
+          switch(STOP){
+            case "青":
+              for (var i = 1; i < 82; i++){
+                STOP = V[i-1].toString().match(/0/g);
+                if(STOP&&Skip[i-1]!="無理"){
+                  if(STOP.length==Length){
+                    if(Skip[i-1]){
+                      Skip[i-1] = "無理";
+                      V[i-1] = V[i-1].match(/[1-9]{1}/g)[1]*1;
+                    }
+                    else{
+                      Skip[i-1] = true;
+                      V[i-1] = V[i-1].match(/[1-9]{1}/g)[0]*1;
+                    };
+                    label.text = i + "に「" + V[i-1] + "」を仮入力。";
+                    V2[i-1] = "紫";
+                    Number[i].frame = V[i-1];
+                    Number[i].image = game.assets["../image/Number紫.png"];
+                    Temp_Number = true;
+                    break;
+                  };
+                };
+              };
+              if(Temp_Number) STOP = "赤";
+              else{
+                STOP = "青";
+                if(Length > 1) Length--;
+                else STOP = "お手上げ";
+              };
+              break;
+            case "赤":
+              Temp_Number = null;
+              STOP = "スキップ";
+              break;
+            default:
+              console.log(STOP);
+              break;
+          };
+        };
+      });
+
       return scene;
     };
     var Answer_Scene = function(V,V2,Answer){
@@ -4435,18 +5595,28 @@ function Game_load(width,height){
         Complete = true;
 
         for (var i = 1; i < 82; i++){
-          if(V[i-1]=="100000000") V[i-1] = 1;
-          if(V[i-1]=="020000000") V[i-1] = 2;
-          if(V[i-1]=="003000000") V[i-1] = 3;
-          if(V[i-1]=="000400000") V[i-1] = 4;
-          if(V[i-1]=="000050000") V[i-1] = 5;
-          if(V[i-1]=="000006000") V[i-1] = 6;
-          if(V[i-1]=="000000700") V[i-1] = 7;
-          if(V[i-1]=="000000080") V[i-1] = 8;
-          if(V[i-1]=="000000009") V[i-1] = 9;
+          switch(V[i-1]){
+            case "000000000":
+              Complete = false;
+              break;
+            case "100000000":
+            case "020000000":
+            case "003000000":
+            case "000400000":
+            case "000050000":
+            case "000006000":
+            case "000000700":
+            case "000000080":
+            case "000000009":
+              V[i-1] = V[i-1].replace(/0/g,"");
+              break;
+          };
           Number[i].a = i + ":" + V[i-1];
           for (var k = 1; k < 10; k++){
             if(V[i-1]==k&&Number[i].frame==0){
+              Now = new Date().getSeconds();
+              Previous = new Date().getSeconds();
+              label.text = i + "に「" + k + "」を入力。";
               Number[i].frame = k;
               if(STOP == "赤"){
                 V2[i-1] = "青";
@@ -4454,7 +5624,6 @@ function Game_load(width,height){
               };
             }
           };
-          if(V[i-1]=="000000000") Complete = false;
         };
 
         if(!Complete){
